@@ -1,4 +1,4 @@
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Ara3D.IfcParser.Test;
 

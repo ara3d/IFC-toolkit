@@ -6,10 +6,31 @@ namespace Ara3D.IfcParser.Test
 {
     public static class StepUnitTests
     {
-        public static FilePath HugeFile = @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\KEQ\02-211211-4800000194-WBP-KEQ-MDL-000001.ifc";
-        public static FilePath BigFile = @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000001.ifc";
-        public static FilePath MedFile = @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000003.ifc";
-        public static FilePath TinyFile = @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000000.ifc";
+        [Test, Explicit]
+        public static void OutputFilesInFolder()
+        {
+            var folder = new DirectoryPath(@"C:\Users\cdigg\dev\impraria");
+            var files = folder.GetAllFilesRecursively().Where(f => f.HasExtension("ifc")).OrderBy(f => f.GetFileSize());
+
+            foreach (var f in files)
+            {
+                Console.WriteLine($@"// {f.FileSizeAsString()}");
+                Console.WriteLine($"@\"{f.Value}\",");
+            }
+        }
+
+
+        public static FilePath HugeFile =
+            @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\KEQ\02-211211-4800000194-WBP-KEQ-MDL-000001.ifc";
+
+        public static FilePath BigFile =
+            @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000001.ifc";
+
+        public static FilePath MedFile =
+            @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000003.ifc";
+
+        public static FilePath TinyFile =
+            @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000000.ifc";
 
         public static void OutputTokenAnalysis(StepTokenAnalysis sta)
         {
@@ -35,10 +56,7 @@ namespace Ara3D.IfcParser.Test
 
             IReadOnlyList<StepEntity> entities = null;
 
-            TimingUtils.TimeIt(() =>
-            {
-                bytes = testFile.ReadAllBytes();
-            }, 
+            TimingUtils.TimeIt(() => { bytes = testFile.ReadAllBytes(); },
                 "Loading Bytes");
 
             /*
@@ -49,12 +67,12 @@ namespace Ara3D.IfcParser.Test
                 },
                 "Computing Separators");
             */
-            
+
             TimingUtils.TimeIt(() =>
-            {
-                tokens = StepTokenizer.CreateTokens(bytes);
-                Console.WriteLine($"Found {tokens.Length} tokens");
-            }, 
+                {
+                    tokens = StepTokenizer.CreateTokens(bytes);
+                    Console.WriteLine($"Found {tokens.Length} tokens");
+                },
                 "Tokenizing");
 
             var size = 0;
@@ -97,21 +115,16 @@ namespace Ara3D.IfcParser.Test
             var bytes = Array.Empty<byte>();
 
             IReadOnlyList<StepEntity> entities = null;
-            
-            TimingUtils.TimeIt(() => {
-                bytes = testFile.ReadAllBytes();
-            }, "Loading Bytes");
+
+            TimingUtils.TimeIt(() => { bytes = testFile.ReadAllBytes(); }, "Loading Bytes");
 
 
-            TimingUtils.TimeIt(() => {
-                lines = testFile.ReadAllLines();
-            }, "Loading Lines");
-            
-            TimingUtils.TimeIt(() => {
-                entities = ParseLines(lines);
-            }, "Creating entities");
+            TimingUtils.TimeIt(() => { lines = testFile.ReadAllLines(); }, "Loading Lines");
 
-            TimingUtils.TimeIt(() => {
+            TimingUtils.TimeIt(() => { entities = ParseLines(lines); }, "Creating entities");
+
+            TimingUtils.TimeIt(() =>
+            {
                 foreach (var e in entities)
                     ParseRawData(e);
             }, "Parsing values");
@@ -173,7 +186,7 @@ namespace Ara3D.IfcParser.Test
                 r.Error = EntityError.NoId;
                 return r;
             }
-                
+
             var n1 = entry.IndexOf('(');
             if (n1 < 0)
             {
@@ -264,6 +277,7 @@ namespace Ara3D.IfcParser.Test
                     Console.WriteLine($"No parse node created");
                     return 0;
                 }
+
                 Console.WriteLine($"Node {ps.Node}");
 
                 var treeAndNode = ps.Node.ToParseTreeAndNode();
@@ -275,6 +289,7 @@ namespace Ara3D.IfcParser.Test
                 }
                 //Console.WriteLine($"Tree {tree}");
             }
+
             return ps.AtEnd() ? 1 : 0;
         }
 
@@ -303,7 +318,7 @@ namespace Ara3D.IfcParser.Test
             TimingUtils.TimeIt(() =>
             {
                 var n = ParseTest(input, g.StartRule);
-                Console.WriteLine($"Parse test result {n==1}");
+                Console.WriteLine($"Parse test result {n == 1}");
             });
         }
     }
