@@ -1,52 +1,11 @@
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using Xbim.IO.Parser;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace Ara3D.IfcParser.Test;
 
-// Limited to parsing 2GB maximum.
-
-[StructLayout(LayoutKind.Sequential, Pack=1)]
-public struct StepToken
-{
-    public int _start;
-    public ushort _length;
-    public ushort _type;
-
-    public int Start => _start;
-    public int End => Start + Count;
-    public int Count => _length;
-    public TokenType Type => (TokenType)_type;
-
-    public int GetByteSize()
-    {
-        if (Type == TokenType.Ident)
-            return 2;
-        if (Type == TokenType.Number)
-            return 8;
-        if (Type == TokenType.String)
-            return Count - 2;
-        if (Type == TokenType.Symbol)
-            return 2;
-        if (Type == TokenType.Id)
-            return 4;
-        return Count;
-    }
-
-    public StepToken(TokenType type, int start, int end)
-    {
-        _type = (ushort)type;
-        _start = start;
-        _length = (ushort)(end - start);
-    }
-
-    public string GetString(byte[] bytes)
-    {
-        return Encoding.ASCII.GetString(bytes, Start, Count);
-    }
-}
+// Limited to parsing 2GB maximum, with 64K lines. 
 
 public enum TokenType
 {
@@ -61,55 +20,55 @@ public enum TokenType
     Special,
     Comment,
     Unknown,
-    BeginLine,
-    EndLine,
-    Definition,
     BeginGroup,
     EndGroup,
     LineBreak,
-}
-
-public class StepNode
-{
-    public readonly List<StepNode> Children = new List<StepNode>();
-    public readonly StepValue Value;
-
-    public StepNode(StepValue value)
-    {
-        Value = value;
-    }
+    EndOfLine,
+    Definition,
 }
 
 public static class StepTokenizer
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsSeparator(byte b)
-    {
-        switch (b)
-        {
-            case (byte)'\n':
-            case (byte)';':
-            case (byte)'(':
-            case (byte)'=':
-            case (byte)')':
-            case (byte)',':
-                return true;
-        }
 
-        return false; 
+    public static readonly TokenType[] TokenLookup =
+        CreateTokenLookup();
+
+    public static bool[] IsNumberLookup =
+        CreateNumberLookup();
+
+    public static bool[] IsIdentLookup =
+        CreateIdentLookup();
+
+    public static TokenType[] CreateTokenLookup()
+    {
+        var r = new TokenType[256];
+        for (var i = 0; i < 256; i++)
+            r[i] = GetTokenType((byte)i);
+        return r;
     }
-
-    public static List<int> GetSeparatorIndices(byte[] bytes)
+    
+    public static bool[] CreateNumberLookup()
     {
-        var r = new List<int>(bytes.Length / 16);
-        for (var i=0; i<bytes.Length; i++)
-            if (IsSeparator(bytes[i]))
-                r.Add(i);
+        var r = new bool[256];
+        for (var i = 0; i < 256; i++)
+            r[i] = IsNumberChar((byte)i);
+        return r;
+    }
+    
+    public static bool[] CreateIdentLookup()
+    {
+        var r = new bool[256];
+        for (var i = 0; i < 256; i++)
+            r[i] = IsIdentOrDigitChar((byte)i);
         return r;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNumber(byte b)
+    public static TokenType LookupToken(byte b)
+        => TokenLookup[b];
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNumberChar(byte b)
     {
         switch (b)
         {
@@ -170,7 +129,7 @@ public static class StepTokenizer
                 return TokenType.Id;
 
             case (byte)';':
-                return TokenType.EndLine;
+                return TokenType.EndOfLine;
 
             case (byte)'(':
                 return TokenType.BeginGroup;
@@ -268,211 +227,115 @@ public static class StepTokenizer
         => b >= '0' && b <= '9';
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsIdentOrDigit(byte b)
+    public static bool IsIdentOrDigitChar(byte b)
         => IsIdent(b) || IsDigit(b);
 
-    /*
-    public static List<StepToken> CreateTokens(byte[] bytes)
+
+    public static unsafe byte* AdvancePast(byte* begin, byte* end, string s)
     {
-        var r = new List<StepToken>();
-        var i = 0;
-        while (i < bytes.Length)
-        {
-            var st = CreateToken(bytes, i);
-            if (st.Type != TokenType.None
-                && st.Type != TokenType.Separator
-                && st.Type != TokenType.Whitespace)
-            {
-                r.Add(st);
-            }
-
-            i = st.End;
-        }
-
-        return r;
+        if (end - begin < s.Length)
+            return null;
+        foreach (var c in s)
+            if (*begin++ != (byte)c)
+                return null;
+        return begin;
     }
-    */
 
-    public static unsafe StepToken[] CreateTokens(byte[] bytes)
+    public static unsafe byte*[]? CreateTokens(byte* begin, byte* end)
     {
-        var r = new StepToken[bytes.Length / 4];
+        if (begin == null || end == null)
+            return null;
+
+        begin = AdvancePast(begin, end, "ISO-10303-21;");
+        if (begin == null)
+            return null;
+
+        // Back up the "end" to the last semi-colon.
+        // This prevents the algorithm from going past the end of bounds
+        // If the input is well-formed. 
+        // An unclosed comment or string could still blow things up though. 
+        while (end-- > begin && *end != ';')
+        { }
+
+        if (end < begin + 5)
+            return null;
+
+        var cur = begin;
         var cnt = 0;
-        fixed (StepToken* pArray = &r[0])
+
+        // Count the number of tokens.
+        while (cur < end)
         {
-            var ptr = pArray;
-            var i = 0;
-            while (i < bytes.Length)
-            {
-                CreateToken(bytes, i, ptr);
-                i = ptr->End;
-
-                switch (ptr->Type)
-                {
-                    case TokenType.None:
-                    case TokenType.Whitespace:
-                    case TokenType.Separator:
-                    case TokenType.Comment:
-                    case TokenType.Unknown:
-                    case TokenType.BeginLine:
-                    case TokenType.EndLine:
-                    case TokenType.BeginGroup:
-                    case TokenType.EndGroup:
-                    case TokenType.LineBreak:
-                    case TokenType.Definition:
-                        break;
-
-                    case TokenType.Ident:
-                    case TokenType.String:
-                    case TokenType.Number:
-                    case TokenType.Symbol:
-                    case TokenType.Id:
-                    case TokenType.Special:
-                    default:
-                        ptr++;
-                        break;
-                }
-            }
-
-            cnt = (int)(ptr - pArray);
+            cnt++;
+            CreateToken(ref cur, end);
         }
 
-        var r2 = new StepToken[cnt];
+        var r = new byte*[cnt];
+        
+        // Store the tokens
+        cnt = 0;
+        cur = begin;
+        while (cur < end)
+        {
+            r[cnt++] = cur;
+            CreateToken(ref cur, end);
+        }
+
         return r;
     }
 
-    public static StepToken CreateToken(byte[] bytes, int start)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void CreateToken(ref byte* cur, byte* end)
     {
-        var i = start;
-        var n = bytes.Length;
-        var state = GetTokenType(bytes[i++]);
+        var type = TokenLookup[*cur++];
 
-        switch (state)
+        switch (type)
         {
             case TokenType.Ident:
-                while (i < n && IsIdentOrDigit(bytes[i]))
-                    i++;
-                return new StepToken(state, start, i);
+                while (IsIdentLookup[*cur])
+                    cur++;
+                break;
 
             case TokenType.String:
-                while (i < n && bytes[i] != '\'')
-                    i++;
-                return new StepToken(state, start, i + 1);                    
-            
-            case TokenType.Whitespace:
-                while (i < n && IsWhiteSpace(bytes[i]))
-                    i++;
-                return new StepToken(state, start, i);
+                while (cur < end && *cur++ != '\'')
+                { }
+                break;
 
             case TokenType.LineBreak:
-                while (i < n && IsLineBreak(bytes[i]))
-                    i++;
-                return new StepToken(TokenType.BeginLine, start, i);
+                while (IsLineBreak(*cur))
+                    cur++;
+                break;
 
             case TokenType.Number:
-                while (i < n && IsNumber(bytes[i]))
-                    i++;
-                return new StepToken(state, start, i);
+                while (IsNumberLookup[*cur])
+                    cur++;
+                break;
 
             case TokenType.Symbol:
-                while (i < n && bytes[i] != '.')
-                    i++;
-                return new StepToken(state, start, i + 1);
+                while (*cur++ != '.')
+                { }
+                break;
 
             case TokenType.Id:
-                while (i < n && IsDigit(bytes[i]))
-                    i++;
-                return new StepToken(state, start, i);
+                while (IsNumberLookup[*cur])
+                    cur++;
+                break;
 
             case TokenType.Comment:
-                if (bytes[i] != '*')
-                    return new StepToken(TokenType.Unknown, start, i);
-                while (i < n && (bytes[i - 1] != '*' || bytes[i] != '/'))
-                    i++;
-                return new StepToken(state, start, i);
+                var prev = *cur++;
+                while (cur < end && (prev != '*' || *cur != '/'))
+                    prev = *cur++;
+                cur++;
+                break;
 
+            case TokenType.Whitespace:
             case TokenType.BeginGroup:
             case TokenType.EndGroup:
-            case TokenType.Definition:
-            case TokenType.EndLine:
             case TokenType.Special:
             case TokenType.Separator:
-                return new StepToken(state, start, i);
-
-            default:
-                throw new ArgumentOutOfRangeException();
+            case TokenType.EndOfLine:
+            default: 
+                break;
         }
-    }
-
-    public static unsafe void CreateToken(byte[] bytes, int start, StepToken* ptr)
-    {
-        var i = start;
-        var n = bytes.Length;
-        ptr->_start = start;
-        ptr->_type = (ushort)GetTokenType(bytes[i++]);
-
-        switch (ptr->_type)
-        {
-            case (ushort)TokenType.Ident:
-                while (i < n && IsIdentOrDigit(bytes[i]))
-                    i++;
-                break;
-
-            case (ushort)TokenType.String:
-                while (i < n && bytes[i] != '\'')
-                    i++;
-                i += 1;
-                break;
-
-            case (ushort)TokenType.Whitespace:
-                while (i < n && IsWhiteSpace(bytes[i]))
-                    i++;
-                break;
-
-            case (ushort)TokenType.LineBreak:
-                while (i < n && IsLineBreak(bytes[i]))
-                    i++;
-                ptr->_type = (ushort)TokenType.BeginLine;
-                break;
-
-            case (ushort)TokenType.Number:
-                while (i < n && IsNumber(bytes[i]))
-                    i++;
-                break;
-
-            case (ushort)TokenType.Symbol:
-                while (i < n && bytes[i] != '.')
-                    i++;
-                i += 1;
-                break;
-
-            case (ushort)TokenType.Id:
-                while (i < n && IsDigit(bytes[i]))
-                    i++;
-                break;
-
-            case (ushort)TokenType.Comment:
-                if (bytes[i] != '*')
-                    throw new Exception("Expected comment");
-                while (i < n && (bytes[i - 1] != '*' || bytes[i] != '/'))
-                    i++;
-                i += 1;
-                break;
-
-            case (ushort)TokenType.BeginGroup:
-            case (ushort)TokenType.EndGroup:
-            case (ushort)TokenType.Definition:
-            case (ushort)TokenType.EndLine:
-            case (ushort)TokenType.Special:
-            case (ushort)TokenType.Separator:
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        var cnt = (i - ptr->_start);
-        if (cnt > ushort.MaxValue)
-            throw new Exception($"Line is too long {cnt}");
-        ptr->_length = (ushort)cnt;
     }
 }

@@ -401,13 +401,24 @@ public static class ProfilingTests
         Console.WriteLine($"Testing {fp.GetFileName()} which is {fp.FileSizeAsString()}");
         TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
         //TimingUtils.TimeIt(() => HyparLoadIfc(fp), "Hypar");
-        TimingUtils.TimeIt(() => GeometryGymLoadIfc(fp), "GeometryGym");
-        TimingUtils.TimeIt(() => XBimLoadIfc(fp), "XBim");
+        //TimingUtils.TimeIt(() => GeometryGymLoadIfc(fp), "GeometryGym");
+        //TimingUtils.TimeIt(() => XBimLoadIfc(fp), "XBim");
     }
 
     public static void Ara3DLoadIfc(FilePath filePath)
     {
-        var data = StepDocument.Create(filePath);
+        var data = new StepDocument(filePath);
+        Console.WriteLine($"Number of tokens = {data.GetNumTokens()}");
+        /*
+        for (var i = 0; i < 50; i++)
+        {
+            if (i >= data.GetNumTokens())
+                break;
+            Console.WriteLine($"Token {i}:{data.GetTokenType(i)} = {data.GetTokenString(i)}");
+        }\
+
+        */
+        data.Dispose();
     }
 
     public static void HyparLoadIfc(FilePath filePath)

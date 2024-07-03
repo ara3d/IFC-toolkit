@@ -32,6 +32,7 @@ namespace Ara3D.IfcParser.Test
         public static FilePath TinyFile =
             @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\ARC\02-211211-4800000194-WBP-ARC-MDL-000000.ifc";
 
+        /*
         public static void OutputTokenAnalysis(StepTokenAnalysis sta)
         {
             Console.WriteLine($"There are {sta.Indices.Count} unique token values");
@@ -45,66 +46,7 @@ namespace Ara3D.IfcParser.Test
             foreach (var g in tokenGroups)
                 Console.WriteLine($"{g.Key} = {g.Value.Count}");
         }
-
-        [Test]
-        [TestCaseSource(nameof(TestFiles))]
-        public static void TestTokenizer(string filePath)
-        {
-            var testFile = new FilePath(filePath);
-            var bytes = Array.Empty<byte>();
-            var tokens = Array.Empty<StepToken>();
-
-            IReadOnlyList<StepEntity> entities = null;
-
-            TimingUtils.TimeIt(() => { bytes = testFile.ReadAllBytes(); },
-                "Loading Bytes");
-
-            /*
-            TimingUtils.TimeIt(() =>
-                {
-                    seps = StepTokenizer.GetSeparatorIndices(bytes);
-                    Console.WriteLine($"Found {seps.Count} separators");
-                },
-                "Computing Separators");
-            */
-
-            TimingUtils.TimeIt(() =>
-                {
-                    tokens = StepTokenizer.CreateTokens(bytes);
-                    Console.WriteLine($"Found {tokens.Length} tokens");
-                },
-                "Tokenizing");
-
-            var size = 0;
-            foreach (var token in tokens)
-            {
-                size += token.GetByteSize();
-                //Console.WriteLine(token.GetString(bytes));
-            }
-
-            Console.WriteLine($"File size = {testFile.GetFileSize()}, current size = {size}");
-
-            TimingUtils.TimeIt(() =>
-                {
-                    var sta = new StepTokenAnalysis(bytes, tokens, TokenType.Id);
-                    OutputTokenAnalysis(sta);
-                },
-                "Analyzing ID tokens");
-
-            TimingUtils.TimeIt(() =>
-                {
-                    var sta = new StepTokenAnalysis(bytes, tokens, TokenType.String);
-                    OutputTokenAnalysis(sta);
-                },
-                "Analyzing String tokens");
-
-            TimingUtils.TimeIt(() =>
-                {
-                    var sta = new StepTokenAnalysis(bytes, tokens, TokenType.Ident);
-                    OutputTokenAnalysis(sta);
-                },
-                "Analyzing Identifier tokens");
-        }
+        */
 
         [Test]
         [TestCaseSource(nameof(TestFiles))]
