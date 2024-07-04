@@ -1,29 +1,57 @@
-using System.IO.MemoryMappedFiles;
 using Ara3D.Utils;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Ara3D.IfcParser.Test;
 
 public unsafe class StepDocument : IDisposable
 {
-    public readonly byte*[] Tokens;
+    public readonly StepTokens Tokens;
+    public readonly byte*[] TokenPtrs;
+    public readonly int NumTokens;
+    public readonly StepEntity[] Entities;
+    public readonly int NumEntities;
     public readonly byte* DataStart;
     public readonly byte* DataEnd;
     public readonly long Length;
-
-    private readonly byte[] _buffer;
     private GCHandle _handle;
+    public StepEntityLookup Lookup;
+
+    public string FirstError;
 
     public StepDocument(FilePath filePath)
     {
-        _buffer = filePath.ReadAllBytes();
+        var _buffer = filePath.ReadAllBytes();
         Length = _buffer.Length;
         _handle = GCHandle.Alloc(_buffer, GCHandleType.Pinned);
         DataStart = (byte*)_handle.AddrOfPinnedObject().ToPointer();
         DataEnd = DataStart + Length;
-        Tokens = StepTokenizer.CreateTokens(DataStart, DataEnd);
+        Tokens = StepTokenizer.CreateTokens(DataStart, DataEnd)
+                 ?? throw new Exception("Tokenization failed");
+        TokenPtrs = Tokens.Tokens;
+        NumTokens = TokenPtrs.Length;
+        Entities = Tokens.Entities;
+        NumEntities = Entities.Length;
+
+        fixed (StepEntity* ptrEntityArray = &Entities[0])
+        {
+            for (var i = 0; i < NumEntities; i++)
+            {
+                var ptr = ptrEntityArray + i;
+                ptr->Index = i;
+                var begin = GetTokenPtr(ptr->BeginToken) + 1;
+                var length = GetTokenPtr(ptr->BeginToken + 1) - begin;
+                var tmp = new ReadOnlySpan<byte>(begin, (int)length);
+                var test = int.TryParse(tmp, out ptr->Id);
+                if (!test)
+                {
+                    FirstError = $"Failed to parse entity ID at token {ptr->BeginToken}";
+                    break;
+                }
+            }
+        }
+
+        Lookup = new(Entities);
     }
 
     public void Dispose()
@@ -32,22 +60,22 @@ public unsafe class StepDocument : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> GetSpan(byte* begin, byte* end)
+        => new(begin, (int)(end - begin));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetTokenLength(int index)
         => (int)(GetTokenPtr(index + 1) - GetTokenPtr(index));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte* GetTokenPtr(int index)
-        => Tokens[index];
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetNumTokens()
-        => Tokens.Length - 1;
+        => TokenPtrs[index];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TokenType GetTokenType(int index)
         => StepTokenizer.LookupToken(*GetTokenPtr(index));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string GetTokenString(int index)
-        => Encoding.ASCII.GetString(GetTokenPtr(index), GetTokenLength(index));
+    public ReadOnlySpan<byte> GetTokenSpan(int index)
+        => GetSpan(GetTokenPtr(index), GetTokenPtr(index+1));
 }

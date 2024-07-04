@@ -1,7 +1,4 @@
 using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.X86;
 
 namespace Ara3D.IfcParser.Test;
 
@@ -27,9 +24,14 @@ public enum TokenType
     Definition,
 }
 
+public unsafe class StepTokens
+{
+    public byte*[] Tokens;
+    public StepEntity[] Entities;
+}
+
 public static class StepTokenizer
 {
-
     public static readonly TokenType[] TokenLookup =
         CreateTokenLookup();
 
@@ -241,7 +243,7 @@ public static class StepTokenizer
         return begin;
     }
 
-    public static unsafe byte*[]? CreateTokens(byte* begin, byte* end)
+    public static unsafe StepTokens? CreateTokens(byte* begin, byte* end)
     {
         if (begin == null || end == null)
             return null;
@@ -262,23 +264,51 @@ public static class StepTokenizer
 
         var cur = begin;
         var cnt = 0;
+        var entityCount = 0;
 
         // Count the number of tokens.
         while (cur < end)
         {
             cnt++;
+            if (*cur == '=')
+                entityCount++;
             CreateToken(ref cur, end);
         }
 
-        var r = new byte*[cnt];
+        var r = new StepTokens();
+        var tokens = new byte*[cnt];
+        r.Tokens = tokens;
         
+        var entities = new StepEntity[entityCount];
+        r.Entities = entities;
+
         // Store the tokens
         cnt = 0;
         cur = begin;
         while (cur < end)
         {
-            r[cnt++] = cur;
+            tokens[cnt++] = cur;
             CreateToken(ref cur, end);
+        }
+
+        // Store the token indices for entity definitions
+        var e = 0;
+        var i = 0;
+        while (i < cnt)
+        {
+            if (*tokens[i] == '#' && *tokens[i+1] == '=')
+            {
+                var j = i;
+                while (j < cnt && *tokens[j] != ';')
+                    j++;
+
+                entities[e++] = new StepEntity(i, j);
+                i = j + 1;
+            }
+            else
+            {
+                i++;
+            }
         }
 
         return r;

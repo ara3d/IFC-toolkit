@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ara3d\parakeet\Parakeet.Grammars\Ara3D.Parakeet.Grammars.csproj" />
     <ProjectReference Include="..\..\ara3d\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
   </ItemGroup>
 
