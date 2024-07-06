@@ -24,22 +24,6 @@ public static class ProfilingTests
         }
     }
 
-
-    [Test]
-    public static void CreateRecords()
-    {
-        using var d = TimingUtils.TimeIt("Creating records"); 
-        //var file = @"C:\Users\cdigg\dev\impraria\07 - NEOM Mountain\4200000004 - Ski Village\STAGE 3A 100%\IFC\MEC\07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc";
-        var file = @"C:\Users\cdigg\dev\impraria\Trojena\4200000004 - NEOM SKI VILLAGE CONCEPT DESIGN\07-004003-4200000004-AED-MEC-MDL-006100.ifc";
-        var doc = new StepDocument(file);
-        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumRecords}, error = {doc.FirstError}");
-        foreach (var rec in doc.Records)
-        {
-            var tmp = StepFactory.CreateRecord(doc, rec);
-            Console.WriteLine($"Create {tmp.Id} = {tmp.Value}");
-        }
-    }
-
     [Test]
     [TestCaseSource(nameof(VeryLargeFiles))]
     public static void Timings(FilePath fp)
@@ -56,8 +40,6 @@ public static class ProfilingTests
     public static void Ara3DLoadIfc(FilePath filePath)
     {
         var doc = new StepDocument(filePath);
-        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumRecords}, error = {doc.FirstError}");
-        
         //CreateRecords(doc);
         /*
         for (var i = 0; i < 50; i++)
