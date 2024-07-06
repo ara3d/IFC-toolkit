@@ -1,3 +1,4 @@
+using Ara3D.Logging;
 using Ara3D.Utils;
 using GeometryGym.Ifc;
 using IFC;
@@ -31,7 +32,7 @@ public static class ProfilingTests
         //var file = @"C:\Users\cdigg\dev\impraria\07 - NEOM Mountain\4200000004 - Ski Village\STAGE 3A 100%\IFC\MEC\07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc";
         var file = @"C:\Users\cdigg\dev\impraria\Trojena\4200000004 - NEOM SKI VILLAGE CONCEPT DESIGN\07-004003-4200000004-AED-MEC-MDL-006100.ifc";
         var doc = new StepDocument(file);
-        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumEntities}, error = {doc.FirstError}");
+        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumRecords}, error = {doc.FirstError}");
         foreach (var rec in doc.Records)
         {
             var tmp = StepFactory.CreateRecord(doc, rec);
@@ -43,7 +44,7 @@ public static class ProfilingTests
     [TestCaseSource(nameof(VeryLargeFiles))]
     public static void Timings(FilePath fp)
     {
-        Console.WriteLine($"Testing {fp.GetFileName()} which is {fp.FileSizeAsString()}");
+        Console.WriteLine($"Testing {fp.GetFileName()} which is {fp.GetFileSizeAsString()}");
         TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
         TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
         TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
@@ -55,7 +56,8 @@ public static class ProfilingTests
     public static void Ara3DLoadIfc(FilePath filePath)
     {
         var doc = new StepDocument(filePath);
-        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumEntities}, error = {doc.FirstError}");
+        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumRecords}, error = {doc.FirstError}");
+        
         //CreateRecords(doc);
         /*
         for (var i = 0; i < 50; i++)

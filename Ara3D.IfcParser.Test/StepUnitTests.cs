@@ -12,7 +12,7 @@ namespace Ara3D.IfcParser.Test
 
             foreach (var f in files)
             {
-                Console.WriteLine($@"// {f.FileSizeAsString()}");
+                Console.WriteLine($@"// {f.GetFileSizeAsString()}");
                 Console.WriteLine($"@\"{f.Value}\",");
             }
         }

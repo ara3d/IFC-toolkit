@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ara3d\src\Ara3D.Logging\Ara3D.Logging.csproj" />
     <ProjectReference Include="..\..\ara3d\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
   </ItemGroup>
 
