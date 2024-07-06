@@ -9,8 +9,8 @@ namespace Ara3D.IfcParser.Test;
 
 public static class ProfilingTests
 {
-    public static IEnumerable<FilePath> VeryLargeFiles() 
-        => TestFiles.VeryLargeFiles().Take(1);
+    public static IEnumerable<FilePath> VeryLargeFiles()
+        => TestFiles.VeryLargeFiles();
 
     public static IEnumerable<FilePath> HugeFiles()
         => TestFiles.HugeFiles();

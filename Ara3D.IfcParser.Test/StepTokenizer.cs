@@ -324,8 +324,8 @@ public static unsafe class StepTokenizer
         switch (type)
         {
             case TokenType.Ident:
-                while (IsIdentLookup[*ptr])
-                    ptr++;
+                while (IsIdentLookup[ptr[i]])
+                    i++;
                 break;
 
             case TokenType.String:
@@ -340,7 +340,7 @@ public static unsafe class StepTokenizer
 
             case TokenType.Number:
                 while (IsNumberLookup[ptr[i]])
-                    ptr++;
+                    i++;
                 break;
 
             case TokenType.Symbol:
