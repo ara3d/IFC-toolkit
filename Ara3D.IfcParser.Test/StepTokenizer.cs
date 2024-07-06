@@ -5,7 +5,7 @@ namespace Ara3D.IfcParser.Test;
 
 // Limited to parsing 2GB maximum, with 64K lines. 
 
-public enum TokenType
+public enum TokenType : byte
 {
     None,
     Ident,
@@ -28,8 +28,8 @@ public enum TokenType
 
 public unsafe class StepTokens
 {
-    public byte*[] Tokens;
-    public StepRawRecord[] Entities;
+    public int[] Tokens;
+    public StepRawRecord[] Records;
 }
 
 public static unsafe class StepTokenizer
@@ -239,84 +239,77 @@ public static unsafe class StepTokenizer
     public static bool IsIdentOrDigitChar(byte b)
         => IsIdent(b) || IsDigit(b);
 
-    public static byte* AdvancePast(byte* begin, byte* end, string s)
+    public static int AdvancePast(byte* begin, int index, int cnt, string s)
     {
-        if (end - begin < s.Length)
-            return null;
+        if (s.Length > cnt)
+            throw new Exception("Data is too short");
         foreach (var c in s)
-            if (*begin++ != (byte)c)
-                return null;
-        return begin;
+            if (begin[index++] != (byte)c)
+                throw new Exception($"Expected a {c} not a {(char)begin[index - 1]}");
+        return s.Length;
     }
 
-    public static StepTokens? CreateTokens(byte* begin, byte* end)
+    public static StepTokens? CreateTokens(byte* ptr, int length)
     {
-        if (begin == null || end == null)
+        if (ptr == null || length <= 0)
             return null;
 
-        begin = AdvancePast(begin, end, "ISO-10303-21;");
-        if (begin == null)
-            return null;
+        var start = AdvancePast(ptr, 0, length, "ISO-10303-21;");
+        var curByte = start;
 
         // Back up the "end" to the last semi-colon.
         // This prevents the algorithm from going past the end of bounds
         // If the input is well-formed. 
         // An unclosed comment or string could still blow things up though. 
-        while (end-- > begin && *end != ';')
-        { }
+        while (length > curByte && ptr[length] != ';')
+        {
+            length--;
+        }
 
-        if (end < begin + 5)
-            return null;
-
-        var cur = begin;
+        if (length <= curByte + 5)
+            throw new Exception("Insufficient data to parse");
+        
         var cnt = 0;
-        var entityCount = 0;
+        var recordCount = 0;
 
         // Count the number of tokens.
-        while (cur < end)
+        while (curByte < length)
         {
             cnt++;
-            if (*cur == '=')
-                entityCount++;
-            CreateToken(ref cur, end);
+            if (ptr[curByte] == (byte)'=')
+                recordCount++;
+            CreateToken(ref curByte, ptr, length);
         }
 
         var r = new StepTokens();
-        var tokensArray = new byte*[cnt];
+        var tokensArray = new int[cnt];
+        var records = new StepRawRecord[recordCount];
         r.Tokens = tokensArray;
+        r.Records = records;
 
-        fixed (byte** pTokens = tokensArray)
+        fixed (int* pTokens = tokensArray)
         {
-            var entities = new StepRawRecord[entityCount];
-            r.Entities = entities;
-
             // Store the tokens
-            cnt = 0;
-            cur = begin;
-            while (cur < end)
+            var curToken = 0;
+            curByte = start;
+            var curRecord = 0;
+            while (curByte < length)
             {
-                pTokens[cnt++] = cur;
-                CreateToken(ref cur, end);
-            }
-
-            // Store the token indices for entity definitions
-            var e = 0;
-            var i = 0;
-            while (i < cnt)
-            {
-                if (*pTokens[i] == '#' && *pTokens[i + 1] == '=')
+                pTokens[curToken] = curByte;
+                
+                if (ptr[curByte] == (byte)'=')
                 {
-                    var j = i;
-                    while (j < cnt && *pTokens[j] != ';')
-                        j++;
-
-                    entities[e++] = new StepRawRecord(i, j);
-                    i = j + 1;
+                    records[curRecord++].BeginToken = curToken - 1;
                 }
-                else
+                else if (ptr[curByte] == (byte)';')
                 {
-                    i++;
+                    // We might encounter a ';' after the last record which is superfluous. 
+                    if (curRecord < recordCount && records[curRecord].EndToken == 0)
+                        records[curRecord].EndToken = curToken;
                 }
+
+                CreateToken(ref curByte, ptr, length);
+                curToken++;
             }
         }
 
@@ -324,53 +317,53 @@ public static unsafe class StepTokenizer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CreateToken(ref byte* cur, byte* end)
+    public static void CreateToken(ref int i, byte* ptr, int length)
     {
-        var type = TokenLookup[*cur++];
+        var type = TokenLookup[ptr[i++]];
 
         switch (type)
         {
             case TokenType.Ident:
-                while (IsIdentLookup[*cur])
-                    cur++;
+                while (IsIdentLookup[*ptr])
+                    ptr++;
                 break;
 
             case TokenType.String:
-                while (cur < end && *cur++ != '\'')
+                while (i < length && ptr[i++] != '\'')
                 { }
                 break;
 
             case TokenType.LineBreak:
-                while (IsLineBreak(*cur))
-                    cur++;
+                while (IsLineBreak(ptr[i]))
+                    i++;
                 break;
 
             case TokenType.Number:
-                while (IsNumberLookup[*cur])
-                    cur++;
+                while (IsNumberLookup[ptr[i]])
+                    ptr++;
                 break;
 
             case TokenType.Symbol:
-                while (*cur++ != '.')
+                while (i < length && ptr[i++] != '.')
                 { }
                 break;
 
             case TokenType.Id:
-                while (IsNumberLookup[*cur])
-                    cur++;
+                while (IsNumberLookup[ptr[i]])
+                    i++;
                 break;
 
             case TokenType.Comment:
-                var prev = *cur++;
-                while (cur < end && (prev != '*' || *cur != '/'))
-                    prev = *cur++;
-                cur++;
+                var prev = ptr[i++];
+                while (i < length && (prev != '*' || ptr[i] != '/'))
+                    prev = ptr[i++];
+                i++;
                 break;
 
             case TokenType.Whitespace:
             case TokenType.Definition:
-                while (*cur == ' ' || *cur == '\t')
-                    cur++;
+                while (ptr[i] == ' ' || ptr[i] == '\t')
+                    i++;
                 break;
 
             case TokenType.BeginGroup:

@@ -8,7 +8,7 @@ namespace Ara3D.IfcParser.Test;
 public unsafe class StepDocument : IDisposable
 {
     public readonly StepTokens Tokens;
-    public readonly byte*[] TokenPtrs;
+    public readonly int[] TokenIndices;
     public readonly int NumTokens;
     public readonly StepRawRecord[] Records;
     public readonly int NumRecords;
@@ -22,7 +22,7 @@ public unsafe class StepDocument : IDisposable
 
     public StepDocument(FilePath filePath, ILogger logger = null)
     {
-        logger ??= new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
+        logger ??= new Logger(LogWriter.DebugWriter, "Ara 3D Step Document Loader");
 
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
         var _buffer = filePath.ReadAllBytes();
@@ -34,11 +34,11 @@ public unsafe class StepDocument : IDisposable
         DataEnd = DataStart + Length;
 
         logger.Log("Creating tokens");
-        Tokens = StepTokenizer.CreateTokens(DataStart, DataEnd)
+        Tokens = StepTokenizer.CreateTokens(DataStart, (int)Length)
                  ?? throw new Exception("Tokenization failed");
-        TokenPtrs = Tokens.Tokens;
-        NumTokens = TokenPtrs.Length;
-        Records = Tokens.Entities;
+        TokenIndices = Tokens.Tokens;
+        NumTokens = TokenIndices.Length;
+        Records = Tokens.Records;
         NumRecords = Records.Length;
         logger.Log($"Created {NumTokens} tokens");
 
@@ -48,16 +48,9 @@ public unsafe class StepDocument : IDisposable
             for (var i = 0; i < NumRecords; i++)
             {
                 var ptr = pArray + i;
+                var span = GetTokenSpan(ptr->BeginToken);
                 ptr->Index = i;
-                var begin = GetTokenPtr(ptr->BeginToken) + 1;
-                var length = GetTokenPtr(ptr->BeginToken + 1) - begin;
-                var tmp = new ReadOnlySpan<byte>(begin, (int)length);
-                var test = int.TryParse(tmp, out ptr->Id);
-                if (!test)
-                {
-                    FirstError = $"Failed to record ID at token {ptr->BeginToken}";
-                    break;
-                }
+                ptr->Id = span.Skip(1).ToInt();
             }
         }
         logger.Log($"Created {NumRecords} records");
@@ -83,7 +76,7 @@ public unsafe class StepDocument : IDisposable
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte* GetTokenPtr(int index)
-        => TokenPtrs[index];
+        => DataStart + TokenIndices[index];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TokenType GetTokenType(int index)
@@ -91,5 +84,9 @@ public unsafe class StepDocument : IDisposable
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ByteSpan GetTokenSpan(int index)
-        => GetSpan(GetTokenPtr(index), GetTokenPtr(index+1));
+    {
+        var a = TokenIndices[index];
+        var b = TokenIndices[index + 1];
+        return new(DataStart + a, b - a);
+    }
 }

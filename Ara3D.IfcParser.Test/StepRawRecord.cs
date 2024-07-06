@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Ara3D.IfcParser.Test;
 
 /// <summary>
@@ -13,6 +15,8 @@ public struct StepRawRecord
 
     public StepRawRecord(int begin, int end)
     {
+        Debug.Assert(end > begin);
+        Debug.Assert(begin >= 0);
         BeginToken = begin;
         EndToken = end;
     }
