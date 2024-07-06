@@ -249,6 +249,16 @@ public static unsafe class StepTokenizer
         return begin;
     }
 
+    public const byte SEMICOLON = (byte)';';
+    public const byte EQ = (byte)'=';
+    public const byte HASH = (byte)'#';
+    public const byte SINGLE_QUOTE = (byte)'\'';
+    public const byte DOT = (byte)'.';
+    public const byte SLASH = (byte)'/';
+    public const byte STAR = (byte)'*';
+    public const byte SPACE = (byte)' ';
+    public const byte TAB = (byte)'\t';
+
     public static StepTokens? CreateTokens(byte* begin, byte* end)
     {
         if (begin == null || end == null)
@@ -262,7 +272,7 @@ public static unsafe class StepTokenizer
         // This prevents the algorithm from going past the end of bounds
         // If the input is well-formed. 
         // An unclosed comment or string could still blow things up though. 
-        while (end-- > begin && *end != ';')
+        while (end-- > begin && *end != SEMICOLON)
         { }
 
         if (end < begin + 5)
@@ -276,7 +286,7 @@ public static unsafe class StepTokenizer
         while (cur < end)
         {
             cnt++;
-            if (*cur == '=')
+            if (*cur == EQ)
                 entityCount++;
             CreateToken(ref cur, end);
         }
@@ -304,10 +314,10 @@ public static unsafe class StepTokenizer
             var i = 0;
             while (i < cnt)
             {
-                if (*pTokens[i] == '#' && *pTokens[i + 1] == '=')
+                if (*pTokens[i] == HASH && *pTokens[i + 1] == EQ)
                 {
                     var j = i;
-                    while (j < cnt && *pTokens[j] != ';')
+                    while (j < cnt && *pTokens[j] != SEMICOLON)
                         j++;
 
                     entities[e++] = new StepRawRecord(i, j);
@@ -326,6 +336,124 @@ public static unsafe class StepTokenizer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CreateToken(ref byte* cur, byte* end)
     {
+        switch (*cur++)
+        {
+            case (byte)'0':
+            case (byte)'1':
+            case (byte)'2':
+            case (byte)'3':
+            case (byte)'4':
+            case (byte)'5':
+            case (byte)'6':
+            case (byte)'7':
+            case (byte)'8':
+            case (byte)'9':
+            case (byte)'+':
+            case (byte)'-':
+                while (IsNumberLookup[*cur])
+                    cur++;
+                return;
+
+            case (byte)'\r':
+                if (*cur == (byte)'\n')
+                    cur++;
+                return;
+
+            case (byte)'\'':
+                while (cur < end && *cur++ != SINGLE_QUOTE)
+                {
+                }
+
+                return;
+
+            case (byte)'.':
+                while (cur < end && *cur++ != DOT)
+                {
+                }
+
+                return;
+
+            case (byte)'#':
+                while (IsNumberLookup[*cur])
+                    cur++;
+                return;
+
+            case (byte)';':
+            case (byte)',':
+            case (byte)'=':
+                while (*cur == SPACE || *cur == TAB)
+                    cur++;
+                return;
+
+            case (byte)'/':
+                var prev = *cur++;
+                while (cur < end && (prev != STAR || *cur != SLASH))
+                    prev = *cur++;
+                cur++;
+                return;
+
+            case (byte)'a':
+            case (byte)'b':
+            case (byte)'c':
+            case (byte)'d':
+            case (byte)'e':
+            case (byte)'f':
+            case (byte)'g':
+            case (byte)'h':
+            case (byte)'i':
+            case (byte)'j':
+            case (byte)'k':
+            case (byte)'l':
+            case (byte)'m':
+            case (byte)'n':
+            case (byte)'o':
+            case (byte)'p':
+            case (byte)'q':
+            case (byte)'r':
+            case (byte)'s':
+            case (byte)'t':
+            case (byte)'u':
+            case (byte)'v':
+            case (byte)'w':
+            case (byte)'x':
+            case (byte)'y':
+            case (byte)'z':
+            case (byte)'A':
+            case (byte)'B':
+            case (byte)'C':
+            case (byte)'D':
+            case (byte)'E':
+            case (byte)'F':
+            case (byte)'G':
+            case (byte)'H':
+            case (byte)'I':
+            case (byte)'J':
+            case (byte)'K':
+            case (byte)'L':
+            case (byte)'M':
+            case (byte)'N':
+            case (byte)'O':
+            case (byte)'P':
+            case (byte)'Q':
+            case (byte)'R':
+            case (byte)'S':
+            case (byte)'T':
+            case (byte)'U':
+            case (byte)'V':
+            case (byte)'W':
+            case (byte)'X':
+            case (byte)'Y':
+            case (byte)'Z':
+            case (byte)'_':
+                while (IsIdentLookup[*cur])
+                    cur++;
+                return;
+            }
+        }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void OLD_CreateToken(ref byte* cur, byte* end)
+    {
         var type = TokenLookup[*cur++];
 
         switch (type)
@@ -336,8 +464,10 @@ public static unsafe class StepTokenizer
                 break;
 
             case TokenType.String:
-                while (cur < end && *cur++ != '\'')
-                { }
+                while (cur < end && *cur++ != SINGLE_QUOTE)
+                {
+                }
+
                 break;
 
             case TokenType.LineBreak:
@@ -351,8 +481,10 @@ public static unsafe class StepTokenizer
                 break;
 
             case TokenType.Symbol:
-                while (*cur++ != '.')
-                { }
+                while (*cur++ != DOT)
+                {
+                }
+
                 break;
 
             case TokenType.Id:
@@ -362,14 +494,14 @@ public static unsafe class StepTokenizer
 
             case TokenType.Comment:
                 var prev = *cur++;
-                while (cur < end && (prev != '*' || *cur != '/'))
+                while (cur < end && (prev != STAR || *cur != SLASH))
                     prev = *cur++;
                 cur++;
                 break;
 
             case TokenType.Whitespace:
             case TokenType.Definition:
-                while (*cur == ' ' || *cur == '\t')
+                while (*cur == SPACE || *cur == TAB)
                     cur++;
                 break;
 
@@ -379,7 +511,7 @@ public static unsafe class StepTokenizer
             case TokenType.Redeclared:
             case TokenType.Separator:
             case TokenType.EndOfLine:
-            default: 
+            default:
                 break;
         }
     }
