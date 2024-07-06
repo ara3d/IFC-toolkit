@@ -9,7 +9,7 @@ public unsafe class StepDocument : IDisposable
     public readonly StepTokens Tokens;
     public readonly byte*[] TokenPtrs;
     public readonly int NumTokens;
-    public readonly StepEntity[] Entities;
+    public readonly StepRawRecord[] Records;
     public readonly int NumEntities;
     public readonly byte* DataStart;
     public readonly byte* DataEnd;
@@ -30,10 +30,10 @@ public unsafe class StepDocument : IDisposable
                  ?? throw new Exception("Tokenization failed");
         TokenPtrs = Tokens.Tokens;
         NumTokens = TokenPtrs.Length;
-        Entities = Tokens.Entities;
-        NumEntities = Entities.Length;
+        Records = Tokens.Entities;
+        NumEntities = Records.Length;
 
-        fixed (StepEntity* ptrEntityArray = &Entities[0])
+        fixed (StepRawRecord* ptrEntityArray = &Records[0])
         {
             for (var i = 0; i < NumEntities; i++)
             {
@@ -51,7 +51,7 @@ public unsafe class StepDocument : IDisposable
             }
         }
 
-        Lookup = new(Entities);
+        Lookup = new(Records);
     }
 
     public void Dispose()
@@ -60,7 +60,7 @@ public unsafe class StepDocument : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<byte> GetSpan(byte* begin, byte* end)
+    public ByteSpan GetSpan(byte* begin, byte* end)
         => new(begin, (int)(end - begin));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,6 +76,6 @@ public unsafe class StepDocument : IDisposable
         => StepTokenizer.LookupToken(*GetTokenPtr(index));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<byte> GetTokenSpan(int index)
+    public ByteSpan GetTokenSpan(int index)
         => GetSpan(GetTokenPtr(index), GetTokenPtr(index+1));
 }

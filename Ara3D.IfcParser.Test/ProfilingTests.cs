@@ -11,12 +11,41 @@ public static class ProfilingTests
     public static IEnumerable<FilePath> VeryLargeFiles() 
         => TestFiles.VeryLargeFiles();
 
+    public static IEnumerable<FilePath> HugeFiles()
+        => TestFiles.HugeFiles();
+
+    public static void CreateRecords(StepDocument doc)
+    {
+        foreach (var rec in doc.Records)
+        {
+            var tmp = StepFactory.CreateRecord(doc, rec);
+            //Console.WriteLine($"Create {tmp.Id} = {tmp.Value}");
+        }
+    }
+
+
+    [Test]
+    public static void CreateRecords()
+    {
+        using var d = TimingUtils.TimeIt("Creating records"); 
+        //var file = @"C:\Users\cdigg\dev\impraria\07 - NEOM Mountain\4200000004 - Ski Village\STAGE 3A 100%\IFC\MEC\07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc";
+        var file = @"C:\Users\cdigg\dev\impraria\Trojena\4200000004 - NEOM SKI VILLAGE CONCEPT DESIGN\07-004003-4200000004-AED-MEC-MDL-006100.ifc";
+        var doc = new StepDocument(file);
+        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumEntities}, error = {doc.FirstError}");
+        foreach (var rec in doc.Records)
+        {
+            var tmp = StepFactory.CreateRecord(doc, rec);
+            Console.WriteLine($"Create {tmp.Id} = {tmp.Value}");
+        }
+    }
 
     [Test]
     [TestCaseSource(nameof(VeryLargeFiles))]
     public static void Timings(FilePath fp)
     {
         Console.WriteLine($"Testing {fp.GetFileName()} which is {fp.FileSizeAsString()}");
+        TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
+        TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
         TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
         //TimingUtils.TimeIt(() => HyparLoadIfc(fp), "Hypar");
         //TimingUtils.TimeIt(() => GeometryGymLoadIfc(fp), "GeometryGym");
@@ -25,8 +54,9 @@ public static class ProfilingTests
 
     public static void Ara3DLoadIfc(FilePath filePath)
     {
-        var data = new StepDocument(filePath);
-        Console.WriteLine($"#tokens = {data.NumTokens}, #entities = {data.NumEntities}, error = {data.FirstError}");
+        var doc = new StepDocument(filePath);
+        Console.WriteLine($"#tokens = {doc.NumTokens}, #entities = {doc.NumEntities}, error = {doc.FirstError}");
+        //CreateRecords(doc);
         /*
         for (var i = 0; i < 50; i++)
         {
@@ -34,9 +64,8 @@ public static class ProfilingTests
                 break;
             Console.WriteLine($"Token {i}:{data.GetTokenType(i)} = {data.GetTokenString(i)}");
         }\
-
         */
-        data.Dispose();
+        doc.Dispose();
     }
 
     public static void HyparLoadIfc(FilePath filePath)

@@ -5,11 +5,11 @@ namespace Ara3D.IfcParser.Test;
 
 public class StepEntityLookup
 {
-    public readonly StepEntity[] Entities;
+    public readonly StepRawRecord[] Entities;
     public readonly int Capacity;
     public readonly int[] Lookup;
     
-    public StepEntityLookup(StepEntity[] entities)
+    public StepEntityLookup(StepRawRecord[] entities)
     {
         Entities = entities;
         Capacity = entities.Length * 2;
@@ -18,7 +18,7 @@ public class StepEntityLookup
         {
             var e = Entities[i];
             Add(e.Id, i);
-            Debug.Assert(Find(e.Id) == i);
+            Debug.Assert(Find(e.Id) == i);  
         }
     }
 

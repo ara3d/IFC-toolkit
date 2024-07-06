@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Ara3D.IfcParser.Test;
 
@@ -14,7 +15,8 @@ public enum TokenType
     Symbol,
     Id,
     Separator,
-    Special,
+    Redeclared,
+    Unassigned,
     Comment,
     Unknown,
     BeginGroup,
@@ -27,42 +29,45 @@ public enum TokenType
 public unsafe class StepTokens
 {
     public byte*[] Tokens;
-    public StepEntity[] Entities;
+    public StepRawRecord[] Entities;
 }
 
-public static class StepTokenizer
+public static unsafe class StepTokenizer
 {
-    public static readonly TokenType[] TokenLookup =
+    public static readonly TokenType* TokenLookup =
         CreateTokenLookup();
 
-    public static bool[] IsNumberLookup =
+    public static readonly bool* IsNumberLookup =
         CreateNumberLookup();
 
-    public static bool[] IsIdentLookup =
+    public static readonly bool* IsIdentLookup =
         CreateIdentLookup();
 
-    public static TokenType[] CreateTokenLookup()
+    public static TokenType* CreateTokenLookup()
     {
         var r = new TokenType[256];
         for (var i = 0; i < 256; i++)
             r[i] = GetTokenType((byte)i);
-        return r;
+        var h = GCHandle.Alloc(r, GCHandleType.Pinned);
+        return (TokenType*)h.AddrOfPinnedObject().ToPointer();
     }
     
-    public static bool[] CreateNumberLookup()
+    public static bool* CreateNumberLookup()
     {
         var r = new bool[256];
         for (var i = 0; i < 256; i++)
             r[i] = IsNumberChar((byte)i);
-        return r;
+        var h = GCHandle.Alloc(r, GCHandleType.Pinned);
+        return (bool*)h.AddrOfPinnedObject().ToPointer();
     }
     
-    public static bool[] CreateIdentLookup()
+    public static bool* CreateIdentLookup()
     {
         var r = new bool[256];
         for (var i = 0; i < 256; i++)
             r[i] = IsIdentOrDigitChar((byte)i);
-        return r;
+        var h = GCHandle.Alloc(r, GCHandleType.Pinned);
+        return (bool*)h.AddrOfPinnedObject().ToPointer();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -146,8 +151,10 @@ public static class StepTokenizer
                 return TokenType.Separator;
 
             case (byte)'$':
+                return TokenType.Unassigned;
+
             case (byte)'*':
-                return TokenType.Special;
+                return TokenType.Redeclared;
 
             case (byte)'/':
                 return TokenType.Comment;
@@ -232,8 +239,7 @@ public static class StepTokenizer
     public static bool IsIdentOrDigitChar(byte b)
         => IsIdent(b) || IsDigit(b);
 
-
-    public static unsafe byte* AdvancePast(byte* begin, byte* end, string s)
+    public static byte* AdvancePast(byte* begin, byte* end, string s)
     {
         if (end - begin < s.Length)
             return null;
@@ -243,7 +249,7 @@ public static class StepTokenizer
         return begin;
     }
 
-    public static unsafe StepTokens? CreateTokens(byte* begin, byte* end)
+    public static StepTokens? CreateTokens(byte* begin, byte* end)
     {
         if (begin == null || end == null)
             return null;
@@ -276,38 +282,41 @@ public static class StepTokenizer
         }
 
         var r = new StepTokens();
-        var tokens = new byte*[cnt];
-        r.Tokens = tokens;
-        
-        var entities = new StepEntity[entityCount];
-        r.Entities = entities;
+        var tokensArray = new byte*[cnt];
+        r.Tokens = tokensArray;
 
-        // Store the tokens
-        cnt = 0;
-        cur = begin;
-        while (cur < end)
+        fixed (byte** pTokens = tokensArray)
         {
-            tokens[cnt++] = cur;
-            CreateToken(ref cur, end);
-        }
+            var entities = new StepRawRecord[entityCount];
+            r.Entities = entities;
 
-        // Store the token indices for entity definitions
-        var e = 0;
-        var i = 0;
-        while (i < cnt)
-        {
-            if (*tokens[i] == '#' && *tokens[i+1] == '=')
+            // Store the tokens
+            cnt = 0;
+            cur = begin;
+            while (cur < end)
             {
-                var j = i;
-                while (j < cnt && *tokens[j] != ';')
-                    j++;
-
-                entities[e++] = new StepEntity(i, j);
-                i = j + 1;
+                pTokens[cnt++] = cur;
+                CreateToken(ref cur, end);
             }
-            else
+
+            // Store the token indices for entity definitions
+            var e = 0;
+            var i = 0;
+            while (i < cnt)
             {
-                i++;
+                if (*pTokens[i] == '#' && *pTokens[i + 1] == '=')
+                {
+                    var j = i;
+                    while (j < cnt && *pTokens[j] != ';')
+                        j++;
+
+                    entities[e++] = new StepRawRecord(i, j);
+                    i = j + 1;
+                }
+                else
+                {
+                    i++;
+                }
             }
         }
 
@@ -315,7 +324,7 @@ public static class StepTokenizer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void CreateToken(ref byte* cur, byte* end)
+    public static void CreateToken(ref byte* cur, byte* end)
     {
         var type = TokenLookup[*cur++];
 
@@ -359,9 +368,15 @@ public static class StepTokenizer
                 break;
 
             case TokenType.Whitespace:
+            case TokenType.Definition:
+                while (*cur == ' ' || *cur == '\t')
+                    cur++;
+                break;
+
             case TokenType.BeginGroup:
             case TokenType.EndGroup:
-            case TokenType.Special:
+            case TokenType.Unassigned:
+            case TokenType.Redeclared:
             case TokenType.Separator:
             case TokenType.EndOfLine:
             default: 
