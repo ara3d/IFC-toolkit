@@ -15,12 +15,26 @@ public static class ProfilingTests
     public static IEnumerable<FilePath> HugeFiles()
         => TestFiles.HugeFiles();
 
-    public static void CreateRecords(StepDocument doc)
+    public static void VisitRecords(StepDocument doc, ILogger logger)
     {
-        foreach (var rec in doc.Records)
+        var i = 0;
+        var recs = doc.GetRecords().AsParallel();
+        foreach (var rec in recs)
         {
-            var tmp = StepFactory.CreateRecord(doc, rec);
-            //Console.WriteLine($"Create {tmp.Id} = {tmp.Value}");
+            Interlocked.Increment(ref i);
+        }
+        logger.Log($"Visited {i} records");
+    }
+
+    public static void ListEntityTypes(StepDocument doc, ILogger logger)
+    {
+        logger.Log("Gathering distinct entity types");
+        var recs = doc.GetRecords().Select(r => r.Value.Name).Distinct().ToList();
+        logger.Log($"Completed, found {recs.Count} distinct records");
+        var i = 0;
+        foreach (var r in recs)
+        {
+            Console.WriteLine($"{i++} = {r} [{r.GetHashCode()}]");
         }
     }
 
@@ -30,8 +44,8 @@ public static class ProfilingTests
     {
         Console.WriteLine($"Testing {fp.GetFileName()} which is {fp.GetFileSizeAsString()}");
         TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
-        TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
-        TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
+        //TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
+        //TimingUtils.TimeIt(() => Ara3DLoadIfc(fp), "Ara 3D");
         //TimingUtils.TimeIt(() => HyparLoadIfc(fp), "Hypar");
         //TimingUtils.TimeIt(() => GeometryGymLoadIfc(fp), "GeometryGym");
         //TimingUtils.TimeIt(() => XBimLoadIfc(fp), "XBim");
@@ -39,16 +53,10 @@ public static class ProfilingTests
 
     public static void Ara3DLoadIfc(FilePath filePath)
     {
-        var doc = new StepDocument(filePath);
-        //CreateRecords(doc);
-        /*
-        for (var i = 0; i < 50; i++)
-        {
-            if (i >= data.GetNumTokens())
-                break;
-            Console.WriteLine($"Token {i}:{data.GetTokenType(i)} = {data.GetTokenString(i)}");
-        }\
-        */
+        var logger = new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
+        var doc = new StepDocument(filePath, logger);
+        //VisitRecords(doc, logger);
+        ListEntityTypes(doc, logger);
         doc.Dispose();
     }
 

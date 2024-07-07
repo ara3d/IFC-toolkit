@@ -8,9 +8,9 @@ public class StepValue
 
 public class StepAggregate : StepValue
 {
-    public readonly IEnumerable<StepValue> Values;
+    public readonly List<StepValue> Values;
 
-    public StepAggregate(IEnumerable<StepValue> values)
+    public StepAggregate(List<StepValue> values)
         => Values = values;
 
     public override string ToString()

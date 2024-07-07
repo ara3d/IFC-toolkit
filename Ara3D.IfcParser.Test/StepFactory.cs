@@ -96,22 +96,5 @@ public static class StepFactory
         return new StepAggregate(values);
     }
 
-    public static unsafe StepRecord CreateRecord(StepDocument doc, StepRawRecord location)
-    {
-        var begin = doc.GetTokenPtr(location.BeginToken);
-        var end = doc.GetTokenPtr(location.EndToken);
-        Debug.Assert(location.BeginToken + 3 <= location.EndToken);
-        Debug.Assert(end - begin > 3);
-        Debug.Assert(*begin == '#');
-        Debug.Assert(*end == ';');
-        var eqTokenPtr = doc.GetTokenPtr(location.BeginToken + 1);
-        Debug.Assert(*eqTokenPtr == '=');
-        var idSpan = new ByteSpan(begin + 1, eqTokenPtr);
-        var id = idSpan.ToInt();
-        var defTokenIndex = location.BeginToken + 2;
-        var val = Create(doc, ref defTokenIndex, location.EndToken);
-        if (val is not StepInstance si)
-            throw new Exception($"Expected StepInstance not {val} of type {val.GetType()}");
-        return new StepRecord(id, si);
-    }
+   
 }

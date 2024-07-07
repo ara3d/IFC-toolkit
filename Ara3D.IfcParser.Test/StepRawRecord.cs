@@ -10,6 +10,7 @@ namespace Ara3D.IfcParser.Test;
 public struct StepRawRecord
 {
     public int Id;
+
     public int BeginToken;
     public int EndToken;
 
