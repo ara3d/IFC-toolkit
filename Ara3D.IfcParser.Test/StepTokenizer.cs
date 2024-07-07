@@ -1,5 +1,12 @@
+using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+using Ara3D.Logging;
+using Xbim.Tessellator;
+using Debug = System.Diagnostics.Debug;
 
 namespace Ara3D.IfcParser.Test;
 
@@ -252,14 +259,16 @@ public static unsafe class StepTokenizer
     public const byte SEMICOLON = (byte)';';
     public const byte EQ = (byte)'=';
     public const byte HASH = (byte)'#';
-    public const byte SINGLE_QUOTE = (byte)'\'';
+    public const byte SQUOTE = (byte)'\'';
     public const byte DOT = (byte)'.';
     public const byte SLASH = (byte)'/';
     public const byte STAR = (byte)'*';
     public const byte SPACE = (byte)' ';
     public const byte TAB = (byte)'\t';
+    public const byte NL = (byte)'\n';
+    public const byte CR = (byte)'\r';
 
-    public static StepTokens? CreateTokens(byte* begin, byte* end)
+    public static StepTokens? CreateTokens(byte* begin, byte* end, ILogger logger)
     {
         if (begin == null || end == null)
             return null;
@@ -282,6 +291,8 @@ public static unsafe class StepTokenizer
         var cnt = 0;
         var entityCount = 0;
 
+        logger.Log("Counting tokens");
+
         // Count the number of tokens.
         while (cur < end)
         {
@@ -291,16 +302,20 @@ public static unsafe class StepTokenizer
             CreateToken(ref cur, end);
         }
 
+        logger.Log("Allocating the arrays for records and tokens");
+
         var r = new StepTokens();
         var tokensArray = new byte*[cnt];
+        var entities = new StepRawRecord[entityCount];
         r.Tokens = tokensArray;
+        r.Entities = entities;
 
         fixed (byte** pTokens = tokensArray)
         {
-            var entities = new StepRawRecord[entityCount];
-            r.Entities = entities;
 
             // Store the tokens
+            logger.Log("Creating the tokens");
+
             cnt = 0;
             cur = begin;
             while (cur < end)
@@ -309,7 +324,9 @@ public static unsafe class StepTokenizer
                 CreateToken(ref cur, end);
             }
 
-            // Store the token indices for entity definitions
+            // Store the token indices for record definitions
+            logger.Log("Computing records");
+
             var e = 0;
             var i = 0;
             while (i < cnt)
@@ -334,6 +351,58 @@ public static unsafe class StepTokenizer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int IndexOfByte(Vector128<byte> vector, byte pattern)
+    {
+        // Create a vector with the pattern repeated in all positions
+        var patternVector = Vector128.Create(pattern);
+
+        // Compare the input vector with the pattern vector
+        var compareResult = Sse2.CompareEqual(vector, patternVector);
+
+        // Create a mask from the comparison result
+        var mask = (uint)Sse2.MoveMask(compareResult);
+
+        // Find the index of the first set bit in the mask
+        return BitOperations.TrailingZeroCount(mask);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AdvancePast(ref byte* cur, byte pattern)
+    {
+        while (true)
+        {
+            var vec = Sse2.LoadVector128(cur);
+            var i = IndexOfByte(vec, pattern);
+            if (i < 16)
+            {
+                cur += i + 1;
+                return;
+            }
+            cur += 16;
+        }
+    }
+
+    public static readonly Vector128<byte> DigitStart = Vector128.Create((byte)48); // ASCII '0'
+    public static readonly Vector128<byte> DigitEnd = Vector128.Create((byte)57);   // ASCII '9'
+
+
+    public static void AdvancePastDigit(ref byte* cur)
+    {
+        var vec = Sse2.LoadVector128(cur);
+        var isLessThanZero = Sse2.CompareLessThan(vec.AsSByte(), DigitStart.AsSByte());
+        var isGreaterThanNine = Sse2.CompareGreaterThan(vec.AsSByte(), DigitEnd.AsSByte());
+        var compare = Sse2.Or(isLessThanZero, isGreaterThanNine).AsByte();
+        // MoveMask extracts the most significant bit of each byte and forms a 16-bit mask.
+        var mask = Sse2.MoveMask(compare);
+
+        // Find the first zero bit in the mask, indicating the first non-digit byte.
+        var firstNonDigit = BitOperations.TrailingZeroCount((uint)mask);
+        Debug.Assert(firstNonDigit < 16);
+        cur += firstNonDigit;
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CreateToken(ref byte* cur, byte* end)
     {
         switch (*cur++)
@@ -350,47 +419,37 @@ public static unsafe class StepTokenizer
             case (byte)'9':
             case (byte)'+':
             case (byte)'-':
-                while (IsNumberLookup[*cur])
-                    cur++;
-                return;
-
-            case (byte)'\r':
-                if (*cur == (byte)'\n')
-                    cur++;
-                return;
-
-            case (byte)'\'':
-                while (cur < end && *cur++ != SINGLE_QUOTE)
-                {
-                }
-
-                return;
-
-            case (byte)'.':
-                while (cur < end && *cur++ != DOT)
-                {
-                }
-
-                return;
-
             case (byte)'#':
                 while (IsNumberLookup[*cur])
                     cur++;
-                return;
+                break;
+
+            case (byte)'\r':
+                if (*cur == NL)
+                    cur++;
+                break;
+
+            case (byte)'\'':
+                AdvancePast(ref cur, SQUOTE);
+                break;
+
+            case (byte)'.':
+                AdvancePast(ref cur, DOT);
+                break;
 
             case (byte)';':
             case (byte)',':
             case (byte)'=':
                 while (*cur == SPACE || *cur == TAB)
                     cur++;
-                return;
+                break;
 
             case (byte)'/':
                 var prev = *cur++;
                 while (cur < end && (prev != STAR || *cur != SLASH))
                     prev = *cur++;
                 cur++;
-                return;
+                break;
 
             case (byte)'a':
             case (byte)'b':
@@ -447,72 +506,7 @@ public static unsafe class StepTokenizer
             case (byte)'_':
                 while (IsIdentLookup[*cur])
                     cur++;
-                return;
+                break;
             }
         }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void OLD_CreateToken(ref byte* cur, byte* end)
-    {
-        var type = TokenLookup[*cur++];
-
-        switch (type)
-        {
-            case TokenType.Ident:
-                while (IsIdentLookup[*cur])
-                    cur++;
-                break;
-
-            case TokenType.String:
-                while (cur < end && *cur++ != SINGLE_QUOTE)
-                {
-                }
-
-                break;
-
-            case TokenType.LineBreak:
-                while (IsLineBreak(*cur))
-                    cur++;
-                break;
-
-            case TokenType.Number:
-                while (IsNumberLookup[*cur])
-                    cur++;
-                break;
-
-            case TokenType.Symbol:
-                while (*cur++ != DOT)
-                {
-                }
-
-                break;
-
-            case TokenType.Id:
-                while (IsNumberLookup[*cur])
-                    cur++;
-                break;
-
-            case TokenType.Comment:
-                var prev = *cur++;
-                while (cur < end && (prev != STAR || *cur != SLASH))
-                    prev = *cur++;
-                cur++;
-                break;
-
-            case TokenType.Whitespace:
-            case TokenType.Definition:
-                while (*cur == SPACE || *cur == TAB)
-                    cur++;
-                break;
-
-            case TokenType.BeginGroup:
-            case TokenType.EndGroup:
-            case TokenType.Unassigned:
-            case TokenType.Redeclared:
-            case TokenType.Separator:
-            case TokenType.EndOfLine:
-            default:
-                break;
-        }
     }
-}

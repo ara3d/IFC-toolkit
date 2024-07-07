@@ -33,9 +33,9 @@ public unsafe class StepDocument : IDisposable
         DataStart = (byte*)_handle.AddrOfPinnedObject().ToPointer();
         DataEnd = DataStart + Length;
 
-        logger.Log("Creating tokens");
-        Tokens = StepTokenizer.CreateTokens(DataStart, DataEnd)
+        Tokens = StepTokenizer.CreateTokens(DataStart, DataEnd, logger)
                  ?? throw new Exception("Tokenization failed");
+
         TokenPtrs = Tokens.Tokens;
         NumTokens = TokenPtrs.Length;
         Records = Tokens.Entities;
@@ -48,7 +48,7 @@ public unsafe class StepDocument : IDisposable
             for (var i = 0; i < NumRecords; i++)
             {
                 var ptr = pArray + i;
-                ptr->Index = i;
+                //ptr->Index = i;
                 var begin = GetTokenPtr(ptr->BeginToken) + 1;
                 var length = GetTokenPtr(ptr->BeginToken + 1) - begin;
                 var tmp = new ReadOnlySpan<byte>(begin, (int)length);
