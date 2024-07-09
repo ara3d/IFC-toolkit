@@ -1,3 +1,4 @@
+using Ara3D.Spans;
 using Ara3D.Utils;
 
 namespace Ara3D.IfcParser.Test;

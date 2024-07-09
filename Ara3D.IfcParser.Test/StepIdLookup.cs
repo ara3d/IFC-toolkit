@@ -3,13 +3,13 @@ using System.Runtime.CompilerServices;
 
 namespace Ara3D.IfcParser.Test;
 
-public class StepIdLookup
+public class StepEntityLookup
 {
     public readonly StepRawRecord[] Entities;
     public readonly int Capacity;
     public readonly int[] Lookup;
     
-    public StepIdLookup(StepRawRecord[] entities)
+    public StepEntityLookup(StepRawRecord[] entities)
     {
         Entities = entities;
         Capacity = entities.Length * 2;

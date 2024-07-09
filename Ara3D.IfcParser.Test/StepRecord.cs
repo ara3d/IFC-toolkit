@@ -16,4 +16,9 @@ public readonly struct StepRecord
         Id = id;
         Value = value;
     }
+
+    public override string ToString()
+    {
+        return $"{Id} = {Value}";
+    }
 }

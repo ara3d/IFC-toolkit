@@ -401,7 +401,6 @@ public static unsafe class StepTokenizer
         cur += firstNonDigit;
     }
 
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CreateToken(ref byte* cur, byte* end)
     {

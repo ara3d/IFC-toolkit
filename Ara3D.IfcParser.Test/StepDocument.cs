@@ -1,13 +1,14 @@
-using System.Collections.Concurrent;
 using Ara3D.Utils;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Ara3D.Logging;
+using Ara3D.Spans;
 
 namespace Ara3D.IfcParser.Test;
 
 public unsafe class StepDocument : IDisposable
 {
+    public readonly FilePath FilePath;
     public readonly StepTokens Tokens;
     public readonly byte*[] TokenPtrs;
     public readonly int NumTokens;
@@ -17,10 +18,11 @@ public unsafe class StepDocument : IDisposable
     public readonly byte* DataEnd;
     public readonly long Length;
     private GCHandle _handle;
-    public StepIdLookup Lookup;
+    public StepEntityLookup Lookup;
         
     public StepDocument(FilePath filePath, ILogger logger = null)
     {
+        FilePath = filePath;
         logger ??= new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
 
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
@@ -73,7 +75,9 @@ public unsafe class StepDocument : IDisposable
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetTokenLength(int index)
-        => (int)(GetTokenPtr(index + 1) - GetTokenPtr(index));
+        => index == NumTokens - 1
+                ? (int)(DataEnd - GetTokenPtr(index))
+                : (int)(GetTokenPtr(index + 1) - GetTokenPtr(index));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte* GetTokenPtr(int index)
@@ -104,11 +108,26 @@ public unsafe class StepDocument : IDisposable
         => RawRecords.Select(CreateRecord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ByteSpan GetEntityType(StepRawRecord rec)
+        => GetTokenSpan(rec.BeginToken + 2);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ByteSpan GetEntityType(int index)
+        => GetEntityType(RawRecords[index]);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEntity(int recordIndex, ByteSpan entityType)
+        => GetEntityType(recordIndex).Equals(entityType);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IEnumerable<StepRecord> GetRecords(ByteSpan entityType)
     {
-        var rr = RawRecords[recordIndex];
-        var span = GetTokenSpan(rr.BeginToken + 2);
-        return span.Equals(entityType);
+        for (var i = 0; i < NumRecords; i++)
+        {
+            var rec = RawRecords[i];
+            if (GetEntityType(rec).Equals(entityType))
+                yield return CreateRecord(rec);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
