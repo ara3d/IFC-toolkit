@@ -97,6 +97,19 @@ public static class ProfilingTests
     }
 
     [Test]
+    public static void Ara3DSkiHillCountDoors()
+    {
+        var f =
+            @"C:/Users/cdigg/dev/impraria/07 - NEOM Mountain/4200000004 - Ski Village/STAGE 3A 100%/IFC/MEC/07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc";
+
+        for (var i = 0; i < 3; i++)
+        {
+            TimingUtils.TimeIt(() => Ara3DLoadIfc(f, true));
+            TimingUtils.TimeIt(() => Ara3DLoadIfc(f, false));
+        }
+    }
+
+    [Test]
     public static void Ara3DTimingsMultiFiles()
     {
         var files = MediumFiles();
@@ -126,7 +139,7 @@ public static class ProfilingTests
     public static void TestSerialize()
     {
         var fp = LargeFiles().First();
-        var doc = new StepDocument(fp);
+        var doc = new StepDocument(fp, false);
         var bis = new BinaryIfcSerializer();
         var r = bis.Serialize(doc);
         Console.WriteLine($"Text = {fp.GetFileSizeAsString()} and Binary = {PathUtil.BytesToString(r.Count)}");
@@ -138,7 +151,7 @@ public static class ProfilingTests
     public static void IdentifierCounts()
     {
         var fp = LargeFiles().First();
-        var doc = new StepDocument(fp);
+        var doc = new StepDocument(fp, false);
         var d = doc.GetRecords().GroupBy(r => r.Value.Name).ToDictionary(g => g.Key, g => g.Count());
         foreach (var kv in d.OrderByDescending(pair => pair.Value))
         {
@@ -152,7 +165,7 @@ public static class ProfilingTests
     {
         var d = new Dictionary<TokenType, (int, int)>();
         var fp = LargeFiles().First();
-        var doc = new StepDocument(fp);
+        var doc = new StepDocument(fp, false);
         for (var i=0; i < doc.NumTokens; ++i)
         {
             var tt = doc.GetTokenType(i);
@@ -176,9 +189,12 @@ public static class ProfilingTests
     }
 
     public static void Ara3DLoadIfc(FilePath filePath, ILogger logger = null)
+        => Ara3DLoadIfc(filePath, false, logger);
+
+    public static void Ara3DLoadIfc(FilePath filePath, bool useCustomReader, ILogger logger = null)
     {
         logger ??= new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
-        var doc = new StepDocument(filePath, logger);
+        var doc = new StepDocument(filePath, true, logger);
         //VisitRecords(doc, logger);
         //ListEntityTypes(doc, logger);
         Ara3DListDoors(doc, logger);

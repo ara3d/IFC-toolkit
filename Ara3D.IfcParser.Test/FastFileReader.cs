@@ -5,37 +5,32 @@ namespace Ara3D.IfcParser.Test;
 
 public static class FastFileReader
 {
-    public static unsafe IntPtr ReadFileToUnmanagedMemory(string filePath, out long fileSize)
+    public static byte[] ReadAllBytes(string path, int bufferSize = 16 * 1024)
     {
-        fileSize = new FileInfo(filePath).Length;
-        IntPtr unmanagedPointer = Marshal.AllocHGlobal(new IntPtr(fileSize));
-
-        using (var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read))
+        byte[] bytes;
+        using (var fs = new FileStream(path, 
+                   FileMode.Open, 
+                   FileAccess.Read, 
+                   FileShare.Read,
+                   bufferSize, 
+                   false))
         {
-            using (var accessor = mmf.CreateViewAccessor(0, fileSize, MemoryMappedFileAccess.Read))
+            var index = 0;
+            var  fileLength = fs.Length;
+            if (fileLength > int.MaxValue)
+                throw new IOException("File too big: > 2GB");
+            var count = (int)fileLength;
+            bytes = new byte[count];
+            while (count > 0)
             {
-                byte* pointer = null;
-                accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
-                try
-                {
-                    byte* destinationPointer = (byte*)unmanagedPointer.ToPointer();
-                    for (long i = 0; i < fileSize; i++)
-                    {
-                        destinationPointer[i] = pointer[i];
-                    }
-                }
-                finally
-                {
-                    accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-                }
+                var n = fs.Read(bytes, index, count);
+                if (n == 0)
+                    break;
+                index += n;
+                count -= n;
             }
         }
 
-        return unmanagedPointer;
-    }
-
-    public static void FreeUnmanagedMemory(IntPtr pointer)
-    {
-        Marshal.FreeHGlobal(pointer);
+        return bytes;
     }
 }

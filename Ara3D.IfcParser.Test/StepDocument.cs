@@ -20,13 +20,18 @@ public unsafe class StepDocument : IDisposable
     private GCHandle _handle;
     public StepEntityLookup Lookup;
         
-    public StepDocument(FilePath filePath, ILogger logger = null)
+    public StepDocument(FilePath filePath, bool useCustomFileReader, ILogger logger = null)
     {
         FilePath = filePath;
         logger ??= new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
 
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
-        var _buffer = filePath.ReadAllBytes();
+
+        var nTokens = 0;
+        var _buffer = 
+            useCustomFileReader 
+                ? IfcFastFileReader.ReadAllBytes(filePath, ref nTokens)
+                : filePath.ReadAllBytes();
 
         logger.Log("Pinning data");
         Length = _buffer.Length;
