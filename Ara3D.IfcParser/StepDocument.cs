@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Ara3D.Logging;
 using Ara3D.Spans;
 using Ara3D.Utils;
@@ -11,7 +9,6 @@ public unsafe class StepDocument : IDisposable
     public readonly FilePath FilePath;
     public readonly byte* DataStart;
     public readonly SimdMemory Data;
-    private GCHandle _handle;
     
     public readonly StepInstance[] Instances;
     public readonly StepInstanceLookup Lookup;
@@ -24,23 +21,20 @@ public unsafe class StepDocument : IDisposable
 
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
         Data = SimdReader.ReadAllBytes(filePath);
-
-        logger.Log($"Pinning data");
-        _handle = GCHandle.Alloc(Data.Data, GCHandleType.Pinned);
-        DataStart = (byte*)_handle.AddrOfPinnedObject().ToPointer();
+        DataStart = Data.BytePtr;
 
         logger.Log($"Computing the start of each line");
         // NOTE: this estimates that the average line length is more than 16 characters. 
         // This is a reasonable estimate. Only very degenerate files would not meet that. 
-        var cap = Data.Length / 16;
+        var cap = Data.NumBytes / 16;
         Lines = new List<int>(cap);
         
         // We are going to report the beginning of the lines, while the "ComputeLines" function
         // will compute the ends of lines.
         var currentLine = 1;
-        foreach (var v in Data.Data)
+        for (var i=0; i < Data.NumVectors; i++)
         {
-            StepTokenizer.ComputeLines(v, ref currentLine, Lines);
+            StepTokenizer.ComputeLines(Data.VectorPtr[i], ref currentLine, Lines);
         }
         logger.Log($"Found {Lines.Count} lines");
 
@@ -70,7 +64,7 @@ public unsafe class StepDocument : IDisposable
 
     public void Dispose()
     {
-        _handle.Free();
+        Data.Dispose();
     }
 
     public StepInstance[] GetInstances()

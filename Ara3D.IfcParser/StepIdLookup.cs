@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Debug = System.Diagnostics.Debug;
 
 namespace Ara3D.IfcParser;
 
@@ -28,20 +29,26 @@ public class StepInstanceLookup
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public long GetFirstIndex(long key)
-        => (key * 7) % Capacity;
+    public long GetFirstIndex(long instanceId)
+    {
+        Debug.Assert(instanceId > 0);
+        Debug.Assert(instanceId * 7 < int.MaxValue);
+        return (instanceId * 7) % Capacity;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long NextIndex(long index)
         => (index + 1) % Capacity;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Add(int entityId, int entityIndex)
+    public void Add(int entityId, int instanceIndex)
     {
+        Debug.Assert(instanceIndex > 0);
+        Debug.Assert(instanceIndex < Instances.Length);
         var i = GetFirstIndex(entityId);
         while (IsOccupied(i))
             i = NextIndex(i);
-        Lookup[i] = entityIndex + 1;
+        Lookup[i] = instanceIndex + 1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -53,6 +60,9 @@ public class StepInstanceLookup
     {
         var first = GetFirstIndex(key);
         var i = first;
+#if DEBUG
+        var scanCnt = 1;
+#endif
         while (true)
         {
             var r = Lookup[i];
@@ -60,6 +70,10 @@ public class StepInstanceLookup
                 return -1;
             if (Instances[r - 1].Id == key)
                 return r - 1;
+#if DEBUG
+            if (scanCnt++ % 10 == 0)
+                Debug.WriteLine($"Scanned {scanCnt} times to find an unoccupied place");
+#endif 
             i = NextIndex(i);
             Debug.Assert(i != first);
         }

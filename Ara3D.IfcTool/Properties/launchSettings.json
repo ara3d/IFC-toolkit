@@ -2,7 +2,7 @@
   "profiles": {
     "Ara3D.IfcTool": {
       "commandName": "Project",
-      "commandLineArgs": "find IFCDOOR \"C:/Users/cdigg/dev/impraria/07 - NEOM Mountain/4200000004 - Ski Village/STAGE 3A 100%/IFC/MEC/07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc\""
+      "commandLineArgs": "findall IFCDOOR \"C:/Users/cdigg/dev/impraria\""
     }
   }
 }
