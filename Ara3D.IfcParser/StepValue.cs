@@ -81,20 +81,3 @@ public class StepRedeclared : StepValue
     public override string ToString()
         => "*";
 }
-
-public class StepInstance : StepValue
-{
-    public ByteSpan Name;
-    public StepAggregate Attributes;
-
-    public StepInstance(ByteSpan name, StepAggregate attributes)
-    {
-        Name = name;
-        Attributes = attributes; 
-    }
-
-    public override string ToString()
-    {
-        return $"{Name}{Attributes}";
-    }
-}

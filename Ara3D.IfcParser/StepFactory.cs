@@ -4,6 +4,7 @@ namespace Ara3D.IfcParser;
 
 public static class StepFactory
 {
+    /*
     public static StepValue Create(StepDocument doc, ref int beginToken, int endToken)
     {
         var span = doc.GetTokenSpan(beginToken++);
@@ -95,6 +96,5 @@ public static class StepFactory
 
         return new StepAggregate(values);
     }
-
-   
+    */
 }

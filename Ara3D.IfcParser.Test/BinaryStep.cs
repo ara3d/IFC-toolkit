@@ -47,12 +47,13 @@ public class BinaryIfcSerializer
     public List<byte> Serialize(StepDocument doc)
     {
         Bytes = new List<byte>();
+        /*
         foreach (var rec in doc.GetRecords())
         {
             Write((byte)IfcTokenType.Record);
             Write((uint)rec.Id);
             Write(rec.Value);
-        }
+        }*/
 
         return Bytes;
     }
@@ -90,24 +91,6 @@ public class BinaryIfcSerializer
             case StepId stepId:
                 Write((byte)IfcTokenType.Id);
                 Write((uint)stepId.Id);
-                break;
-            case StepInstance stepInstance:
-                if (stepInstance.Name.Equals("IFCCARTESIANPOINT"))
-                {
-                    Write((byte)IfcTokenType.Point);
-                    // TODO: get the points 
-                    for (var i=0; i < 24; ++i)
-                        Write((byte)i);
-                }
-                else
-                {
-                    Write((byte)IfcTokenType.Instance);
-                    Write(stepInstance.Name.First());
-                    Write(stepInstance.Name.Last());
-                    foreach (var attr in stepInstance.Attributes.Values)
-                        Write(attr);
-                }
-
                 break;
             case StepNumber stepNumber:
                 if ((stepNumber.Value) <= double.Epsilon)

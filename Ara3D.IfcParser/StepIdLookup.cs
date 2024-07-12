@@ -3,20 +3,25 @@ using System.Runtime.CompilerServices;
 
 namespace Ara3D.IfcParser;
 
-public class StepEntityLookup
+/// <summary>
+/// This is a hand-written lookup table for performance
+/// </summary>
+public class StepInstanceLookup
 {
-    public readonly StepRawRecord[] Entities;
+    public readonly StepInstance[] Instances;
     public readonly int Capacity;
     public readonly int[] Lookup;
     
-    public StepEntityLookup(StepRawRecord[] entities)
+    public StepInstanceLookup(StepInstance[] instances)
     {
-        Entities = entities;
-        Capacity = entities.Length * 2;
+        Instances = instances;
+        Capacity = instances.Length * 2;
         Lookup = new int[Capacity];
-        for (var i = 0; i < Entities.Length; i++)
+        for (var i = 0; i < Instances.Length; i++)
         {
-            var e = Entities[i];
+            var e = Instances[i];
+            if (!e.IsValid())
+                continue;
             Add(e.Id, i);
             Debug.Assert(Find(e.Id) == i);  
         }
@@ -53,7 +58,7 @@ public class StepEntityLookup
             var r = Lookup[i];
             if (r == 0)
                 return -1;
-            if (Entities[r - 1].Id == key)
+            if (Instances[r - 1].Id == key)
                 return r - 1;
             i = NextIndex(i);
             Debug.Assert(i != first);

@@ -33,9 +33,9 @@ namespace Ara3D.IfcTool
 
             var logger = Logger.Console;
             logger.Log($"Opening file {fp.GetFileName()} of size {fp.GetFileSizeAsString()}");
-            var doc = new StepDocument( fp, false, logger );
+            var doc = new StepDocument(fp, logger);
             var span = e.ToByteSpanPinned();
-            var recs = doc.GetRecords(span).ToList();
+            var recs = doc.GetInstances(span).ToList();
             logger.Log($"Found {recs.Count} instances of type {span}");
             logger.Log("Completed");
         }

@@ -1,9 +1,9 @@
-using Ara3D.Logging;
 using Ara3D.Utils;
+using NUnit.Framework;
 
 namespace Ara3D.IfcParser.Test
 {
-    public static class StepUnitTests
+    public static class StepTestTools
     {
         [Test, Explicit]
         public static void OutputFilesInFolder()

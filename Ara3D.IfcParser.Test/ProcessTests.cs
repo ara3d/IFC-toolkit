@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Ara3D.Utils;
+using NUnit.Framework;
 
 namespace Ara3D.IfcParser.Test;
 
