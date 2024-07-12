@@ -1,4 +1,4 @@
-using Ara3D.Utils;
+    using Ara3D.Utils;
 
 namespace Ara3D.IfcParser.Test;
 
@@ -373,12 +373,12 @@ public static class TestFiles
 // 374.2MB
             @"C:\Users\cdigg\dev\impraria\IFC_selected_2023-05-30_06-47-30am\ARC\07-186100-4800000333-CH2-ARC-MDL-900502_A.ifc",
 
-// 440.3MB
-            @"C:\Users\cdigg\dev\impraria\07 - NEOM Mountain\4200000004 - Ski Village\STAGE 3A 100%\IFC\MEC\07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc",
     };
 
     public static FilePath[] HugeFiles() => new FilePath[]
         {
+// 440.3MB
+            @"C:\Users\cdigg\dev\impraria\07 - NEOM Mountain\4200000004 - Ski Village\STAGE 3A 100%\IFC\MEC\07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc",
 // 498.9MB
             @"C:\Users\cdigg\dev\impraria\0000100120-093 - OXAGON ADVANCED HEALTH CENTER\STAGE 3A - CONCEPT DESIGN\IDN\03-730000-0000100120-DAH-IDN-MDL-000009_IFC_D.ifc",
 // 699.4MB

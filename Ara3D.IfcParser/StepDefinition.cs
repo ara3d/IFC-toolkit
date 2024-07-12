@@ -1,4 +1,4 @@
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 public class StepDefinition
 {

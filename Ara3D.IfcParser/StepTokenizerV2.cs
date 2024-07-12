@@ -5,42 +5,18 @@ using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using Ara3D.Logging;
-using Xbim.Tessellator;
-using Debug = System.Diagnostics.Debug;
 
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
-// Limited to parsing 2GB maximum, with 64K lines. 
-
-public enum TokenType
+public static unsafe class StepTokenizerV2
 {
-    None,
-    Ident,
-    String,
-    Whitespace,
-    Number,
-    Symbol,
-    Id,
-    Separator,
-    Redeclared,
-    Unassigned,
-    Comment,
-    Unknown,
-    BeginGroup,
-    EndGroup,
-    LineBreak,
-    EndOfLine,
-    Definition,
-}
+    public struct StepInstance
+    {
+        public uint Start;
+        public ushort Length;
+        public ushort DefOffset;
+    }
 
-public unsafe class StepTokens
-{
-    public byte*[] Tokens;
-    public StepRawRecord[] Entities;
-}
-
-public static unsafe class StepTokenizer
-{
     public static readonly TokenType* TokenLookup =
         CreateTokenLookup();
 
@@ -58,7 +34,7 @@ public static unsafe class StepTokenizer
         var h = GCHandle.Alloc(r, GCHandleType.Pinned);
         return (TokenType*)h.AddrOfPinnedObject().ToPointer();
     }
-    
+
     public static bool* CreateNumberLookup()
     {
         var r = new bool[256];
@@ -67,7 +43,7 @@ public static unsafe class StepTokenizer
         var h = GCHandle.Alloc(r, GCHandleType.Pinned);
         return (bool*)h.AddrOfPinnedObject().ToPointer();
     }
-    
+
     public static bool* CreateIdentLookup()
     {
         var r = new bool[256];
@@ -80,7 +56,7 @@ public static unsafe class StepTokenizer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TokenType LookupToken(byte b)
         => TokenLookup[b];
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNumberChar(byte b)
     {
@@ -506,6 +482,6 @@ public static unsafe class StepTokenizer
                 while (IsIdentLookup[*cur])
                     cur++;
                 break;
-            }
         }
     }
+}

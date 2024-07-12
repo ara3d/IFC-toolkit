@@ -1,6 +1,4 @@
-using System.Diagnostics;
-
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 /// <summary>
 /// Constructed as needed.

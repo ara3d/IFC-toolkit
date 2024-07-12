@@ -1,7 +1,7 @@
 using Ara3D.Spans;
 using Ara3D.Utils;
 
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 public class StepValue
 {

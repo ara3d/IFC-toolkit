@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 /// <summary>
 /// Describes where to find a Step record in the the data file.

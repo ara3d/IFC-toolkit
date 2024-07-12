@@ -17,7 +17,5 @@ namespace Ara3D.IfcParser.Test
                 Console.WriteLine($"@\"{f.Value}\",");
             }
         }
-        
-      
     }
 }

@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 public class StepEntityLookup
 {
@@ -23,11 +23,11 @@ public class StepEntityLookup
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int GetFirstIndex(int key)
+    public long GetFirstIndex(long key)
         => (key * 7) % Capacity;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int NextIndex(int index)
+    public long NextIndex(long index)
         => (index + 1) % Capacity;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40,7 +40,7 @@ public class StepEntityLookup
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsOccupied(int index)
+    public bool IsOccupied(long index)
         => Lookup[index] > 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

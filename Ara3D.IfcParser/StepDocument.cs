@@ -1,10 +1,10 @@
-using Ara3D.Utils;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Ara3D.Logging;
 using Ara3D.Spans;
+using Ara3D.Utils;
 
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 public unsafe class StepDocument : IDisposable
 {
@@ -28,10 +28,7 @@ public unsafe class StepDocument : IDisposable
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
 
         var nTokens = 0;
-        var _buffer = 
-            useCustomFileReader 
-                ? IfcFastFileReader.ReadAllBytes(filePath, ref nTokens)
-                : filePath.ReadAllBytes();
+        var _buffer = filePath.ReadAllBytes();
 
         logger.Log("Pinning data");
         Length = _buffer.Length;

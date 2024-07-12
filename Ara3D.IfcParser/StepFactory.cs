@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Ara3D.IfcParser.Test;
+namespace Ara3D.IfcParser;
 
 public static class StepFactory
 {
