@@ -1,100 +1,121 @@
 using System.Diagnostics;
+using Ara3D.Spans;
 
 namespace Ara3D.IfcParser;
 
-public static class StepFactory
+public static unsafe class StepFactory
 {
-    /*
-    public static StepValue Create(StepDocument doc, ref int beginToken, int endToken)
+    public static StepAggregate? GetAttributes(this StepInstance inst, byte* lineEnd)
     {
-        var span = doc.GetTokenSpan(beginToken++);
-        Debug.Assert(span.Length > 0);
+        if (!inst.IsValid())
+            return default;
 
-        var tt = StepTokenizer.LookupToken(span.First());
-        switch (tt)
+        var ptr = inst.Type.End();
+        if (ptr >= lineEnd)
+            return default;
+
+        if (*ptr++ != (byte)'(')
         {
-            case TokenType.String:
+            // NOTE: Maybe there is whitespace between the identifier and the parenthesis 
+            // This should be exceedingly rare. 
+            Debug.Fail("Expected an open parenthesis");
+            return default;
+        }
+
+        return CreateAggregate(ref ptr, lineEnd);
+    }
+
+    public static StepValue Create(ref byte* cur, byte* end)
+    {
+        var begin = cur;
+        var type = StepTokenizer.ParseToken(ref cur, end);
+        var span = new ByteSpan(begin, cur);
+
+        switch (type)
+        {
+            case StepTokenType.String:
                 Debug.Assert(span.Length >= 2);
                 Debug.Assert(span.First() == '\'');
                 Debug.Assert(span.Last() == '\'');
                 return new StepString(span.Trim(1, 1));
 
-            case TokenType.Symbol:
+            case StepTokenType.Symbol:
                 Debug.Assert(span.Length >= 2);
                 Debug.Assert(span.First() == '.');
                 Debug.Assert(span.Last() == '.');
                 return new StepSymbol(span.Trim(1, 1));
 
-            case TokenType.Id:
+            case StepTokenType.Id:
                 Debug.Assert(span.Length >= 2);
                 Debug.Assert(span.First() == '#');
                 return new StepId(span.Skip(1));
 
-            case TokenType.Redeclared:
+            case StepTokenType.Redeclared:
                 Debug.Assert(span.Length == 1);
                 Debug.Assert(span.First() == '*');
                 return new StepRedeclared();
 
-            case TokenType.Unassigned:
+            case StepTokenType.Unassigned:
                 Debug.Assert(span.Length == 1);
                 Debug.Assert(span.First() == '$');
                 return new StepUnassigned();
 
-            case TokenType.Number:
+            case StepTokenType.Number:
                 return new StepNumber(span);
 
-            case TokenType.Ident:
-                if (doc.GetTokenType(beginToken++) != TokenType.BeginGroup)
-                    throw new Exception("Expected an attribute group");
-                var attr = CreateAggregate(doc, ref beginToken, endToken);
-                return new StepInstance(span, attr);
+            case StepTokenType.Ident:
+                Debug.Assert(*cur == '(');
+                cur++;
+                var attr = CreateAggregate(ref cur, end);
+                return new StepEntity(span, attr);
 
-            case TokenType.BeginGroup:
-                return CreateAggregate(doc, ref beginToken, endToken);
+            case StepTokenType.BeginGroup:
+                return CreateAggregate(ref cur, end);
 
-            case TokenType.None:
-            case TokenType.Whitespace:
-            case TokenType.Comment:
-            case TokenType.Unknown:
-            case TokenType.LineBreak:
-            case TokenType.EndOfLine:
-            case TokenType.Definition:
-            case TokenType.Separator:
-            case TokenType.EndGroup:
+            case StepTokenType.None:
+            case StepTokenType.Whitespace:
+            case StepTokenType.Comment:
+            case StepTokenType.Unknown:
+            case StepTokenType.LineBreak:
+            case StepTokenType.EndOfLine:
+            case StepTokenType.Definition:
+            case StepTokenType.Separator:
+            case StepTokenType.EndGroup:
             default:
-                throw new Exception($"Cannot convert token type {tt} to a StepValue");
+                throw new Exception($"Cannot convert token type {type} to a StepValue");
         }
     }
 
-    public static StepAggregate CreateAggregate(StepDocument doc, ref int beginToken, int endToken)
+    public static StepAggregate CreateAggregate(ref byte* cur, byte* end)
     {
+        var begin = cur;
         var values = new List<StepValue>();
-        var tt = doc.GetTokenType(beginToken);
-        while (beginToken < endToken && tt != TokenType.EndGroup)
+        var tt = StepTokenizer.LookupToken(*cur);
+        while (cur < end && tt != StepTokenType.EndGroup)
         {
-            if (tt == TokenType.Comment 
-                || tt == TokenType.Whitespace 
-                || tt == TokenType.Separator 
-                || tt == TokenType.None)
+            // Advance past comments, whitespace, and commas 
+            if (tt == StepTokenType.Comment 
+                || tt == StepTokenType.Whitespace 
+                || tt == StepTokenType.Separator 
+                || tt == StepTokenType.None)
             {
-                // Advance past comments, whitespace, and commas 
-                tt = doc.GetTokenType(++beginToken);
+                tt = StepTokenizer.LookupToken(*cur++);
+                continue;
             }
-            else
-            {
-                var prevToken = beginToken;
-                // This should always increment the "beginToken". Checked in debug builds 
-                var curValue = Create(doc, ref beginToken, endToken);
-                values.Add(curValue);
-                Debug.Assert(beginToken > prevToken);
-                tt = doc.GetTokenType(beginToken);
-            }
+            
+            Debug.Assert(tt != StepTokenType.Unknown);
+
+            // Get the next value
+            var tmp = cur;
+            var curValue = Create(ref cur, end);
+            Debug.Assert(cur > tmp);
+            values.Add(curValue);
+            tt = StepTokenizer.LookupToken(*cur);
         }
 
-        if (tt != TokenType.EndGroup)
+        if (tt != StepTokenType.EndGroup)
             throw new Exception("Did not reach end of aggregate");
-
+        cur++;
         return new StepAggregate(values);
     }
-    */
 }

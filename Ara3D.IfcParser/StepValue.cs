@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Ara3D.Spans;
 using Ara3D.Utils;
 
@@ -5,6 +6,22 @@ namespace Ara3D.IfcParser;
 
 public class StepValue
 {
+}
+
+public class StepEntity : StepValue
+{
+    public readonly ByteSpan EntityType;
+    public readonly StepAggregate Attributes;
+
+    public StepEntity(ByteSpan entityType, StepAggregate attributes)
+    {
+        Debug.Assert(!entityType.IsNull());
+        EntityType = entityType;
+        Attributes = attributes;
+    }
+
+    public override string ToString()
+        => $"{EntityType}{Attributes}";
 }
 
 public class StepAggregate : StepValue
@@ -80,4 +97,32 @@ public class StepRedeclared : StepValue
 
     public override string ToString()
         => "*";
+}
+
+public static class StepValueExtensions
+{
+    public static int AsId(this StepValue value)
+        => value is StepUnassigned 
+            ? 0 
+            : ((StepId)value).Id;
+
+    public static string AsString(this StepValue value)
+        => value is StepUnassigned 
+            ? "" 
+            : ((StepString)value).Value.ToString();
+
+    public static double AsNumber(this StepValue value)
+        => value is StepUnassigned 
+            ? 0 
+            : ((StepNumber)value).Value;
+
+    public static List<StepValue> AsList(this StepValue value)
+        => value is StepUnassigned
+            ? new List<StepValue>()
+            : ((StepAggregate)value).Values;
+
+    public static List<int> AsIdList(this StepValue value)
+        => value is StepUnassigned
+            ? new List<int>()
+            : value.AsList().Select(AsId).ToList();
 }

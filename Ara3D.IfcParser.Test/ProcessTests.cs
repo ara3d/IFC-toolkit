@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Ara3D.Logging;
 using Ara3D.Utils;
 using NUnit.Framework;
 
@@ -46,5 +47,36 @@ public static class ProcessTests
             TestAra3D(f, "IFCFACE");
             TestWebIfc(f, "IFCFACE");
         }
+    }
+
+    [Test]
+    public static void ThreadedWebIfcTest()
+    {
+        var logger = Logger.Console;
+        var dp = new DirectoryPath(@"C:\Users\cdigg\dev\impraria");
+        if (!dp.Exists())
+        {
+            Console.WriteLine($"Could not find directory {dp}");
+            return;
+        }
+        logger.Log($"Looking for IFC files in {dp}");
+        
+        // Starting with just 8 files.
+        var files = dp.GetFiles("*.ifc", true).ToList();
+
+        logger.Log($"Found {files.Count} files");
+
+        const int numThreads = 4;
+        ThreadUtil.RunThreads(numThreads,
+            curThread =>
+            {
+                for (var i = 0; i < files.Count; i++)
+                    if (i % numThreads == curThread)
+                        TestWebIfc(files[i], "IFCDOOR");
+            });
+
+        //Parallel.ForEach(files, f => Find(f, entity, logger));
+        //foreach (var f in files) Find(f, entity, logger);
+        logger.Log("Completed");
     }
 }

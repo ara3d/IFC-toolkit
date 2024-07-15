@@ -7,8 +7,8 @@ namespace Ara3D.IfcParser;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly struct StepInstance
 {
-    public readonly ByteSpan Type;
     public readonly int Id;
+    public readonly ByteSpan Type;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public StepInstance(int id, ByteSpan type)
@@ -20,4 +20,7 @@ public readonly struct StepInstance
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsValid()
         => Id > 0;
+
+    public override string ToString()
+        => $"{Id} = {Type}";
 }
