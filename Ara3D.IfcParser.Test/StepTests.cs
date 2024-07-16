@@ -84,11 +84,13 @@ public static class StepTests
     public static void GeometryGymTimingsMultiFiles()
     {
         var files = MediumFiles();
-        var totalSize = PathUtil.BytesToString(files.Sum(f => f.GetFileSize()));
+        var totalSize = PathUtil
+            .BytesToString(files.Sum(f => f.GetFileSize()));
         var count = files.Count();
         Console.WriteLine($"Loading {count} files of total size {totalSize}");
         var actions = files
-            .Select<FilePath, Action>(f => () => GeometryGymLoadIfc(f))
+            .Select<FilePath, Action>(f 
+                => () => GeometryGymLoadIfc(f))
             .ToArray();
         TimingUtils.TimeIt(() => { Parallel.Invoke(actions); });
     }
@@ -114,9 +116,9 @@ public static class StepTests
     }
 
     [Test]
-    public static unsafe void CountPropValues()
+    [TestCaseSource(nameof(LargeFiles))]
+    public static void CountPropValues(FilePath fp)
     {
-        var fp = LargeFiles().First();
         Console.WriteLine(fp);
         Console.WriteLine();
         var logger = Logger.Console;
@@ -126,7 +128,9 @@ public static class StepTests
         var propNames = new HashSet<string>();
         var propDescriptions = new HashSet<string>();
         var propUnits = new HashSet<string>();
-        var propValues = new List<StepValue>();
+        var propValues = new HashSet<string>();
+        var nProps = 0;
+        var szProps = 0;
         for (var i=0; i < doc.GetNumLines(); ++i)
         {
             var inst = doc.GetInstance(i);
@@ -140,7 +144,12 @@ public static class StepTests
             propNames.Add(pv.Name);
             propDescriptions.Add(pv.Description);
             propUnits.Add(pv.Unit);
+            propValues.Add(pv.Value);
+            nProps++;
+            szProps += doc.GetLineSpan(i).Length;
         }
+
+        Console.WriteLine($"Found {nProps} properties, total size was {szProps}");
 
         Console.WriteLine($"Found {propNames.Count} property names");
         Console.WriteLine($"Found {propDescriptions.Count} property descriptions");

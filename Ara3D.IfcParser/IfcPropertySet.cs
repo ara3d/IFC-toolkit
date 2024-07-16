@@ -56,7 +56,7 @@ public class IfcPropertyValue
         {
             ValueEntityType = "UNKNOWN";
         }
-        Unit = vals[3].AsString();
+        Unit = vals[3].ToString();
     }
 
     public override string ToString()

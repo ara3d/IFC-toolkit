@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Ara3D.Spans;
 using Ara3D.Utils;
@@ -39,6 +40,16 @@ public class StepString : StepValue
 {
     public readonly ByteSpan Value;
 
+    public static StepString Create(StepToken token)
+    {
+        var span = token.Span;
+        Debug.Assert(token.Type == StepTokenType.String);
+        Debug.Assert(span.Length >= 2);
+        Debug.Assert(span.First() == '\'');
+        Debug.Assert(span.Last() == '\'');
+        return new StepString(span.Trim(1, 1));
+    }
+
     public StepString(ByteSpan value)
         => Value = value;
 
@@ -55,6 +66,16 @@ public class StepSymbol : StepValue
 
     public override string ToString() 
         => $".{Name}.";
+
+    public static StepSymbol Create(StepToken token)
+    {
+        Debug.Assert(token.Type == StepTokenType.Symbol);
+        var span = token.Span;
+        Debug.Assert(span.Length >= 2);
+        Debug.Assert(span.First() == '.');
+        Debug.Assert(span.Last() == '.');
+        return new StepSymbol(span.Trim(1, 1));
+    }
 }
 
 public class StepNumber : StepValue
@@ -67,6 +88,13 @@ public class StepNumber : StepValue
 
     public override string ToString() 
         => $"{Value}";
+
+    public static StepNumber Create(StepToken token)
+    {
+        Debug.Assert(token.Type == StepTokenType.Number);
+        var span = token.Span;
+        return new(span);
+    }
 }
 
 public class StepId : StepValue
@@ -79,6 +107,15 @@ public class StepId : StepValue
 
     public override string ToString()
         => $"#{Id}";
+
+    public static StepId Create(StepToken token)
+    {
+        Debug.Assert(token.Type == StepTokenType.Id);
+        var span = token.Span;
+        Debug.Assert(span.Length >= 2);
+        Debug.Assert(span.First() == '#');
+        return new StepId(span.Skip(1));
+    }
 }
 
 public class StepUnassigned : StepValue
@@ -88,6 +125,15 @@ public class StepUnassigned : StepValue
 
     public override string ToString()
         => "$";
+
+    public static StepUnassigned Create(StepToken token)
+    {
+        Debug.Assert(token.Type == StepTokenType.Unassigned);
+        var span = token.Span;
+        Debug.Assert(span.Length == 1);
+        Debug.Assert(span.First() == '$');
+        return Default;
+    }
 }
 
 public class StepRedeclared : StepValue
@@ -97,6 +143,15 @@ public class StepRedeclared : StepValue
 
     public override string ToString()
         => "*";
+
+    public static StepRedeclared Create(StepToken token)
+    {
+        Debug.Assert(token.Type == StepTokenType.Redeclared);
+        var span = token.Span;
+        Debug.Assert(span.Length == 1);
+        Debug.Assert(span.First() == '*');
+        return Default;
+    }
 }
 
 public static class StepValueExtensions

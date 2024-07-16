@@ -1,0 +1,17 @@
+﻿using System.Diagnostics;
+using Ara3D.Spans;
+
+namespace Ara3D.IfcParser;
+
+public readonly struct StepToken
+{
+    public readonly ByteSpan Span;
+    public readonly StepTokenType Type;
+
+    public StepToken(ByteSpan span, StepTokenType type)
+    {
+        Span = span;
+        Debug.Assert(span.Length > 0);
+        Type = type;
+    }
+}

@@ -1,13 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Ara3D.Spans;
 
 namespace Ara3D.IfcParser;
-
-public unsafe struct Token
-{
-    public byte* Ptr;
-    public int Length;
-    public StepTokenType Type;
-}
 
 public static class StepTokenizer
 {
@@ -213,7 +208,6 @@ public static class StepTokenizer
     public static bool IsIdentOrDigitChar(byte b)
         => IsIdent(b) || IsDigit(b);
 
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe byte* AdvancePast(byte* begin, byte* end, string s)
     {
@@ -224,9 +218,28 @@ public static class StepTokenizer
                 return null;
         return begin;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe StepTokenType ParseToken(ref byte* cur, byte* end)
+    public static unsafe StepToken ParseToken(byte* begin, byte* end)
+    {
+        var cur = begin;
+        var tt = InternalParseToken(ref cur, end);
+        Debug.Assert(cur < end);
+        var span = new ByteSpan(begin, cur);
+        return new StepToken(span, tt);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe bool ParseNextToken(ref StepToken prev, byte* end)
+    {
+        var cur = prev.Span.End();
+        if (cur >= end) return false;
+        prev = ParseToken(cur, end); 
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static unsafe StepTokenType InternalParseToken(ref byte* cur, byte* end)
     {
         var type = TokenLookup[*cur++];
 
@@ -238,8 +251,16 @@ public static class StepTokenizer
                 break;
 
             case StepTokenType.String:
-                while (cur < end && *cur++ != '\'')
-                { }
+                while (cur < end)
+                {
+                    if (*cur++ == '\'')
+                    {
+                        if (*cur != '\'')
+                            break;
+                        else
+                            cur++;
+                    }
+                }
                 break;
 
             case StepTokenType.LineBreak:
