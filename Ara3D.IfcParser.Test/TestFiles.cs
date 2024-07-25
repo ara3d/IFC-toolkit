@@ -4,6 +4,22 @@ namespace Ara3D.IfcParser.Test;
 
 public static class TestFiles
 {
+    public static IEnumerable<FilePath> Village() =>
+        new DirectoryPath(@"C:\Users\cdigg\dev\impraria\Trojena")
+            .GetFiles("*.ifc", true);
+
+    public static IEnumerable<FilePath> Health() =>
+        new DirectoryPath(@"C:\Users\cdigg\dev\impraria\0000100120-093 - OXAGON ADVANCED HEALTH CENTER")
+            .GetFiles("*.ifc", true);
+    
+    public static IEnumerable<FilePath> Mountain() =>
+        new DirectoryPath(@"C:\Users\cdigg\dev\impraria\07 - NEOM Mountain")
+            .GetFiles("*.ifc", true);
+
+    public static IEnumerable<FilePath> Gulf() =>
+        new DirectoryPath(@"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba")
+            .GetFiles("*.ifc", true);
+
     // < 2MB
     public static FilePath[] TinyFiles() => new FilePath[]
     {
@@ -389,4 +405,12 @@ public static class TestFiles
             @"C:\Users\cdigg\dev\impraria\02 - Gulf of Aqaba\4800000194 - GOA Romantic Bay\Stage 3A\IFC\KEQ\02-211211-4800000194-WBP-KEQ-MDL-000001.ifc",
         };
 
+
+    public static IEnumerable<FilePath> AllFiles() => 
+        TinyFiles()
+            .Concat(SmallFiles())
+            .Concat(MediumFiles())
+            .Concat(LargeFiles())
+            .Concat(VeryLargeFiles())
+            .Concat(HugeFiles());
 }

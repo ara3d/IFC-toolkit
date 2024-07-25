@@ -56,9 +56,9 @@ public class StepInstanceLookup
         => Lookup[index] > 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int Find(int key)
+    public int Find(int entityId)
     {
-        var first = GetFirstIndex(key);
+        var first = GetFirstIndex(entityId);
         var i = first;
 #if DEBUG
         var scanCnt = 1;
@@ -68,7 +68,7 @@ public class StepInstanceLookup
             var r = Lookup[i];
             if (r == 0)
                 return -1;
-            if (Instances[r - 1].Id == key)
+            if (Instances[r - 1].Id == entityId)
                 return r - 1;
 #if DEBUG
             if (scanCnt++ % 10 == 0)

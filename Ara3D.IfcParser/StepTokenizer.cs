@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Ara3D.Spans;
+using Ara3D.Buffers;
 
 namespace Ara3D.IfcParser;
 

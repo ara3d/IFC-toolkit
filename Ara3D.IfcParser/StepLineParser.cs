@@ -3,7 +3,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using Ara3D.Spans;
+using Ara3D.Buffers;
 
 namespace Ara3D.IfcParser;
 

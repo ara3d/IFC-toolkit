@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ara3d\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
+    <ProjectReference Include="..\..\ara3d\src\Ara3D.Buffers\Ara3D.Buffers.csproj" />
     <ProjectReference Include="..\..\ara3d\src\Ara3D.Logging\Ara3D.Logging.csproj" />
-    <ProjectReference Include="..\..\ara3d\src\Ara3D.Spans\Ara3D.Spans.csproj" />
+    <ProjectReference Include="..\..\ara3d\src\Ara3D.Serialization.BFAST\Ara3D.Serialization.BFAST.csproj" />
+    <ProjectReference Include="..\..\ara3d\src\Ara3D.SimpleDB\Ara3D.SimpleDB.csproj" />
     <ProjectReference Include="..\..\ara3d\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
   </ItemGroup>
 

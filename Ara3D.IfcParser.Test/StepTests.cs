@@ -1,5 +1,5 @@
+using Ara3D.Buffers;
 using Ara3D.Logging;
-using Ara3D.Spans;
 using Ara3D.Utils;
 using GeometryGym.Ifc;
 using IFC;
@@ -124,7 +124,6 @@ public static class StepTests
         var logger = Logger.Console;
         using var doc = new StepDocument(fp, logger);
 
-        var originalSize = 0;
         var propNames = new HashSet<string>();
         var propDescriptions = new HashSet<string>();
         var propUnits = new HashSet<string>();
@@ -138,15 +137,14 @@ public static class StepTests
                 continue;
 
             var lineSpan = doc.GetLineSpan(i);
-            originalSize += lineSpan.Length;
-            var e = doc.GetEntity(i);
-            var pv = new IfcPropertyValue(e.Attributes);
+            var e = doc.GetEntityFromLine(i);
+            var pv = new IfcPropertyValue(e.Id, e.AttributeValues);
             propNames.Add(pv.Name);
             propDescriptions.Add(pv.Description);
             propUnits.Add(pv.Unit);
             propValues.Add(pv.Value);
             nProps++;
-            szProps += doc.GetLineSpan(i).Length;
+            szProps += lineSpan.Length;
         }
 
         Console.WriteLine($"Found {nProps} properties, total size was {szProps}");
@@ -264,7 +262,7 @@ public static class StepTests
             var attr = StepFactory.GetAttributes(inst, span.End());
             Assert.IsNotNull(attr);
             Console.WriteLine(attr);
-            var ps = new IfcPropertySet(attr);
+            var ps = new IfcPropertySet(inst.Id, attr.Values);
             Console.WriteLine(ps);
         }
     }

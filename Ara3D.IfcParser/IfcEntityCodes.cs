@@ -1,4 +1,4 @@
-﻿using Ara3D.Spans;
+﻿using Ara3D.Buffers;
 
 namespace Ara3D.IfcParser
 {
@@ -52,7 +52,15 @@ namespace Ara3D.IfcParser
             "IFCVECTOR",
         };
 
-        public static Dictionary<string, int> EntityToCodeLookup = CreateEntityLookup();
+        public static readonly string[] PropertyEntities = new string[]
+        {
+            "IFCPROPERTYSET",
+            "IFCRELDEFINESBYPROPERTIES",
+            "IFCPROPERTYSINGLEVALUE"
+        };
+
+        public static Dictionary<string, int> EntityToCodeLookup 
+            = CreateEntityLookup();
 
         public static Dictionary<string, int> CreateEntityLookup()
         {
@@ -72,8 +80,6 @@ namespace Ara3D.IfcParser
             => EntityToCodeLookup.ContainsKey(e);
 
         public static bool IsPropertyEntity(string str) 
-            => str is "IFCPROPERTYSET" 
-                or "IFCRELDEFINESBYPROPERTIES" 
-                or "IFCPROPERTYSINGLEVALUE";
+            => PropertyEntities.Contains(str);
     }
 }

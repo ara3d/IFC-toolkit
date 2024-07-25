@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Ara3D.Spans;
+using Ara3D.Buffers;
 
 namespace Ara3D.IfcParser;
 

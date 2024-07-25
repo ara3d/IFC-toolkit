@@ -1,5 +1,7 @@
+using System.Runtime.Intrinsics;
+using Ara3D.Buffers;
+using Ara3D.Buffers.Modern;
 using Ara3D.Logging;
-using Ara3D.Spans;
 using Ara3D.Utils;
 
 namespace Ara3D.IfcParser;
@@ -8,7 +10,7 @@ public unsafe class StepDocument : IDisposable
 {
     public readonly FilePath FilePath;
     public readonly byte* DataStart;
-    public readonly SimdMemory Data;
+    public readonly AlignedMemory Data;
     
     public readonly StepInstance[] Instances;
     public readonly StepInstanceLookup Lookup;
@@ -20,7 +22,7 @@ public unsafe class StepDocument : IDisposable
         logger ??= new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
 
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
-        Data = SimdReader.ReadAllBytes(filePath);
+        Data = AlignedMemoryReader.ReadAllBytes(filePath);
         DataStart = Data.BytePtr;
 
         logger.Log($"Computing the start of each line");
@@ -34,7 +36,8 @@ public unsafe class StepDocument : IDisposable
         var currentLine = 1;
         for (var i=0; i < Data.NumVectors; i++)
         {
-            StepLineParser.ComputeLines(Data.VectorPtr[i], ref currentLine, LineOffsets);
+            StepLineParser.ComputeLines(
+                ((Vector256<byte>*)Data.BytePtr)[i], ref currentLine, LineOffsets);
         }
         logger.Log($"Found {LineOffsets.Count} lines");
 
@@ -87,30 +90,47 @@ public unsafe class StepDocument : IDisposable
     public StepInstance GetInstance(int lineIndex)
         => Instances[lineIndex];
 
-    public StepEntity GetEntity(int lineIndex)
+    public StepEntityWithId GetEntityFromLine(int lineIndex)
     {
         var inst = GetInstance(lineIndex);
         if (!inst.IsValid())
             return null;
-
         var span = GetLineSpan(lineIndex);
         var attr = inst.GetAttributes(span.End());
-        return new StepEntity(inst.Type, attr);
+        var e = new StepEntity(inst.Type, attr);
+        var r = new StepEntityWithId(inst.Id, lineIndex, e);
+        return r;
+    }
+
+    public StepEntityWithId GetEntityFromInst(StepInstance inst, int lineIndex)
+    {
+        var span = GetLineSpan(lineIndex);
+        var attr = inst.GetAttributes(span.End());
+        var e = new StepEntity(inst.Type, attr);
+        return new StepEntityWithId(inst.Id, lineIndex, e);
     }
 
     public int GetNumLines()
         => Instances.Length - 1;
 
-    public IEnumerable<StepEntity> GetEntities()
+    public IEnumerable<StepEntityWithId> GetEntities()
         => Enumerable
             .Range(0, GetNumLines())
-            .Select(GetEntity)
+            .Select(GetEntityFromLine)
             .WhereNotNull();
 
-    public IEnumerable<StepEntity> GetEntities(string entity)
-        => Enumerable
-            .Range(0, GetNumLines())
-            .Select(GetEntity)
-            .WhereNotNull()
-            .Where(e => e.EntityType.ToString().Equals(entity));
+    public List<StepEntityWithId> GetEntities(string type)
+    {
+        var r = new List<StepEntityWithId>();
+        type.WithSpan(span =>
+        {
+            for (var i = 0; i < GetNumLines(); ++i)
+            {
+                var inst = GetInstance(i);
+                if (inst.IsValid() && inst.Type.Equals(span))
+                    r.Add(GetEntityFromInst(inst, i));
+            }
+        });
+        return r;
+    }
 }
