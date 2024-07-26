@@ -1,5 +1,5 @@
 using Ara3D.Logging;
-using Ara3D.SimpleDB;
+using Ara3D.NarwhalDB;
 using Ara3D.Utils;
 using NUnit.Framework;
 using static Ara3D.IfcParser.IfcPropertyDatabase;
@@ -11,76 +11,23 @@ public static class DatabaseTests
     public static IEnumerable<FilePath> InputFiles()
         => StepTests.LargeFiles();
 
-    public static void OutputDatabase(SimpleDatabase db, ILogger logger)
+    public static void OutputDatabase(DB db, ILogger logger)
     {
         logger.Log("Describing database: ");
         foreach (var t in db.GetTables())
         {
-            logger.Log($"  table {t.Name} has {t.Objects.Count} objects and schema {t.TableSchema}");
+            logger.Log($"  table {t.Name} has {t.Objects.Count} objects");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(InputFiles))]
-    public static void DatabaseTest(FilePath f)
+    public static void SingleFileDatabaseTest(FilePath f)
     {
-        var logger = Logger.Console;
-        var doc = new StepDocument(f, logger);
-        var db = new IfcPropertyDatabase();
-
-        var szProps = 0;
-        var cntProps = 0;
-
-        var szSets = 0;
-        var cntSets = 0;
-
-        for (var i = 0; i < doc.GetNumLines(); ++i)
-        {
-            var inst = doc.GetInstance(i);
-            if (!inst.IsValid())
-                continue;
-
-            var lineSpan = doc.GetLineSpan(i);
-            var type = inst.Type.ToString();
-            if (type == "IFCPROPERTYSINGLEVALUE")
-            {
-                szProps += lineSpan.Length;
-                cntProps++;
-            }
-            if (type == "IFCPROPERTYSET")
-            {
-                szSets += lineSpan.Length;
-                cntSets++;
-            } 
-        }
-
-        logger.Log($"Found {cntProps} properties {PathUtil.BytesToString(szProps)}");
-        logger.Log($"Found {cntSets} property sets {PathUtil.BytesToString(szSets)}");
-
-        logger.Log($"Adding document to database");
-        db.AddDocument(doc, logger);
-        OutputDatabase(db.Db, logger);
-
-        var fp = PathUtil.CreateTempFile();
-        logger.Log("Writing database to disk");
-        db.Db.WriteToFile(fp, logger);
-        logger.Log("Wrote database to disk");
-
-        logger.Log("Reading database from disk");
-        var tmp = SimpleDatabase.ReadFile(fp, TableTypes, logger);
-        logger.Log("Read database from disk");
-        OutputDatabase(tmp, logger);
-
-        CompareDB(db.Db, tmp, logger);
-
-        var inputSize = f.GetFileSizeAsString();
-        var outputSize = fp.GetFileSizeAsString();
-        var propSize = PathUtil.BytesToString(szSets + szProps);
-        logger.Log($"From IFC file of {inputSize} with {propSize} props to database of {outputSize}");
+        MultiFileTest(new[] { f }, f.GetFileNameWithoutExtension());
     }
 
-
-    public static void CompareDB(SimpleDatabase db1, SimpleDatabase db2, ILogger logger)
+    public static void CompareDB(DB db1, DB db2)
     {
         Assert.AreEqual(db1.NumTables, db2.NumTables);
         var tables1 = db1.GetTables().OrderBy(t => t.Name).ToList();
@@ -94,8 +41,6 @@ public static class DatabaseTests
             Assert.AreEqual(t1.Objects.Count, t2.Objects.Count);
             Assert.AreEqual(t1.Objects, t2.Objects);
         }
-
-        logger.Log("Database comparsion works");
     }
 
     [Test]
@@ -168,10 +113,19 @@ public static class DatabaseTests
 
         OutputDatabase(db.Db, logger);
 
-        var fp = OutputFolder.RelativeFile(name + ".db");
+        var fp = OutputFolder.RelativeFile(name + ".bfast");
         logger.Log("Writing database to disk");
         db.Db.WriteToFile(fp, logger);
         logger.Log("Wrote database to disk");
+
+        logger.Log("Reading database from disk");
+        var tmp = DB.ReadFile(fp, TableTypes, logger);
+        logger.Log("Read database from disk");
+        OutputDatabase(tmp, logger);
+
+        logger.Log("Comparing database written and read");
+        CompareDB(db.Db, tmp);
+        logger.Log($"Comparison successful");
 
         var inputSize = PathUtil.BytesToString(totalSize);
         var outputSize = fp.GetFileSizeAsString();
@@ -180,19 +134,21 @@ public static class DatabaseTests
         logger.Log($"Found {cntSets} property sets {PathUtil.BytesToString(szSets)}");
 
         logger.Log($"From {cnt} IFC files of {inputSize} to property database of {outputSize}");
-    }
+
+        var zip = fp.Zip();
+        logger.Log($"Zipped file as {zip.GetFileSizeAsString()}");
+;    }
 
     [Test]
     public static void TestLoadDb()
     {
-        var logger = Logger.Console;
 
-        foreach (var fp in OutputFolder.GetFiles("*.db"))
-        {
-            logger.Log($"Reading database {fp.GetFileName()} from disk");
-            var tmp = SimpleDatabase.ReadFile(fp, TableTypes, logger);
-            logger.Log("Read database from disk");
-            OutputDatabase(tmp, logger);
-        }
+        //foreach (var fp in OutputFolder.GetFiles("*.bfast"))
+        var fp = OutputFolder.RelativeFile("all.bfast");
+        var logger = Logger.Console;
+        logger.Log($"Reading database {fp.GetFileName()} from disk");
+        var tmp = DB.ReadFile(fp, TableTypes, logger);
+        logger.Log("Read database from disk");
+        OutputDatabase(tmp, logger);
     }
 }
