@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Ara3D.Buffers;
 using Ara3D.Logging;
 using Ara3D.NarwhalDB;
 using Ara3D.Utils;
@@ -54,6 +55,11 @@ public class IfcPropertyDatabase
        public int Size()
             => 8;
 
+       public object Read(ref nint ptr, IReadOnlyList<string> strings)
+           => new PropSetToVal(
+               ReadInt(ref ptr),
+               ReadInt(ref ptr));
+
         public object Read(byte[] bytes, ref int offset, IReadOnlyList<string> strings)
             => new PropSetToVal(
                 ReadInt(bytes, ref offset),
@@ -90,6 +96,12 @@ public class IfcPropertyDatabase
 
         public int Size()
             => 12;
+
+        public object Read(ref nint ptr, IReadOnlyList<string> strings)
+            => new PropSetEntityToIndex(
+                ReadInt(ref ptr),
+                ReadInt(ref ptr),
+                ReadString(ref ptr, strings));
 
         public object Read(byte[] bytes, ref int offset, IReadOnlyList<string> strings)
             => new PropSetEntityToIndex(
@@ -148,6 +160,13 @@ public class IfcPropertyDatabase
         public int Size()
             => 16;
 
+        public object Read(ref nint ptr, IReadOnlyList<string> strings)
+            => new PropDesc(
+                ReadString(ref ptr, strings),
+                ReadString(ref ptr, strings),
+                ReadString(ref ptr, strings),
+                ReadString(ref ptr, strings));
+
         public object Read(byte[] bytes, ref int offset, IReadOnlyList<string> strings)
             => new PropDesc(
                 ReadString(bytes, ref offset, strings),
@@ -191,6 +210,11 @@ public class IfcPropertyDatabase
         public int Size()
             => 8;
 
+        public object Read(ref nint ptr, IReadOnlyList<string> strings)
+            => new PropSet(
+                ReadString(ref ptr, strings),
+                ReadString(ref ptr, strings));
+
         public object Read(byte[] bytes, ref int offset, IReadOnlyList<string> strings)
             => new PropSet(
                 ReadString(bytes, ref offset, strings),
@@ -223,7 +247,7 @@ public class IfcPropertyDatabase
 
         public override bool Equals(object? obj)
             => obj is PropSetWithIndices x 
-               &&  PropSet.Equals(x.PropSet)
+               && PropSet.Equals(x.PropSet)
                && OrderedPropVals.SequenceEqual(x.OrderedPropVals);
 
         public override string ToString()
@@ -259,6 +283,11 @@ public class IfcPropertyDatabase
 
         public int Size()
             => 8;
+
+        public object Read(ref nint ptr, IReadOnlyList<string> strings)
+            => new PropVal(
+                ReadString(ref ptr, strings),
+                ReadInt(ref ptr));
 
         public object Read(byte[] bytes, ref int offset, IReadOnlyList<string> strings)
             => new PropVal(

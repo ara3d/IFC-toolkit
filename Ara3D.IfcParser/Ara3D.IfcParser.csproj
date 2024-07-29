@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ara3d\Collections\Ara3D.Collections\Ara3D.Collections.csproj" />
     <ProjectReference Include="..\..\ara3d\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
     <ProjectReference Include="..\..\ara3d\src\Ara3D.Buffers\Ara3D.Buffers.csproj" />
     <ProjectReference Include="..\..\ara3d\src\Ara3D.Logging\Ara3D.Logging.csproj" />

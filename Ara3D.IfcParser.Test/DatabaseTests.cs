@@ -137,7 +137,7 @@ public static class DatabaseTests
 
         var zip = fp.Zip();
         logger.Log($"Zipped file as {zip.GetFileSizeAsString()}");
-;    }
+    }
 
     [Test]
     public static void TestLoadDb()
@@ -150,5 +150,30 @@ public static class DatabaseTests
         var tmp = DB.ReadFile(fp, TableTypes, logger);
         logger.Log("Read database from disk");
         OutputDatabase(tmp, logger);
+    }
+
+    [Test]
+    public static void TestLoadDb2()
+    {
+
+        var fp = OutputFolder.RelativeFile("all.bfast");
+        var logger = Logger.Console;
+        logger.Log($"Reading database {fp.GetFileName()} from disk");
+        var buffers = BFastReader2.Read(fp, logger);
+        logger.Log($"Read {buffers.Count} buffers");
+        var reader = new IfcPropertyDataReader(buffers);
+        logger.Log("Created data reader");
+        OutputReader(reader, logger);
+    }
+
+    public static void OutputReader(IfcPropertyDataReader dr, ILogger logger)
+    {
+        logger.Log($"Property data reader");
+        logger.Log($"  # property descriptors {dr.PropDescTable.Count}");
+        logger.Log($"  # property sets {dr.PropSetTable.Count}");
+        logger.Log($"  # property sets to values {dr.PropSetToValTable.Count}");
+        logger.Log($"  # property set entities {dr.PropSetEntityToIndexTable.Count}");
+        logger.Log($"  # property values {dr.PropValTable.Count}");
+        logger.Log($"  # strings {dr.Strings.Count}");
     }
 }
