@@ -1,7 +1,6 @@
 using Ara3D.Buffers;
 using Ara3D.Collections;
 using Ara3D.NarwhalDB;
-using Microsoft.VisualBasic;
 
 namespace Ara3D.IfcParser;
 
@@ -16,7 +15,11 @@ public class IfcPropertyDataReader
         LoadTable(out PropValTable, buffers);
 
         var stringsBuffer = buffers.Single(b => b.Name == "_STRINGS_");
-        Strings = stringsBuffer.Span.UnpackStrings().Select(bs => bs.ToString()).ToList();
+        var unpackedStrings = stringsBuffer.Span.UnpackStrings().ToIArray();
+        
+        // The conversion to an actual string, happens as late as possible. 
+        // However: I eventually want even more usage of "ByteSpan" throughout. 
+        Strings = unpackedStrings.Select(bs => bs.ToString());
     }
 
     public static void LoadTable<T>(out TypedSpan<T> span, IEnumerable<ByteSpanBuffer> buffers) where T: unmanaged
@@ -32,7 +35,7 @@ public class IfcPropertyDataReader
     public TypedSpan<PropDesc> PropDescTable;
     public TypedSpan<PropSet> PropSetTable;
     public TypedSpan<PropVal> PropValTable;
-    public IReadOnlyList<string> Strings;
+    public IArray<string> Strings;
 
     public struct PropSetToVal
     {
