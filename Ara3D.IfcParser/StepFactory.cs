@@ -4,7 +4,7 @@ namespace Ara3D.IfcParser;
 
 public static unsafe class StepFactory
 {
-    public static StepAggregate GetAttributes(this StepInstance inst, byte* lineEnd)
+    public static StepList GetAttributes(this StepInstance inst, byte* lineEnd)
     {
         if (!inst.IsValid())
             return default;
@@ -58,7 +58,7 @@ public static unsafe class StepFactory
         }
     }
 
-    public static StepAggregate CreateAggregate(ref StepToken token, byte* end)
+    public static StepList CreateAggregate(ref StepToken token, byte* end)
     {
         var values = new List<StepValue>();
         Debug.Assert(token.Type == StepTokenType.BeginGroup);
@@ -76,7 +76,7 @@ public static unsafe class StepFactory
 
                 // Expected end of group 
                 case StepTokenType.EndGroup:
-                    return new StepAggregate(values);
+                    return new StepList(values);
             }
 
             var curValue = Create(ref token, end);

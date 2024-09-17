@@ -24,4 +24,12 @@ public class StepEntityWithId
 
     public override string ToString()
         => $"{LineIndex}: #{Id}={Entity};";
+
+    public int Count => AttributeValues.Count;
+
+    public StepValue this[int i] 
+        => AttributeValues[i];
+    
+    public bool IsLeaf
+        => !AttributeValues.Any(a => a is StepId);
 }

@@ -11,15 +11,27 @@ public unsafe class StepDocument : IDisposable
     public readonly FilePath FilePath;
     public readonly byte* DataStart;
     public readonly AlignedMemory Data;
-    
+
+    /// <summary>
+    /// This is a list of raw step instance information.
+    /// Each one has only a type and an ID.
+    /// </summary>
     public readonly StepInstance[] Instances;
+
+    /// <summary>
+    /// This gives us a fast way to look up a StepInstance by their ID
+    /// </summary>
     public readonly StepInstanceLookup Lookup;
+
+    /// <summary>
+    /// This tells us the byte offset of the start of each line in the file
+    /// </summary>
     public readonly List<int> LineOffsets;
 
     public StepDocument(FilePath filePath, ILogger logger = null)
     {
         FilePath = filePath;
-        logger ??= new Logger(LogWriter.ConsoleWriter, "Ara 3D Step Document Loader");
+        logger ??= Logger.Null;
 
         logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
         Data = AlignedMemoryReader.ReadAllBytes(filePath);
@@ -102,6 +114,18 @@ public unsafe class StepDocument : IDisposable
         return r;
     }
 
+    public Dictionary<int, StepEntityWithId> ComputeEntities()
+    {
+        var r = new Dictionary<int, StepEntityWithId>();
+        for (var i = 0; i < GetNumLines(); ++i)
+        {
+            var e = GetEntityFromLine(i);
+            if (e != null)
+                r.Add(e.Id, e);
+        }
+        return r;
+    }
+
     public StepEntityWithId GetEntityFromInst(StepInstance inst, int lineIndex)
     {
         var span = GetLineSpan(lineIndex);
@@ -121,6 +145,7 @@ public unsafe class StepDocument : IDisposable
 
     public List<StepEntityWithId> GetEntities(string type)
     {
+        type = type.ToUpperInvariant();
         var r = new List<StepEntityWithId>();
         type.WithSpan(span =>
         {
@@ -133,4 +158,7 @@ public unsafe class StepDocument : IDisposable
         });
         return r;
     }
+
+    public static StepDocument Create(FilePath fp)
+        => new StepDocument(fp);
 }

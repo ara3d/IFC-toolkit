@@ -4,6 +4,22 @@ namespace Ara3D.IfcParser
 {
     public static class IfcEntityCodes
     {
+        public static readonly string[] MeshEntities = new string[]
+        {
+            "IFCPOLYLOOP",
+            "IFCFACEOUTERBOUND",
+            "IFCFACE",
+            "IFCCARTESIANPOINT",
+            "IFCINDEXEDPOLYGONALFACE",
+            //"IFCAXIS2PLACEMENT3D",
+            "IFCDIRECTION",
+            //"IFCLOCALPLACEMENT",
+            "IFCPOLYLINE",
+            "IFCLINE",
+            "IFCVECTOR",
+            "IFCVERTEXPOINT"
+        };
+    
         public static readonly string[] GeometricEntities = new string[]
         {
             "IFC2DCOMPOSITECURVE",
@@ -50,6 +66,29 @@ namespace Ara3D.IfcParser
             "IFCSWEPTSURFACE",
             "IFCTRIMMEDCURVE",
             "IFCVECTOR",
+
+            "IFCRECTANGLEPROFILEDEF",
+            "IFCCIRCLEPROFILEDEF",
+            "IFCISHAPEPROFILEDEF",
+
+            "IFCARBITRARYCLOSEDPROFILEDEF",
+            "IFCSHAPEREPRESENTATION",
+            "IFCARBITRARYPROFILEDEFWITHVOIDS",
+            "IFCGRID",
+            "IFCGRIDAXIS",
+            "IFCGEOMETRICCURVESET",
+            "IFCSTYLEDITEM",
+            "IFCEXTRUDEDAREASOLID",
+            "IFCPRESENTATIONLAYERASSIGNMENT",
+
+            "IFCFACETEDBREP",
+            "IFCBOOLEANRESULT",
+            "IFCBOOLEANCLIPPINGRESULT",
+            "IFCFACEBASEDSURFACEMODEL",
+            "IFCHALFSPACESOLID",
+
+            "IFCFACEOUTERBOUND",
+            "IFCFACE"
         };
 
         public static readonly string[] PropertyEntities = new string[]

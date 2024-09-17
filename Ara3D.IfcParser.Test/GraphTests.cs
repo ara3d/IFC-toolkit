@@ -7,67 +7,58 @@ namespace Ara3D.IfcParser.Test;
 public static class GraphTests
 {
     [Test]
-    public static void GraphTest()
+    public static void GeometryEntityAnalysis()
+    {
+        var logger = Logger.Console;
+        logger.Log("Starting");
+        var files = StepTests.LargeFiles().Take(5);
+        var docs = files.Select(StepDocument.Create).ToList();
+        
+        logger.Log("Created documents");
+        var graphs = docs.Select(StepGraph.Create).ToList();
+        
+        logger.Log("Created graphs");
+        var ga = new GraphAnalysis();
+        foreach (var g in graphs)
+            ga.AddGraph(g);
+
+        logger.Log($"Creating graph analysis");
+        //var geoEntities = IfcEntityCodes.GeometricEntities.ToHashSet();
+        var meshEntities = IfcEntityCodes.MeshEntities.ToHashSet();
+        foreach (var line in GraphCodes(ga, meshEntities))
+        {
+            Console.WriteLine(line);
+        }
+    }
+
+    [Test]
+    public static void Groups()
     {
         var f = StepTests.LargeFiles().First();
         var logger = Logger.Console;
         var d = new StepDocument(f, logger);
-        var g = new IfcGraph(d);
+        logger.Log("Created document");
+        var g = new StepGraph(d);
         logger.Log("Created graph");
-        
-        foreach (var n in g.Nodes.Take(20))
-        {
-            //Console.WriteLine(n);
-        }
+        var groups = g.Nodes.GroupBy(n => g.ToValString(n, 2)).ToList();
+        logger.Log($"Created groups");
+        var dict = groups.ToDictionary(g => g.Key, g => g.ToList());
+        logger.Log($"Created dictionary");
 
-        foreach (var n in g
-                     .Nodes
-                     .Where(n => n.Entity.IsEntityType("IFCSHAPEREPRESENTATION"))
-                     .Take(5))
-        {
-            //Console.WriteLine(n.ToGraph());
-        }
+        //var keyValues = dict.OrderByDescending(kv => kv.Value.Count).Take(100).First(kv => kv.Key.Contains('#'));
+        var keyValues = dict
+            .OrderByDescending(kv => kv.Value.Count)
+            .Where(kv => !kv.Key.Contains('#') && kv.Value.Count > 1);
 
-        var ga = new GraphAnalysis(g);
-
-        Console.WriteLine("# Property analysis");
-        foreach (var p in IfcEntityCodes.PropertyEntities)
-            Write(ga, p);
+        foreach (var kv in keyValues)
+            Console.WriteLine($"{kv.Value.Count}\t{kv.Key}");
     }
 
-    public static void Write(GraphAnalysis ga, string name)
+    public static IEnumerable<string> GraphCodes(GraphAnalysis ga, HashSet<string> entities)
     {
-        Console.WriteLine($"## Analysis of {name}");
-
-        {
-            if (ga.NodeChildren.TryGetValue(name, out var values))
-            {
-                var distinct = values.Distinct().ToList();
-                Console.WriteLine($"{distinct.Count} distinct children");
-                foreach (var v in distinct)
-                {
-                    Console.WriteLine($"  {v}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"No children");
-            }
-        }
-        {
-            if (ga.NodeParent.TryGetValue(name, out var values))
-            {
-                var distinct = values.Distinct().ToList();
-                Console.WriteLine($"{distinct.Count} distinct parents");
-                foreach (var v in distinct)
-                {
-                    Console.WriteLine($"  {v}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"No parents");
-            }
-        }
+        foreach (var kv in ga.EntityChildren)
+            foreach (var c in kv.Value)
+                if (entities.Contains(kv.Key) || entities.Contains(c))
+                    yield return $"{kv.Key}-->{c}";
     }
 }

@@ -1,0 +1,68 @@
+using System.Collections.Generic;
+using Ara3D.Utils;
+
+namespace Ara3D.IfcParser;
+
+public class StepGraph
+{
+    public StepDocument Document { get; }
+
+    public readonly Dictionary<int, StepNode> Lookup
+        = new Dictionary<int, StepNode>();
+
+    public StepNode GetNode(int id)
+        => Lookup[id];
+
+    public IEnumerable<StepNode> Nodes
+        => Lookup.Values;
+
+    public StepGraph(StepDocument doc)
+    {
+        Document = doc;
+
+        foreach (var e in doc.GetEntities())
+        {
+            var node = new StepNode(this, e);
+            Lookup.Add(node.Entity.Id, node);
+        }
+
+        foreach (var n in Nodes)
+            n.Init();
+    }
+
+    public static StepGraph Create(StepDocument doc)
+        => new(doc);
+
+    public string ToValString(StepNode node, int depth)
+        => ToValString(node.Entity.Entity, depth - 1);
+
+    public string ToValString(StepValue value, int depth)
+    {
+        if (value == null)
+            return "";
+
+        switch (value)
+        {
+            case StepList stepAggregate:
+                return $"({stepAggregate
+                    .Values.Select(v => ToValString(v, depth))
+                    .JoinStringsWithComma()})";
+            
+            case StepEntity stepEntity:
+                return $"{stepEntity.EntityType}{ToValString(stepEntity.Attributes, depth)}";
+
+            case StepId stepId:
+                return depth <= 0 
+                    ? "#" 
+                    : ToValString(GetNode(stepId.Id), depth - 1);
+
+            case StepNumber stepNumber:
+            case StepRedeclared stepRedeclared:
+            case StepString stepString:
+            case StepSymbol stepSymbol:
+            case StepUnassigned stepUnassigned:
+            default:
+                return value.ToString();
+        }
+    }
+}

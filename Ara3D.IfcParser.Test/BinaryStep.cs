@@ -62,7 +62,7 @@ public class BinaryIfcSerializer
     {
         switch (value)
         {
-            case StepAggregate stepAggregate:
+            case StepList stepAggregate:
                 var cnt = stepAggregate.Values.Count;
                 if (cnt > ushort.MaxValue)
                     throw new Exception("Too many items in group");

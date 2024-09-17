@@ -12,9 +12,9 @@ public class StepValue
 public class StepEntity : StepValue
 {
     public readonly ByteSpan EntityType;
-    public readonly StepAggregate Attributes;
+    public readonly StepList Attributes;
 
-    public StepEntity(ByteSpan entityType, StepAggregate attributes)
+    public StepEntity(ByteSpan entityType, StepList attributes)
     {
         Debug.Assert(!entityType.IsNull());
         EntityType = entityType;
@@ -25,11 +25,11 @@ public class StepEntity : StepValue
         => $"{EntityType}{Attributes}";
 }
 
-public class StepAggregate : StepValue
+public class StepList : StepValue
 {
     public readonly List<StepValue> Values;
 
-    public StepAggregate(List<StepValue> values)
+    public StepList(List<StepValue> values)
         => Values = values;
 
     public override string ToString()
@@ -107,7 +107,7 @@ public class StepId : StepValue
 
     public override string ToString()
         => $"#{Id}";
-
+    
     public static StepId Create(StepToken token)
     {
         Debug.Assert(token.Type == StepTokenType.Id);
@@ -174,7 +174,7 @@ public static class StepValueExtensions
     public static List<StepValue> AsList(this StepValue value)
         => value is StepUnassigned
             ? new List<StepValue>()
-            : ((StepAggregate)value).Values;
+            : ((StepList)value).Values;
 
     public static List<int> AsIdList(this StepValue value)
         => value is StepUnassigned

@@ -168,52 +168,30 @@ public static class StepTests
     }
 
     [Test]
-    public static unsafe void CountPropEntities()
+    public static void CountEntities()
     {
-        var fp = LargeFiles().First();
-        Console.WriteLine(fp);
-        Console.WriteLine();
-
         var logger = Logger.Console;
-        using var doc = new StepDocument(fp, logger);
-        var instances = doc.GetInstances();
-        var szProps = 0;
-        var szOther = 0;
-        var szGeom = 0;
-        var cntProps = 0;
-        var cntOther = 0;
-        var cntGeom = 0;
-        for (var i = 0; i < instances.Length- 1; i++)
+        logger.Log($"Loading files");
+        var files = LargeFiles().Concat(VeryLargeFiles()).Concat(HugeFiles());
+        var docs = files.AsParallel().Select(f => new StepDocument(f)).ToList();
+        logger.Log($"Loaded {docs.Count} files");
+
+        logger.Log("Performing analysis");
+        var ea = EntitySizeAnalysis.Create(docs);
+        logger.Log($"Found {ea.EntitySizes.Count} distinct entities");
+
+        var es = ea.GetStats();
+        logger.Log("Computed stats");
+
+        var totalSize = es.Values.Sum(s => s.Sum);
+        logger.Log($"Total size of data is {PathUtil.BytesToString((long)totalSize)}");
+
+        foreach (var kv in es.OrderByDescending(kv => kv.Value.Sum))
         {
-            var instA = instances[i];
-            var instB = instances[i+1];
-
-            if (!instA.IsValid()) continue;
-            if (!instB.IsValid()) continue; 
-
-            var length = (int)(instB.Type.Ptr - instA.Type.Ptr);
-            var str = instA.Type.ToString();
-            
-            if (IfcEntityCodes.IsPropertyEntity(str))
-            {
-                szProps += length;
-                cntProps++;
-            }
-            else if (IfcEntityCodes.IsGeometryEntity(str))
-            {
-                szGeom += length;
-                cntGeom++;
-            }
-            else
-            {
-                szOther += length;
-                cntOther++;
-            }
+            var s = kv.Value;
+            var p = 100.0 * (s.Sum / totalSize);
+            Console.WriteLine($"{kv.Key}\t{s.Count}\t{s.Average:F3}\t{s.Sum}\t{p:F3}");
         }
-
-        Console.WriteLine($"Prop entities {cntProps} = {szProps}");
-        Console.WriteLine($"Non-Prop entities {cntOther} = {szOther}");
-        Console.WriteLine($"Geom entities {cntGeom} = {szGeom}");
     }
 
     [Test]

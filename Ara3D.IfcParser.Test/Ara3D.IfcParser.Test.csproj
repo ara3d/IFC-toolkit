@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.3" />
     <PackageReference Include="GeometryGymIFC_Core" Version="24.5.8" />
     <PackageReference Include="Hypar.IFC2X3" Version="0.1.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
@@ -24,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ara3d\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
     <ProjectReference Include="..\..\ara3d\src\Ara3D.Logging\Ara3D.Logging.csproj" />
     <ProjectReference Include="..\..\ara3d\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
     <ProjectReference Include="..\Ara3D.IfcParser\Ara3D.IfcParser.csproj" />
