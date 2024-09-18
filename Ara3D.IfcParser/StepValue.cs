@@ -34,6 +34,9 @@ public class StepList : StepValue
 
     public override string ToString()
         => $"({Values.JoinStringsWithComma()})";
+
+    public static StepList Default
+        = new StepList(new List<StepValue>());
 }
 
 public class StepString : StepValue

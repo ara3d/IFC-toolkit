@@ -10,7 +10,7 @@ public class StepEntityWithId
         => Entity.Attributes.Values;
 
     public string EntityType 
-        => Entity.EntityType.ToString();
+        => Entity?.EntityType.ToString() ?? "";
 
     public StepEntityWithId(int id, int lineIndex, StepEntity entity)
     {

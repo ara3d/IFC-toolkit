@@ -118,7 +118,17 @@ namespace Ara3D.IfcParser
                 else
                 {
                     // Simple IFC node: without step entity data.
-                    var e = new StepEntityWithId(inst.Id, i, null);
+
+
+                    // TODO: the goal here is to not allocate everything unless it really was needed. 
+                    // What to do next will involve delayed computation of attributes.
+                    // These can be extremely slow for things 
+                    //var e = new StepEntityWithId(inst.Id, i, null);
+                    //var e = d.GetEntityFromInst(inst, i);
+
+                    var se = new StepEntity(inst.Type, StepList.Default);
+                    var e = new StepEntityWithId(inst.Id, i, se);
+
                     AddNode(new IfcNode(this, e));
                 }
             }
@@ -198,7 +208,7 @@ namespace Ara3D.IfcParser
         public StepEntityWithId LineData { get; }
         public IfcGraph Graph { get; }
         public uint Id => (uint)LineData.Id;
-        public string Type => LineData.EntityType;
+        public string Type => LineData?.EntityType ?? "";
 
         public IfcPart(IfcGraph graph, StepEntityWithId lineData)
         {
