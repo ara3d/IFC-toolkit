@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ara3d\Collections\Ara3D.Collections\Ara3D.Collections.csproj" />
-    <ProjectReference Include="..\..\ara3d\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
-    <ProjectReference Include="..\..\ara3d\src\Ara3D.Logging\Ara3D.Logging.csproj" />
-    <ProjectReference Include="..\..\ara3d\src\Ara3D.NarwhalDB\Ara3D.NarwhalDB.csproj" />
-    <ProjectReference Include="..\..\ara3d\src\Ara3D.Serialization.BFAST\Ara3D.Serialization.BFAST.csproj" />
-    <ProjectReference Include="..\..\ara3d\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
+    <ProjectReference Include="..\..\Collections\Ara3D.Collections\Ara3D.Collections.csproj" />
+    <ProjectReference Include="..\..\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
+    <ProjectReference Include="..\..\src\Ara3D.Logging\Ara3D.Logging.csproj" />
+    <ProjectReference Include="..\..\src\Ara3D.NarwhalDB\Ara3D.NarwhalDB.csproj" />
+    <ProjectReference Include="..\..\src\Ara3D.Serialization.BFAST\Ara3D.Serialization.BFAST.csproj" />
+    <ProjectReference Include="..\..\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
   </ItemGroup>
 
 </Project>
