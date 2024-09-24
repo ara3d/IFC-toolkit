@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Ara3D.Buffers;
+using Ara3D.StepParser;
 
 namespace Ara3D.IfcParser.Test;
 

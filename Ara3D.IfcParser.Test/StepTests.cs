@@ -1,5 +1,6 @@
 using Ara3D.Buffers;
 using Ara3D.Logging;
+using Ara3D.StepParser;
 using Ara3D.Utils;
 using GeometryGym.Ifc;
 using IFC;

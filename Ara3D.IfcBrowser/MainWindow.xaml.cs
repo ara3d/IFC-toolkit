@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Ara3D.NarwhalDB;
 using System.Windows;
-using Ara3D.IfcParser;
+using Ara3D.IfcPropDB;
 using Ara3D.Logging;
 using Ara3D.Utils;
 using Microsoft.Win32;

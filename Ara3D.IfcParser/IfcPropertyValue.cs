@@ -1,35 +1,41 @@
-namespace Ara3D.IfcParser;
+using Ara3D.StepParser;
+using System;
+using System.Collections.Generic;
 
-public class IfcPropertyValue
+namespace Ara3D.IfcParser
 {
-    public readonly int EntityId;
-    public readonly string Name;
-    public readonly string Description;
-    public readonly string Value;
-    public readonly string Unit;
-    public readonly string Entity;
-
-    public IfcPropertyValue(int entityId, IReadOnlyList<StepValue> vals)
+    public class IfcPropertyValue
     {
-        if (vals.Count != 4)
-            throw new Exception("Expected 4 values");
-        EntityId = entityId;
+        public readonly int EntityId;
+        public readonly string Name;
+        public readonly string Description;
+        public readonly string Value;
+        public readonly string Unit;
+        public readonly string Entity;
 
-        Name = vals[0].AsString();
-        Description = vals[1].AsString();
-        var inst = vals[2];
-        if (inst is StepEntity se)
+        public IfcPropertyValue(int entityId, IReadOnlyList<StepValue> vals)
         {
-            Entity = se.EntityType.ToString();
-            Value = se.Attributes.ToString();
+            if (vals.Count != 4)
+                throw new Exception("Expected 4 values");
+            EntityId = entityId;
+
+            Name = vals[0].AsString();
+            Description = vals[1].AsString();
+            var inst = vals[2];
+            if (inst is StepEntity se)
+            {
+                Entity = se.EntityType.ToString();
+                Value = se.Attributes.ToString();
+            }
+            else
+            {
+                Entity = "UNKNOWN";
+            }
+
+            Unit = vals[3].ToString();
         }
-        else
-        {
-            Entity = "UNKNOWN";
-        }
-        Unit = vals[3].ToString();
+
+        public override string ToString()
+            => $"#{EntityId}=IFCPROPERTYSINGLEVALUE('{Name}', {Description}, {Value}, {Unit})";
     }
-
-    public override string ToString()
-        => $"#{EntityId}=IFCPROPERTYSINGLEVALUE('{Name}', {Description}, {Value}, {Unit})";
 }

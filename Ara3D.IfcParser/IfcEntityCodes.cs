@@ -1,4 +1,7 @@
 ﻿using Ara3D.Buffers;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace Ara3D.IfcParser
 {

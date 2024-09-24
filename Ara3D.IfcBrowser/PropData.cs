@@ -2,7 +2,7 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Data;
-using Ara3D.IfcParser;
+using Ara3D.IfcPropDB;
 
 namespace Ara3D.IfcBrowser
 {

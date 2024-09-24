@@ -1,7 +1,10 @@
 ﻿using Ara3D.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using Ara3D.Buffers;
+using Ara3D.StepParser;
 
 namespace Ara3D.IfcParser
 {

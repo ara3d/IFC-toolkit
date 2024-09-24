@@ -35,7 +35,7 @@ generate meshes.
 # Acknowledgements 
 
 This work was funded by [Speckle Systems](https://speckle.systems/) 
-with guidance and test data provided by [Impararia Solutions](https://www.impararia.com/).
+with additional guidance and test data provided by [Impararia Solutions](https://www.impararia.com/).
 
 <image src="https://github.com/user-attachments/assets/76431694-9005-4344-a8fa-3a993aaf50ed" width="200" valign="center"/>
 <image src="https://github.com/user-attachments/assets/79298b1e-4765-42aa-b345-1e88d776694a"/>

@@ -1,8 +1,9 @@
+using Ara3D.IfcPropDB;
 using Ara3D.Logging;
 using Ara3D.NarwhalDB;
+using Ara3D.StepParser;
 using Ara3D.Utils;
 using NUnit.Framework;
-using static Ara3D.IfcParser.IfcPropertyDatabase;
 
 namespace Ara3D.IfcParser.Test;
 
@@ -119,7 +120,7 @@ public static class DatabaseTests
         logger.Log("Wrote database to disk");
 
         logger.Log("Reading database from disk");
-        var tmp = DB.ReadFile(fp, TableTypes, logger);
+        var tmp = DB.ReadFile(fp, IfcPropertyDatabase.TableTypes, logger);
         logger.Log("Read database from disk");
         OutputDatabase(tmp, logger);
 
@@ -147,7 +148,7 @@ public static class DatabaseTests
         var fp = OutputFolder.RelativeFile("all.bfast");
         var logger = Logger.Console;
         logger.Log($"Reading database {fp.GetFileName()} from disk");
-        var tmp = DB.ReadFile(fp, TableTypes, logger);
+        var tmp = DB.ReadFile(fp, IfcPropertyDatabase.TableTypes, logger);
         logger.Log("Read database from disk");
         OutputDatabase(tmp, logger);
     }

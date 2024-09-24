@@ -1,5 +1,6 @@
 using Ara3D.IfcParser.Test;
 using Ara3D.Logging;
+using Ara3D.StepParser;
 using NUnit.Framework;
 
 namespace Ara3D.IfcParser.Test;
