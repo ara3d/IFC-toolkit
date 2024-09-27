@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Ara3D.NarwhalDB\Ara3D.NarwhalDB.csproj" />
     <ProjectReference Include="..\Ara3D.IfcParser\Ara3D.IfcParser.csproj" />
+    <ProjectReference Include="..\Ara3D.IfcPropDB\Ara3D.IfcPropDB.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,12 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Ara3D.Collections\Ara3D.Collections.csproj" />
-    <ProjectReference Include="..\..\Plato.Geometry\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
     <ProjectReference Include="..\..\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
+    <ProjectReference Include="..\..\src\Ara3D.Buffers\Ara3D.Buffers.csproj" />
     <ProjectReference Include="..\..\src\Ara3D.Logging\Ara3D.Logging.csproj" />
     <ProjectReference Include="..\..\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
-    <ProjectReference Include="..\Ara3D.StepParser\Ara3D.StepParser.csproj" />
   </ItemGroup>
 
 </Project>
