@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ara3D.StepParser\Ara3D.StepParser.csproj" />
     <ProjectReference Include="..\..\Collections\Ara3D.Collections\Ara3D.Collections.csproj" />
     <ProjectReference Include="..\..\Plato.Geometry\Plato.Geometry.CSharp\Plato.Geometry.csproj" />
     <ProjectReference Include="..\..\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />

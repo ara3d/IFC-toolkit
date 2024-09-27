@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ara3D.IfcPropDB\Ara3D.IfcPropDB.csproj" />
     <ProjectReference Include="..\..\src\Ara3D.Logging\Ara3D.Logging.csproj" />
     <ProjectReference Include="..\..\src\Ara3D.NarwhalDB\Ara3D.NarwhalDB.csproj" />
     <ProjectReference Include="..\..\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />

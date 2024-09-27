@@ -86,24 +86,16 @@ public static class DatabaseTests
             totalSize += curSize;
             var doc = new StepDocument(f, logger);
 
-            for (var i = 0; i < doc.GetNumLines(); ++i)
+            foreach (var inst in doc.GetInstances())
             {
-                var inst = doc.GetInstance(i);
 
-                if (!inst.IsValid())
-                    continue;
-
-                var lineSpan = doc.GetLineSpan(i);
-
-                if (inst.Type.ToString() == "IFCPROPERTYSINGLEVALUE")
+                if (inst.EntityType == "IFCPROPERTYSINGLEVALUE")
                 {
-                    szProps += lineSpan.Length;
                     cntProps++;
                 }
 
-                if (inst.Type.ToString() == "IFCPROPERTYSET")
+                if (inst.EntityType == "IFCPROPERTYSET")
                 {
-                    szSets += lineSpan.Length;
                     cntSets++;
                 }
             }

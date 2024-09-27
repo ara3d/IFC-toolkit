@@ -18,10 +18,11 @@ public class EntitySizeAnalysis
     {
         if (doc == null)
             return;
-        foreach (var e in doc.GetEntities())
+        foreach (var e in doc.GetInstances())
         {
-            var size = doc.GetLineSpan(e.LineIndex).Length;
-            EntitySizes.Add(e.EntityType, size);
+            throw new NotImplementedException();
+            //var size = doc.GetLineSpan(e.LineIndex).Length;
+            //EntitySizes.Add(e.EntityType, size);
         }
     }
 

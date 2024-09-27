@@ -1,6 +1,7 @@
 # Ara 3D IFC Toolkit
 
-A set of open-source C# libraries for extremely fast loading and querying of IFC files in STEP format.
+A set of open-source C# libraries (.NET 8.0) 
+for extremely fast loading and querying of IFC files in STEP format.
 
 Currently it does not provide any utilities for generating geometry, or validating specific schemas.  
 
@@ -14,8 +15,8 @@ from the solution file contained there.
 
 # Future Directions
 
-This project will eventually integrate the [Plato.Geometry](https://github.com/ara3d/Plato.Geometry) to 
-generate meshes. 
+This project will integrate the [Plato.Geometry](https://github.com/ara3d/Plato.Geometry) to 
+extract geometry and to generate meshes. 
 
 # Related Open-Source Work 
 

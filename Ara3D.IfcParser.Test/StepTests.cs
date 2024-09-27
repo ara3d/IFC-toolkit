@@ -4,6 +4,7 @@ using Ara3D.StepParser;
 using Ara3D.Utils;
 using GeometryGym.Ifc;
 using IFC;
+using Microsoft.Isam.Esent.Interop;
 using NUnit.Framework;
 using STEP;
 using Xbim.Ifc;
@@ -26,33 +27,20 @@ public static class StepTests
     public static IEnumerable<FilePath> HugeFiles()
         => TestFiles.HugeFiles();
 
-    public static void VisitRecords(StepDocument doc, ILogger logger)
-    {
-        var i = 0;
-        var recs = doc.GetInstances().AsParallel();
-        foreach (var rec in recs)
-        {
-            Interlocked.Increment(ref i);
-        }
-        logger.Log($"Visited {i} records");
-    }
 
-    public static void ListEntityTypes(StepDocument doc, ILogger logger)
-    {
-        logger.Log("Gathering distinct entity types");
-        var recs = doc.GetInstances().Select(r => r.Type).Distinct().ToList();
-        logger.Log($"Completed, found {recs.Count} distinct records");
-        var i = 0;
-        foreach (var r in recs)
-        {
-            Console.WriteLine($"{i++}: {r} [{r.GetHashCode()}]");
-        }
-    }
+    public static IEnumerable<StepRawInstance> GetInstances(StepDocument doc, ByteSpan type) =>
+        doc.RawInstances.Where(inst
+            => inst.Type.Equals(type));
+
+    public static IEnumerable<StepRawInstance> GetInstances(StepDocument doc, string type) =>
+        type.WithSpan(span =>
+            doc.RawInstances.Where(inst =>
+                inst.Type.Equals(span)));
 
     public static void Ara3DListDoors(StepDocument doc, ILogger logger)
     {
         
-        var doors = "IFCDOOR".WithSpan(doc.GetInstances).ToList();
+        var doors = GetInstances(doc, "IFCDOOR").ToList();
         Console.WriteLine($"Found {doors.Count} doors in {doc.FilePath}");
     }
 
@@ -116,57 +104,8 @@ public static class StepTests
         TimingUtils.TimeIt(() => { Parallel.Invoke(actions); });
     }
 
-    [Test]
-    [TestCaseSource(nameof(LargeFiles))]
-    public static void CountPropValues(FilePath fp)
-    {
-        Console.WriteLine(fp);
-        Console.WriteLine();
-        var logger = Logger.Console;
-        using var doc = new StepDocument(fp, logger);
+  
 
-        var propNames = new HashSet<string>();
-        var propDescriptions = new HashSet<string>();
-        var propUnits = new HashSet<string>();
-        var propValues = new HashSet<string>();
-        var nProps = 0;
-        var szProps = 0;
-        for (var i=0; i < doc.GetNumLines(); ++i)
-        {
-            var inst = doc.GetInstance(i);
-            if (!inst.IsValid() || inst.Type.ToString() != "IFCPROPERTYSINGLEVALUE")
-                continue;
-
-            var lineSpan = doc.GetLineSpan(i);
-            var e = doc.GetEntityFromLine(i);
-            var pv = new IfcPropertyValue(e.Id, e.AttributeValues);
-            propNames.Add(pv.Name);
-            propDescriptions.Add(pv.Description);
-            propUnits.Add(pv.Unit);
-            propValues.Add(pv.Value);
-            nProps++;
-            szProps += lineSpan.Length;
-        }
-
-        Console.WriteLine($"Found {nProps} properties, total size was {szProps}");
-
-        Console.WriteLine($"Found {propNames.Count} property names");
-        Console.WriteLine($"Found {propDescriptions.Count} property descriptions");
-        Console.WriteLine($"Found {propUnits.Count} property units");
-        Console.WriteLine($"Found {propValues.Count} property values");
-
-        Console.WriteLine("Property names:");
-        foreach (var name in propNames)
-            Console.WriteLine($"  {name}");
-        
-        Console.WriteLine("Property descriptions:");
-        foreach (var description in propDescriptions)
-            Console.WriteLine($"  {description}");
-
-        Console.WriteLine("Property units:");
-        foreach (var unit in propUnits)
-            Console.WriteLine($"  {unit}");
-    }
 
     [Test]
     public static void CountEntities()
@@ -217,41 +156,14 @@ public static class StepTests
         doc.Dispose();
     }
 
-    [Test]
-    public static unsafe void TestPropSets()
-    {
-        var fp = LargeFiles().First();
-        Console.WriteLine(fp);
-        Console.WriteLine();
-
-        var logger = Logger.Console;
-        using var doc = new StepDocument(fp, logger);
-        var propSetInstances = doc.GetInstances("IFCPROPERTYSET").ToList();
-        logger.Log($"Found {propSetInstances.Count} property sets");
-
-        for (var i = 0; i < 25; ++i)
-        {
-            if (i >= propSetInstances.Count)
-                break;
-            var inst = propSetInstances[i];
-            var index = doc.Lookup.Find(inst.Id);
-            Console.WriteLine($"Id {i}, Index {index}, Type {inst}");
-            var span = doc.GetLineSpan(index);
-            Console.WriteLine(span);
-            var attr = StepFactory.GetAttributes(inst, span.End());
-            Assert.IsNotNull(attr);
-            Console.WriteLine(attr);
-            var ps = new IfcPropertySet(inst.Id, attr.Values);
-            Console.WriteLine(ps);
-        }
-    }
+  
 
     [Test]
     public static void IdentifierCounts()
     {
         var fp = LargeFiles().First();
         var doc = new StepDocument(fp);
-        var d = doc.GetInstances().Where(i => i.IsValid()).GroupBy(r => r.Type).ToDictionary(g => g.Key, g => g.Count());
+        var d = doc.RawInstances.Where(i => i.IsValid()).GroupBy(r => r.Type).ToDictionary(g => g.Key, g => g.Count());
         foreach (var kv in d.OrderByDescending(pair => pair.Value))
         {
             Console.WriteLine($"Identifier = {kv.Key} count = {kv.Value}");

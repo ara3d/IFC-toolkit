@@ -57,7 +57,7 @@ namespace Ara3D.IfcParser.Test
 
                     m.Start();
                     var d = new StepDocument(f);
-                    r.ExpressIds = d.Lookup.Instances.Length;
+                    r.ExpressIds = d.RawInstances.Count;
                     m.AddStep("Initial load");
 
                     var geometries = 0;
