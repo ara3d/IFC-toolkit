@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fuzzy-subbuild\CMakeFiles\2a0d95abbb2cd74e7036980c6fecf9a4\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{CDB97CE8-7EB3-33A6-89A0-89EE91613FCE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

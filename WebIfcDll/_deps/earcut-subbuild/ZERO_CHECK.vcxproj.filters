@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\earcut-subbuild\CMakeFiles\da05f465f24db711e96cc0046e20928d\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{E713BB9D-90D0-365E-A819-E181D9EE17F8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\cdt-subbuild\CMakeFiles\3a08aa95874df8195b07ea88165bcf82\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{01970B7E-C3AE-3F17-97CA-D35FA795E7F9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

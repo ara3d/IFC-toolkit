@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\a1d25a28c9ec21db3ac7dc0d437da547\glm-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\e6f8be77a4eaac8380d9aae299d75abd\glm-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\d7936fad062ff464d06049a80db72839\glm-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\glm-subbuild\CMakeFiles\glm-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{60836071-1E4C-3054-91AD-E8CFD100B18F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EA703E17-C8D9-363B-BAE2-BB4BFC16A8BA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>fastfloat-populate</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-mkdir.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating directories for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/tmp/fastfloat-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-mkdir</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-download.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing download step (git clone) for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -P C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/tmp/fastfloat-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\fastfloat-populate-gitinfo.txt;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-mkdir;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-download</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-update.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing update step for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcan_fetch=YES -P C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/tmp/fastfloat-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\tmp\fastfloat-populate-gitupdate.cmake;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\fastfloat-populate-update-info.txt;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-download;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-update</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-patch.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No patch step for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\fastfloat-populate-patch-info.txt;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-update;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-patch</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-configure.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No configure step for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\tmp\fastfloat-populate-cfgcmd.txt;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-patch;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-configure</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-build.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No build step for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-configure;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-build</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-install.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No install step for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-build;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-install</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-test.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No test step for 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-install;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-test</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\d4765cb5ca178db90186865df1cd5557\fastfloat-populate-complete.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Completed 'fastfloat-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/CMakeFiles/Debug/fastfloat-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/fastfloat-populate-prefix/src/fastfloat-populate-stamp/Debug/fastfloat-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-install;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-mkdir;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-download;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-update;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-patch;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-configure;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-build;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\src\fastfloat-populate-stamp\Debug\fastfloat-populate-test;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\Debug\fastfloat-populate-complete</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\00a6846807803fd7c23fa1040b0beb02\fastfloat-populate.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\Debug\fastfloat-populate-complete;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\fastfloat-populate</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild -BC:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild --check-stamp-file C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/fastfloat-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\CMakeDetermineSystem.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\CMakeSystem.cmake.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\PatchInfo.txt.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\RepositoryInfo.txt.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\UpdateInfo.txt.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\cfgcmd.txt.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\gitclone.cmake.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\gitupdate.cmake.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\mkdirs.cmake.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.27\Modules\Platform\WindowsPaths.cmake;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\3.27.2-msvc1\CMakeSystem.cmake;C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\fastfloat-populate-prefix\tmp\fastfloat-populate-mkdirs.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\fastfloat-populate">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\ZERO_CHECK.vcxproj">
+      <Project>{2D34CF5E-2AA8-3380-80EB-AFAAAEE197B7}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

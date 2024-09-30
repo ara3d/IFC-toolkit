@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\modelmanager\ModelManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\schema\IfcSchemaManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\schema\schema-functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\parsing\IfcFileStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\parsing\IfcLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\parsing\IfcTokenChunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\parsing\IfcTokenStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\parsing\string_parsing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\geometry\IfcGeometryLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\geometry\IfcGeometryProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\geometry\operations\nurbs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\geometry\representation\IfcCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\geometry\representation\IfcGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\test\encoding_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\test\io_helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="web-ifc-test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DotNetTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DotNetApi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{684AF87A-D281-338F-9BE7-35059E25CE12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\9181403de1bbd4ead16b7e6d35125b24\fastfloat-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\d4765cb5ca178db90186865df1cd5557\fastfloat-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\00a6846807803fd7c23fa1040b0beb02\fastfloat-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\cdigg\git\temp\engine_web-ifc\src\cpp\_deps\fastfloat-subbuild\CMakeFiles\fastfloat-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{3B7594A3-E46A-326A-B204-AE9697E71E50}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

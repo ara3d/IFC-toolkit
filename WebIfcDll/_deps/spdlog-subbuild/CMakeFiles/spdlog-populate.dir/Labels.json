@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/spdlog-populate"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/ba53c219ae46f782ddc221bbf05d3328/spdlog-populate.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/f75466175e68fdc977d8482776c5d234/spdlog-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"spdlog-populate"
+		],
+		"name" : "spdlog-populate"
+	}
+}

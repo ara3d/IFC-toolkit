@@ -1,0 +1,14 @@
+# Target labels
+ spdlog-populate
+# Source files and their labels
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/spdlog-populate
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/ba53c219ae46f782ddc221bbf05d3328/spdlog-populate.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/f75466175e68fdc977d8482776c5d234/spdlog-populate-complete.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-build.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-configure.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-download.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-install.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-mkdir.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-patch.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-test.rule
+C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/spdlog-subbuild/CMakeFiles/7f95c9c82725beec9d4369bebe2ecb8b/spdlog-populate-update.rule
