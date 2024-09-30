@@ -24,6 +24,49 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ara3D.IfcParser", "Ara3D.If
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ara3D.IfcBrowser", "Ara3D.IfcBrowser\Ara3D.IfcBrowser.csproj", "{045AEE2E-D6BD-434B-B13E-823C67198422}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{DC9D7B8D-0E71-4643-ABEC-03C8F4FEF6EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{98E0BC05-B16C-47B8-AE07-39141CBA22F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testfiles", "testfiles", "{0C265FCA-CD0C-4AB4-A8CF-FC5AFF1929D5}"
+	ProjectSection(SolutionItems) = preProject
+		test-files\AC20-FZK-Haus.ifc = test-files\AC20-FZK-Haus.ifc
+		test-files\advanced_model.ifc = test-files\advanced_model.ifc
+		test-files\C20-Institute-Var-2.ifc = test-files\C20-Institute-Var-2.ifc
+		test-files\dental_clinic.ifc = test-files\dental_clinic.ifc
+		test-files\duplex.ifc = test-files\duplex.ifc
+		test-files\example.ifc = test-files\example.ifc
+		test-files\FM_ARC_DigitalHub.ifc = test-files\FM_ARC_DigitalHub.ifc
+		test-files\ifcbridge-model01.ifc = test-files\ifcbridge-model01.ifc
+		test-files\IfcOpenHouse_IFC4.ifc = test-files\IfcOpenHouse_IFC4.ifc
+		test-files\ISSUE_005_haus.ifc = test-files\ISSUE_005_haus.ifc
+		test-files\ISSUE_021_Mini Project.ifc = test-files\ISSUE_021_Mini Project.ifc
+		test-files\ISSUE_034_HouseZ.ifc = test-files\ISSUE_034_HouseZ.ifc
+		test-files\ISSUE_044_test_IFCCOMPOSITEPROFILEDEF.ifc = test-files\ISSUE_044_test_IFCCOMPOSITEPROFILEDEF.ifc
+		test-files\ISSUE_053_20181220Holter_Tower_10.ifczip = test-files\ISSUE_053_20181220Holter_Tower_10.ifczip
+		test-files\ISSUE_068_ARK_NUS_skolebygg.ifc = test-files\ISSUE_068_ARK_NUS_skolebygg.ifc
+		test-files\ISSUE_098_R8_F1_MAB_AR_M3_XX_XXX_MO_7000.IFC = test-files\ISSUE_098_R8_F1_MAB_AR_M3_XX_XXX_MO_7000.IFC
+		test-files\ISSUE_102_M3D-CON-CD.ifc = test-files\ISSUE_102_M3D-CON-CD.ifc
+		test-files\ISSUE_102_M3D-CON.ifc = test-files\ISSUE_102_M3D-CON.ifc
+		test-files\ISSUE_126_model.ifc = test-files\ISSUE_126_model.ifc
+		test-files\ISSUE_129_N1540_17_EXE_MOD_448200_02_09_11SMC_IGC_V17.ifc = test-files\ISSUE_129_N1540_17_EXE_MOD_448200_02_09_11SMC_IGC_V17.ifc
+		test-files\ISSUE_159_kleine_Wohnung_R22.ifc = test-files\ISSUE_159_kleine_Wohnung_R22.ifc
+		test-files\ISSUE_171_IfcSurfaceCurveSweptAreaSolid.ifc = test-files\ISSUE_171_IfcSurfaceCurveSweptAreaSolid.ifc
+		test-files\KIT-Simple-Road-Test-Web-IFC4x3_RC2.ifc = test-files\KIT-Simple-Road-Test-Web-IFC4x3_RC2.ifc
+		test-files\Office_A_20110811.ifc = test-files\Office_A_20110811.ifc
+		test-files\Sample_entities.ifc = test-files\Sample_entities.ifc
+		test-files\schependomlaan.ifc = test-files\schependomlaan.ifc
+		test-files\S_Office_Integrated Design Archi.ifc = test-files\S_Office_Integrated Design Archi.ifc
+		test-files\tested_sample_project.ifc = test-files\tested_sample_project.ifc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{35D0EFF8-26FC-4746-9FC3-F021E7607857}"
+	ProjectSection(SolutionItems) = preProject
+		schemas\IFC2X3.exp = schemas\IFC2X3.exp
+		schemas\IFC4.exp = schemas\IFC4.exp
+		schemas\IFC4X3.exp = schemas\IFC4X3.exp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +194,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{375A0C4D-F60D-4924-B680-1A4C1845B40E} = {DC9D7B8D-0E71-4643-ABEC-03C8F4FEF6EC}
+		{AE04F6C4-34BB-4920-B865-7F64B079FC8F} = {DC9D7B8D-0E71-4643-ABEC-03C8F4FEF6EC}
+		{185B3030-21ED-4117-B843-C64BF9D964C1} = {98E0BC05-B16C-47B8-AE07-39141CBA22F0}
+		{045AEE2E-D6BD-434B-B13E-823C67198422} = {DC9D7B8D-0E71-4643-ABEC-03C8F4FEF6EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C43C3433-BB14-4B84-B022-AB7E6ACAE540}
