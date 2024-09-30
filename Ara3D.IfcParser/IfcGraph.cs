@@ -3,18 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
-using Ara3D.Buffers;
 using Ara3D.StepParser;
+using Ara3D.Utils;
 
 namespace Ara3D.IfcParser
 {
     /// <summary>
     /// This is a high-level representation of an IFC model as a graph of nodes and relations.
-    /// It also contains the geometries, properties, and property sets. 
-    /// Nodes and relations are created on demand. Only a subset of the file is actually converted into the ModelGraph  
+    /// It also contains the  properties, and property sets. 
     /// </summary>
     public class IfcGraph
     {
+        public static IfcGraph Load(FilePath fp, ILogger logger = null)
+            => new IfcGraph(new StepDocument(fp, logger), logger);
+
         public StepDocument Document { get; }
         public Dictionary<int, StepInstance> EntityLookup { get; }
 

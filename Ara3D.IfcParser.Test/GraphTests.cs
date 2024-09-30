@@ -22,14 +22,6 @@ public static class GraphTests
         var ga = new GraphAnalysis();
         foreach (var g in graphs)
             ga.AddGraph(g);
-
-        logger.Log($"Creating graph analysis");
-        //var geoEntities = IfcEntityCodes.GeometricEntities.ToHashSet();
-        var meshEntities = IfcEntityCodes.MeshEntities.ToHashSet();
-        foreach (var line in GraphCodes(ga, meshEntities))
-        {
-            Console.WriteLine(line);
-        }
     }
 
     [Test]

@@ -30,7 +30,7 @@ namespace Ara3D.IfcParser
 
         public override string ToString()
         {
-            var propIds = Properties.Select(p => $"#{p}").JoinStringsWithComma();
+            var propIds = string.Join(", ", Properties.Select(p => $"#{p}"));
             return $"#{EntityId}=IFCPROPERTYSET({GlobalId}, #{OwnerHistoryId}, {Name}, {Description}, ({propIds}))";
         }
     }

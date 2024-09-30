@@ -79,7 +79,7 @@ namespace Ara3D.StepParser
 
                     // Expected end of group 
                     case StepTokenType.EndGroup:
-                        return new StepList(values);
+                        return new StepList(values);    
                 }
 
                 var curValue = Create(ref token, end);
