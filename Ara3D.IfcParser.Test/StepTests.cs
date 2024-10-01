@@ -4,7 +4,6 @@ using Ara3D.StepParser;
 using Ara3D.Utils;
 using GeometryGym.Ifc;
 using IFC;
-using Microsoft.Isam.Esent.Interop;
 using NUnit.Framework;
 using STEP;
 using Xbim.Ifc;
@@ -15,18 +14,7 @@ namespace Ara3D.IfcParser.Test;
 
 public static class StepTests
 {
-    public static IEnumerable<FilePath> VeryLargeFiles() 
-        => TestFiles.VeryLargeFiles();
-
-    public static IEnumerable<FilePath> LargeFiles()
-        => TestFiles.LargeFiles();
-
-    public static IEnumerable<FilePath> MediumFiles()
-        => TestFiles.MediumFiles();
-
-    public static IEnumerable<FilePath> HugeFiles()
-        => TestFiles.HugeFiles();
-
+    public static IReadOnlyList<FilePath> Files => InputFiles.Files;
 
     public static IEnumerable<StepRawInstance> GetInstances(StepDocument doc, ByteSpan type) =>
         doc.RawInstances.Where(inst
@@ -39,7 +27,6 @@ public static class StepTests
 
     public static void Ara3DListDoors(StepDocument doc, ILogger logger)
     {
-        
         var doors = GetInstances(doc, "IFCDOOR").ToList();
         Console.WriteLine($"Found {doors.Count} doors in {doc.FilePath}");
     }
@@ -59,11 +46,9 @@ public static class StepTests
     [Test]
     public static void XBimTimingsMultiFiles()
     {
-        var files = MediumFiles();
-        var totalSize = PathUtil.BytesToString(files.Sum(f => f.GetFileSize()));
-        var count = files.Count();
-        Console.WriteLine($"Loading {count} files of total size {totalSize}");
-        var actions = files
+        var totalSize = PathUtil.BytesToString(Files.Sum(f => f.GetFileSize()));
+        Console.WriteLine($"Loading {Files.Count} files of total size {totalSize}");
+        var actions = Files
             .Select<FilePath, Action>(f => () => XBimLoadIfc(f, Logger.Null))
             .ToArray();
         TimingUtils.TimeIt(() => { Parallel.Invoke(actions); });
@@ -72,12 +57,10 @@ public static class StepTests
     [Test]
     public static void GeometryGymTimingsMultiFiles()
     {
-        var files = MediumFiles();
         var totalSize = PathUtil
-            .BytesToString(files.Sum(f => f.GetFileSize()));
-        var count = files.Count();
-        Console.WriteLine($"Loading {count} files of total size {totalSize}");
-        var actions = files
+            .BytesToString(Files.Sum(f => f.GetFileSize()));
+        Console.WriteLine($"Loading {Files.Count} files of total size {totalSize}");
+        var actions = Files
             .Select<FilePath, Action>(f 
                 => () => GeometryGymLoadIfc(f))
             .ToArray();
@@ -85,57 +68,18 @@ public static class StepTests
     }
 
     [Test]
-    public static void Ara3DSkiHillCountDoors()
-    {
-        var f = @"C:/Users/cdigg/dev/impraria/07 - NEOM Mountain/4200000004 - Ski Village/STAGE 3A 100%/IFC/MEC/07-004003-4200000004-AED-MEC-MDL-000001_IFC_D.ifc";
-        TimingUtils.TimeIt(() => Ara3DLoadIfc(f));
-    }
-
-    [Test]
     public static void Ara3DTimingsMultiFiles()
     {
-        var files = MediumFiles();
-        var totalSize = PathUtil.BytesToString(files.Sum(f => f.GetFileSize()));
-        var count = files.Count();
-        Console.WriteLine($"Loading {count} files of total size {totalSize}");
-        var actions = files
+        var totalSize = PathUtil.BytesToString(Files.Sum(f => f.GetFileSize()));
+        Console.WriteLine($"Loading {Files.Count} files of total size {totalSize}");
+        var actions = Files
             .Select<FilePath, Action>(f => () => Ara3DLoadIfc(f, Logger.Null))
             .ToArray();
         TimingUtils.TimeIt(() => { Parallel.Invoke(actions); });
     }
 
-  
-
-
     [Test]
-    public static void CountEntities()
-    {
-        var logger = Logger.Console;
-        logger.Log($"Loading files");
-        var files = LargeFiles().Concat(VeryLargeFiles()).Concat(HugeFiles());
-        var docs = files.AsParallel().Select(f => new StepDocument(f)).ToList();
-        logger.Log($"Loaded {docs.Count} files");
-
-        logger.Log("Performing analysis");
-        var ea = EntitySizeAnalysis.Create(docs);
-        logger.Log($"Found {ea.EntitySizes.Count} distinct entities");
-
-        var es = ea.GetStats();
-        logger.Log("Computed stats");
-
-        var totalSize = es.Values.Sum(s => s.Sum);
-        logger.Log($"Total size of data is {PathUtil.BytesToString((long)totalSize)}");
-
-        foreach (var kv in es.OrderByDescending(kv => kv.Value.Sum))
-        {
-            var s = kv.Value;
-            var p = 100.0 * (s.Sum / totalSize);
-            Console.WriteLine($"{kv.Key}\t{s.Count}\t{s.Average:F3}\t{s.Sum}\t{p:F3}");
-        }
-    }
-
-    [Test]
-    [TestCaseSource(nameof(LargeFiles))]
+    [TestCaseSource(nameof(Files))]
     public static void Timings(FilePath fp)
     {
         Console.WriteLine($"Testing {fp.GetFileName()} which is {fp.GetFileSizeAsString()}");
@@ -143,32 +87,6 @@ public static class StepTests
         TimingUtils.TimeIt(() => HyparLoadIfc(fp), "Hypar");
         TimingUtils.TimeIt(() => GeometryGymLoadIfc(fp), "GeometryGym");
         TimingUtils.TimeIt(() => XBimLoadIfc(fp), "XBim");
-    }
-
-    [Test]
-    public static void TestSerialize()
-    {
-        var fp = LargeFiles().First();
-        var doc = new StepDocument(fp);
-        var bis = new BinaryIfcSerializer();
-        var r = bis.Serialize(doc);
-        Console.WriteLine($"Text = {fp.GetFileSizeAsString()} and Binary = {PathUtil.BytesToString(r.Count)}");
-        doc.Dispose();
-    }
-
-  
-
-    [Test]
-    public static void IdentifierCounts()
-    {
-        var fp = LargeFiles().First();
-        var doc = new StepDocument(fp);
-        var d = doc.RawInstances.Where(i => i.IsValid()).GroupBy(r => r.Type).ToDictionary(g => g.Key, g => g.Count());
-        foreach (var kv in d.OrderByDescending(pair => pair.Value))
-        {
-            Console.WriteLine($"Identifier = {kv.Key} count = {kv.Value}");
-        }
-        doc.Dispose();
     }
 
     public static void Ara3DLoadIfc(FilePath filePath, ILogger logger = null)

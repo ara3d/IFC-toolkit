@@ -1,12 +1,10 @@
 using Ara3D.StepParser;
-using Ara3D.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System;
 
 namespace Ara3D.IfcParser
 {
-
     public class IfcPropertySet
     {
         public readonly int EntityId;

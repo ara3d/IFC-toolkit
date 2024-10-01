@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Ara3D.Buffers;
 using Ara3D.IfcParser;
 using Ara3D.Logging;
 using Ara3D.NarwhalDB;

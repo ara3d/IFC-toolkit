@@ -2,6 +2,10 @@ using System.Runtime.InteropServices;
 using Ara3D.Buffers;
 using Ara3D.StepParser;
 
+
+NOTE: Compilation is turned off for this file. 
+
+
 namespace Ara3D.IfcParser.Test;
 
 /*

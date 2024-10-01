@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WebIfcDotNetTests": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Ara3D.Logging;
+﻿using Ara3D.Logging;
 using Ara3D.StepParser;
 using Ara3D.Utils;
 

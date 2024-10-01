@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Linq;
 using System.ComponentModel;
 using System.Data;
 using Ara3D.IfcPropDB;

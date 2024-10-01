@@ -1,5 +1,4 @@
 using Ara3D.StepParser;
-using Ara3D.Utils;
 
 namespace Ara3D.IfcParser.Test;
 

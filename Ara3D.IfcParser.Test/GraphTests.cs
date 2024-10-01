@@ -1,4 +1,3 @@
-using Ara3D.IfcParser.Test;
 using Ara3D.Logging;
 using Ara3D.StepParser;
 using NUnit.Framework;
@@ -12,7 +11,7 @@ public static class GraphTests
     {
         var logger = Logger.Console;
         logger.Log("Starting");
-        var files = StepTests.LargeFiles().Take(5);
+        var files = InputFiles.Files.Take(5);
         var docs = files.Select(StepDocument.Create).ToList();
         
         logger.Log("Created documents");
@@ -27,7 +26,7 @@ public static class GraphTests
     [Test]
     public static void Groups()
     {
-        var f = StepTests.LargeFiles().First();
+        var f = InputFiles.Files.First();
         var logger = Logger.Console;
         var d = new StepDocument(f, logger);
         logger.Log("Created document");

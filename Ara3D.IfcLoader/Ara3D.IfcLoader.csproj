@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ara3D.IfcParser\Ara3D.IfcParser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Ara3D.Utils">
+      <HintPath>..\..\Utils\Ara3D.Utils\bin\Debug\netstandard2.0\Ara3D.Utils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
