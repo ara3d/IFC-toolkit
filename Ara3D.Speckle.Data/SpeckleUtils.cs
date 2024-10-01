@@ -42,6 +42,12 @@ namespace Ara3D.Speckle.Data
             return fp;
         }
 
+        public static Base ReadFromSqlDatabase(FilePath fp, string objectId)
+        {
+            var localSql = new SQLiteTransport(fp);
+            return Operations.Receive(objectId, localSql).Result;
+        }
+
         public static string ToJson(this Base speckleBase)
             => speckleBase.ToSpeckleObject().ToJson();
 

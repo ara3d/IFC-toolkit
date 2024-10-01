@@ -71,14 +71,6 @@ namespace Ara3D.Speckle.Data
                 OutputNative(child, indent + "  ");
         }
 
-        public static void ReadFromDisk()
-        {
-            var filePath = @"C:\Users\cdigg\AppData\Local\Temp\Speckle";
-            var localSql = new SQLiteTransport(filePath);
-            var root = Operations.Receive("f0fa094f0c24fba78171bd57816f3797", localSql).Result;
-            Console.Write($"Received {root}");
-
-            OutputNative(root.ToSpeckleObject()); 
-        }
+        
     }
 }

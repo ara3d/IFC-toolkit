@@ -64,7 +64,7 @@ namespace WebIfcDotNetTests
         [Test]
         public static void IfcFileToSpeckleToJson()
         {
-            var f = "C:\\Users\\cdigg\\git\\web-ifc-dotnet\\src\\engine_web-ifc\\tests\\ifcfiles\\public\\AC20-FZK-Haus.ifc";
+            var f = InputFiles.AC20Haus;
             var b = IfcFileToBase(f);
 
             var convertedRoot = b.ToSpeckleObject();
@@ -93,7 +93,7 @@ namespace WebIfcDotNetTests
         public static void PushAc20Haus()
         {
             var logger = CreateLogger();
-            var f = new FilePath("C:\\Users\\cdigg\\git\\web-ifc-dotnet\\src\\engine_web-ifc\\tests\\ifcfiles\\public\\AC20-FZK-Haus.ifc");
+            var f = InputFiles.AC20Haus;
             logger?.Log($"Converting {f} to Speckle");
             var b = IfcFileToBase(f);
             logger?.Log($"Conversion completed");

@@ -14,7 +14,7 @@ namespace Ara3D.IfcBrowser
     public partial class MainWindow : Window
     {
         public static DirectoryPath OutputFolder
-            = @"C:\Users\cdigg\dev\impraria\propdb";
+            = PathUtil.GetCallerSourceFolder().RelativeFolder("..", "test-output");
 
         public ILogger Logger;
 
@@ -41,7 +41,7 @@ namespace Ara3D.IfcBrowser
         {
             Logger.Log($"User initiating file chose action");
             var ofd = new OpenFileDialog();
-            ofd.InitialDirectory = @"C:\Users\cdigg\dev\impraria\propdb";
+            ofd.InitialDirectory = OutputFolder;
             if (!ofd.ShowDialog().Value)
             {
                 Logger.Log($"No file chosen to open");
