@@ -33,4 +33,10 @@
     <ProjectReference Include="..\Ara3D.Speckle.Data\Ara3D.Speckle.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="web-ifc-dll.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

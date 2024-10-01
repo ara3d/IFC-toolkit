@@ -1,19 +1,16 @@
-﻿using Ara3D.IfcParser.Test;
-using Speckle.Core.Api;
+﻿using Speckle.Core.Api;
 using Speckle.Core.Transports;
 using Ara3D.Speckle.Data;
 using Ara3D.Utils;
 using Ara3D.Logging;
 using NUnit.Framework;
+using static Ara3D.IfcParser.Test.Config;
 using Base = Speckle.Core.Models.Base;
 
 namespace WebIfcDotNetTests
 {
     public static class SpeckleTests
     {
-        public static ILogger CreateLogger()
-            => new Logger(LogWriter.ConsoleWriter, "");
-
         [Test]
         public static void LoadSpeckleObjectToJson()
         {
@@ -64,7 +61,7 @@ namespace WebIfcDotNetTests
         [Test]
         public static void IfcFileToSpeckleToJson()
         {
-            var f = InputFiles.AC20Haus;
+            var f = AC20Haus;
             var b = IfcFileToBase(f);
 
             var convertedRoot = b.ToSpeckleObject();
@@ -93,7 +90,7 @@ namespace WebIfcDotNetTests
         public static void PushAc20Haus()
         {
             var logger = CreateLogger();
-            var f = InputFiles.AC20Haus;
+            var f = AC20Haus;
             logger?.Log($"Converting {f} to Speckle");
             var b = IfcFileToBase(f);
             logger?.Log($"Conversion completed");
@@ -105,7 +102,7 @@ namespace WebIfcDotNetTests
         [Test]
         public static void PushAllTestFiles()
         {
-            var inputFiles = InputFiles.Files;
+            var inputFiles = Files;
             foreach (var f in inputFiles)
             {
                 var logger = CreateLogger();

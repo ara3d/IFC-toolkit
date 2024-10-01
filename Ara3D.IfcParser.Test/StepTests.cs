@@ -14,7 +14,7 @@ namespace Ara3D.IfcParser.Test;
 
 public static class StepTests
 {
-    public static IReadOnlyList<FilePath> Files => InputFiles.Files;
+    public static IReadOnlyList<FilePath> Files => Config.Files;
 
     public static IEnumerable<StepRawInstance> GetInstances(StepDocument doc, ByteSpan type) =>
         doc.RawInstances.Where(inst

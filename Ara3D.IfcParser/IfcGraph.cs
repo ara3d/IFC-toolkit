@@ -18,20 +18,12 @@ namespace Ara3D.IfcParser
             => new IfcGraph(new StepDocument(fp, logger), logger);
 
         public StepDocument Document { get; }
-        public Dictionary<int, StepInstance> EntityLookup { get; }
 
         public Dictionary<uint, IfcNode> Nodes { get; } = new Dictionary<uint, IfcNode>();
         public Dictionary<uint, IfcRelation> Relations { get; } = new Dictionary<uint, IfcRelation>();
 
         public IReadOnlyList<uint> SourceIds { get; }
         public IReadOnlyList<uint> SinkIds { get; }
-
-        public StepInstance GetStepEntity(uint id)
-        {
-            var e = EntityLookup[(int)id];
-            Debug.Assert(e.Id == id);
-            return e;
-        }
 
         public IfcNode AddNode(IfcNode n)
             => Nodes[n.Id] = n;
