@@ -39,9 +39,13 @@ extern "C"
     __declspec(dllexport) Api* InitializeApi();
     __declspec(dllexport) void FinalizeApi(Api* api);
     __declspec(dllexport) Model* LoadModel(Api* api, const char* fileName);
-    __declspec(dllexport) ::Geometry* GetGeometry(Api* api, Model* model, uint32_t id);
+    __declspec(dllexport) ::Geometry* GetGeometryFromId(Api* api, Model* model, uint32_t id);
+    __declspec(dllexport) int GetNumGeometries(Api* api, Model* model);
+    __declspec(dllexport) ::Geometry* GetGeometryFromIndex(Api* api, Model* model, int32_t index);
     __declspec(dllexport) int GetNumMeshes(Api* api, ::Geometry* geom);
+    __declspec(dllexport) uint32_t GetGeometryId(Api* api, ::Geometry* geom);
     __declspec(dllexport) Mesh* GetMesh(Api* api, ::Geometry* geom, int index);
+    __declspec(dllexport) uint32_t GetMeshId(Api* api, ::Mesh* mesh);
     __declspec(dllexport) double* GetTransform(Api* api, Mesh* mesh);
     __declspec(dllexport) double* GetColor(Api* api, Mesh* mesh);
     __declspec(dllexport) int GetNumVertices(Api* api, Mesh* mesh);
@@ -93,6 +97,7 @@ struct Model
     uint32_t id;
     IfcLoader* loader;
     IfcGeometryProcessor* geometryProcessor;
+    std::vector<::Geometry*> geometryList;
     std::unordered_map<uint32_t, ::Geometry*> geometries;
 
     Model(IfcSchemaManager* schemas, IfcLoader* loader, IfcGeometryProcessor* processor, uint32_t id)
@@ -118,6 +123,7 @@ struct Model
                     g->meshes.push_back(mesh);
                 }
                 geometries[eId] = g;
+                geometryList.push_back(g);
             }
         }        
     }
@@ -191,8 +197,20 @@ double* GetColor(Api* api, Mesh* mesh) {
     return &mesh->color.R;
 }
 
-::Geometry* GetGeometry(Api* api, Model* model, uint32_t id) {
+::Geometry* GetGeometryFromId(Api* api, Model* model, uint32_t id) {
     return model->GetGeometry(id);
+}
+
+int GetNumGeometries(Api* api, Model* model) {
+    return model->geometries.size();
+}
+
+::Geometry* GetGeometryFromIndex(Api* api, Model* model, int32_t index) {
+    return model->geometryList[index];
+}
+
+uint32_t GetGeometryId(Api* api, ::Geometry* geom) {
+    return geom->id;
 }
 
 int GetNumMeshes(Api* api, ::Geometry* geom) {
@@ -201,6 +219,10 @@ int GetNumMeshes(Api* api, ::Geometry* geom) {
 
 Mesh* GetMesh(Api* api, ::Geometry* geom, int index) {
     return geom->meshes[index];
+}
+
+uint32_t GetMeshId(Api* api, ::Mesh* mesh) {
+    return mesh->id;
 }
 
 int GetNumVertices(Api* api, Mesh* mesh) {

@@ -78,7 +78,7 @@ namespace Ara3D.StepParser
             if (ptr[i++] != '#')
                 return default;
         
-            var id = 0;
+            var id = 0u;
             while (i < end)
             {
                 if (ptr[i] < '0' || ptr[i] > '9')

@@ -96,11 +96,11 @@ namespace Ara3D.IfcPropDB
             {
             }
 
-            public readonly int PropSetEntity;
+            public readonly uint PropSetEntity;
             public readonly int PropSetIndex;
             public readonly string FilePath;
 
-            public PropSetEntityToIndex(int pse, int psi, string filePath)
+            public PropSetEntityToIndex(uint pse, int psi, string filePath)
                 => (PropSetEntity, PropSetIndex, FilePath) = (pse, psi, filePath);
 
             public int Size()
@@ -108,18 +108,18 @@ namespace Ara3D.IfcPropDB
 
             public object Read(ref nint ptr, IReadOnlyList<string> strings)
                 => new PropSetEntityToIndex(
-                    ReadInt(ref ptr),
+                    (uint)ReadInt(ref ptr),
                     ReadInt(ref ptr),
                     ReadString(ref ptr, strings));
 
             public object Read(byte[] bytes, ref int offset, IReadOnlyList<string> strings)
                 => new PropSetEntityToIndex(
-                    ReadInt(bytes, ref offset),
+                    (uint)ReadInt(bytes, ref offset),
                     ReadInt(bytes, ref offset),
                     ReadString(bytes, ref offset, strings));
 
             public int Write(byte[] bytes, ref int offset, IndexedSet<string> strings)
-                => WriteInt(bytes, ref offset, PropSetEntity)
+                => WriteInt(bytes, ref offset, (int)PropSetEntity)
                    + WriteInt(bytes, ref offset, PropSetIndex)
                    + WriteString(bytes, ref offset, FilePath, strings);
 
@@ -330,7 +330,7 @@ namespace Ara3D.IfcPropDB
         {
             logger.Log($"Adding document to database");
 
-            var valEntityToIndex = new Dictionary<int, int>();
+            var valEntityToIndex = new Dictionary<uint, int>();
             var propValEntities = doc.GetInstances("IFCPROPERTYSINGLEVALUE");
 
             logger.Log("Adding values");

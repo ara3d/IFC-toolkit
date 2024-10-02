@@ -142,7 +142,7 @@ namespace Ara3D.IfcParser
         {
             var r = Nodes.TryGetValue(id, out var node)
                 ? node
-                : AddNode(new IfcNode(this, GetStepEntity(id)));
+                : AddNode(new IfcNode(this, Document.GetInstanceWithData(id)));
             Debug.Assert(r.Id == id);
             return r;
         }

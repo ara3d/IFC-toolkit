@@ -9,9 +9,9 @@ namespace Ara3D.StepParser
     /// </summary>  
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     [method: MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly struct StepRawInstance(int id, ByteSpan type, int lineIndex, int index)
+    public readonly struct StepRawInstance(uint id, ByteSpan type, int lineIndex, int index)
     {
-        public readonly int Id = id;
+        public readonly uint Id = id;
         public readonly ByteSpan Type = type;
         public readonly int LineIndex = lineIndex;
         public readonly int Index = index;

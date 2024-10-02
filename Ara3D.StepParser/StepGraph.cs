@@ -9,9 +9,9 @@ namespace Ara3D.StepParser
     {
         public StepDocument Document { get; }
 
-        public readonly Dictionary<int, StepNode> Lookup = new();
+        public readonly Dictionary<uint, StepNode> Lookup = new();
 
-        public StepNode GetNode(int id)
+        public StepNode GetNode(uint id)
             => Lookup[id];
 
         public IEnumerable<StepNode> Nodes

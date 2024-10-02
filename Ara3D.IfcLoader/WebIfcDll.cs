@@ -2,12 +2,11 @@
 
 namespace Ara3D.IfcLoader
 {
-
     public static class WebIfcDll
     {
         // NOTE: make sure the DLL is in the same directory as the built DLLs or Executable. 
         private const string DllName = "web-ifc-dll.dll"; 
-
+        
         // InitializeApi
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr InitializeApi();
@@ -22,7 +21,19 @@ namespace Ara3D.IfcLoader
 
         // GetGeometry
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr GetGeometry(IntPtr api, IntPtr model, uint id);
+        public static extern IntPtr GetGeometryFromId(IntPtr api, IntPtr model, uint id);
+
+        // GetGeometry
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr GetNumGeometries(IntPtr api, IntPtr model);
+
+        // GetGeometry
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr GetGeometryFromIndex(IntPtr api, IntPtr model, int index);
+
+        // GetGeometryId
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint GetGeometryId(IntPtr api, IntPtr geometry);
 
         // GetNumMeshes
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -31,6 +42,10 @@ namespace Ara3D.IfcLoader
         // GetMesh
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr GetMesh(IntPtr api, IntPtr geometry, int index);
+
+        // GetMeshId
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint GetMeshId(IntPtr api, IntPtr mesh);
 
         // GetTransform
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

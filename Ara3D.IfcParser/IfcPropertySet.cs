@@ -7,14 +7,14 @@ namespace Ara3D.IfcParser
 {
     public class IfcPropertySet
     {
-        public readonly int EntityId;
+        public readonly uint EntityId;
         public readonly string GlobalId;
-        public readonly int OwnerHistoryId;
+        public readonly uint OwnerHistoryId;
         public readonly string Name;
         public readonly string Description;
-        public readonly List<int> Properties;
+        public readonly List<uint> Properties;
 
-        public IfcPropertySet(int entityId, IReadOnlyList<StepValue> vals)
+        public IfcPropertySet(uint entityId, IReadOnlyList<StepValue> vals)
         {
             if (vals.Count != 5)
                 throw new Exception("Expected 5 values");

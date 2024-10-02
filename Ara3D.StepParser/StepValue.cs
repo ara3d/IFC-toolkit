@@ -111,9 +111,9 @@ namespace Ara3D.StepParser
 
     public class StepId : StepValue
     {
-        public readonly int Id;
+        public readonly uint Id;
 
-        public StepId(int id)
+        public StepId(uint id)
             => Id = id;
 
         public override string ToString()
@@ -125,7 +125,7 @@ namespace Ara3D.StepParser
             var span = token.Span;
             Debug.Assert(span.Length >= 2);
             Debug.Assert(span.First() == '#');
-            var id = 0;
+            var id = 0u;
             for (var i = 1; i < span.Length; ++i)
             {
                 Debug.Assert(span.Ptr[i] >= '0' && span.Ptr[i] <= '9');
@@ -171,9 +171,9 @@ namespace Ara3D.StepParser
 
     public static class StepValueExtensions
     {
-        public static int AsId(this StepValue value)
+        public static uint AsId(this StepValue value)
             => value is StepUnassigned
-                ? 0
+                ? 0u
                 : ((StepId)value).Id;
 
         public static string AsString(this StepValue value)
@@ -191,9 +191,9 @@ namespace Ara3D.StepParser
                 ? new List<StepValue>()
                 : ((StepList)value).Values;
 
-        public static List<int> AsIdList(this StepValue value)
+        public static List<uint> AsIdList(this StepValue value)
             => value is StepUnassigned
-                ? new List<int>()
+                ? new List<uint>()
                 : value.AsList().Select(AsId).ToList();
     }
 }

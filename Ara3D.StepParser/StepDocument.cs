@@ -25,7 +25,7 @@ namespace Ara3D.StepParser
         /// <summary>
         /// This gives us a fast way to look up a StepInstance by their ID
         /// </summary>
-        public readonly Dictionary<int, int> InstanceIdToIndex = new();
+        public readonly Dictionary<uint, int> InstanceIdToIndex = new();
 
         /// <summary>
         /// This tells us the byte offset of the start of each line in the file
@@ -76,6 +76,12 @@ namespace Ara3D.StepParser
 
         public void Dispose() 
             => Data.Dispose();
+
+        public StepRawInstance GetRawInstance(uint id)
+            => RawInstances[InstanceIdToIndex[id]];
+
+        public StepInstance GetInstanceWithData(uint id)
+            => GetInstanceWithData(GetRawInstance(id));
 
         public StepInstance GetInstanceWithData(StepRawInstance inst)
         {

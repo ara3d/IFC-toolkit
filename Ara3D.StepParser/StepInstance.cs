@@ -5,7 +5,7 @@ namespace Ara3D.StepParser
     public class StepInstance
     {
         public readonly StepEntity Entity;
-        public readonly int Id;
+        public readonly uint Id;
 
         public List<StepValue> AttributeValues
             => Entity.Attributes.Values;
@@ -13,7 +13,7 @@ namespace Ara3D.StepParser
         public string EntityType
             => Entity?.EntityType.ToString() ?? "";
 
-        public StepInstance(int id, StepEntity entity)
+        public StepInstance(uint id, StepEntity entity)
         {
             Id = id;
             Entity = entity;

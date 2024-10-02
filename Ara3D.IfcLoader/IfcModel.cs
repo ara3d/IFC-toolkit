@@ -13,8 +13,19 @@
 
         public IfcGeometry? GetGeometry(uint id)
         {
-            var gPtr = WebIfcDll.GetGeometry(ApiPtr, ModelPtr, id);
+            var gPtr = WebIfcDll.GetGeometryFromId(ApiPtr, ModelPtr, id);
             return gPtr == IntPtr.Zero ? null : new IfcGeometry(ApiPtr, gPtr);
+        }
+
+        public IEnumerable<IfcGeometry> GetGeometries()
+        {
+            var numGeometries = WebIfcDll.GetNumGeometries(ApiPtr, ModelPtr);
+            for (int i = 0; i < numGeometries; ++i)
+            {
+                var gPtr = WebIfcDll.GetGeometryFromIndex(ApiPtr, ModelPtr, i);
+                if (gPtr != IntPtr.Zero)
+                    yield return new IfcGeometry(ApiPtr, gPtr);
+            }
         }
     }
 }

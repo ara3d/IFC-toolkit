@@ -16,4 +16,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="libs/web-ifc-dll.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>web-ifc-dll.dll</Link>
+    </None>
+  </ItemGroup>
 </Project>

@@ -6,14 +6,14 @@ namespace Ara3D.IfcParser
 {
     public class IfcPropertyValue
     {
-        public readonly int EntityId;
+        public readonly uint EntityId;
         public readonly string Name;
         public readonly string Description;
         public readonly string Value;
         public readonly string Unit;
         public readonly string Entity;
 
-        public IfcPropertyValue(int entityId, IReadOnlyList<StepValue> vals)
+        public IfcPropertyValue(uint entityId, IReadOnlyList<StepValue> vals)
         {
             if (vals.Count != 4)
                 throw new Exception("Expected 4 values");
