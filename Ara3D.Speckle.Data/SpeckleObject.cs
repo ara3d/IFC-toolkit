@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Objects.Geometry;
@@ -13,7 +14,7 @@ namespace Ara3D.Speckle.Data
     /// </summary>
     public class SpeckleObject
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public string SpeckleType { get; set; }
         public string DotNetType { get; set; }
