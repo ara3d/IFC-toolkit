@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Ara3D.Buffers;
-using Ara3D.Buffers.Modern;
 using Ara3D.Utils;
 
 namespace Ara3D.StepParser
@@ -177,9 +176,11 @@ namespace Ara3D.StepParser
                 : ((StepId)value).Id;
 
         public static string AsString(this StepValue value)
-            => value is StepUnassigned
-                ? ""
-                : ((StepString)value).Value.ToString();
+            => value is StepString ss ? ss.Value.ToString() :
+                value is StepNumber sn ? sn.Value.ToString() :
+                value is StepId si ? si.Id.ToString() :
+                value is StepSymbol ssm ? ssm.Name.ToString() :
+                "";    
 
         public static double AsNumber(this StepValue value)
             => value is StepUnassigned

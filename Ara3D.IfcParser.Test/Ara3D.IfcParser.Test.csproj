@@ -25,11 +25,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ara3D.Logging\Ara3D.Logging.csproj" />
-    <ProjectReference Include="..\..\src\Ara3D.NarwhalDB\Ara3D.NarwhalDB.csproj" />
     <ProjectReference Include="..\..\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
     <ProjectReference Include="..\Ara3D.IfcLoader\Ara3D.IfcLoader.csproj" />
     <ProjectReference Include="..\Ara3D.IfcParser\Ara3D.IfcParser.csproj" />
-    <ProjectReference Include="..\Ara3D.IfcPropDB\Ara3D.IfcPropDB.csproj" />
     <ProjectReference Include="..\Ara3D.Speckle.Data\Ara3D.Speckle.Data.csproj" />
   </ItemGroup>
 

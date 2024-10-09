@@ -4,11 +4,13 @@
     {
         public IntPtr ApiPtr;
         public IntPtr ModelPtr;
+        public IfcFile File;
 
-        public IfcModel(IntPtr apiPtr, IntPtr modelPtr)
+        public IfcModel(IfcFile file, IntPtr apiPtr, IntPtr modelPtr)
         {
             ApiPtr = apiPtr;
             ModelPtr = modelPtr;
+            File = file;
         }
 
         public IfcGeometry? GetGeometry(uint id)

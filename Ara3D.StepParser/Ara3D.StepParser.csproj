@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ara3D.Buffers.Modern\Ara3D.Buffers.Modern.csproj" />
-    <ProjectReference Include="..\..\src\Ara3D.Logging\Ara3D.Logging.csproj" />
-    <ProjectReference Include="..\..\Utils\Ara3D.Utils\Ara3D.Utils.csproj" />
+    <PackageReference Include="Ara3D.Buffers" Version="1.4.5" />
+    <PackageReference Include="Ara3D.Logging" Version="1.4.5" />
+    <PackageReference Include="Ara3D.Utils" Version="1.4.5" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Ara3D.IfcTool": {
-      "commandName": "Project",
-      "commandLineArgs": "findall IFCDOOR \"C:/Users/cdigg/dev/impraria\""
-    }
-  }
-}

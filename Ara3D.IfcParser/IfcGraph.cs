@@ -20,7 +20,9 @@ namespace Ara3D.IfcParser
         public StepDocument Document { get; }
 
         public Dictionary<uint, IfcNode> Nodes { get; } = new Dictionary<uint, IfcNode>();
-        public Dictionary<uint, IfcRelation> Relations { get; } = new Dictionary<uint, IfcRelation>();
+        public List<IfcRelation> Relations { get; } = new List<IfcRelation>();
+        public Dictionary<uint, List<IfcRelation>> RelationsByNode { get; } = new Dictionary<uint, List<IfcRelation>>();
+        public Dictionary<uint, List<IfcPropSet>> PropertySetsByNode { get; } = new Dictionary<uint, List<IfcPropSet>>();
 
         public IReadOnlyList<uint> SourceIds { get; }
         public IReadOnlyList<uint> SinkIds { get; }
@@ -30,7 +32,8 @@ namespace Ara3D.IfcParser
 
         public IfcRelation AddRelation(IfcRelation r)
         {
-            Relations.Add(r.Id, r);
+            Relations.Add(r);
+            RelationsByNode.Add(r.From.Id, r);
             return r;
         }
 
@@ -48,48 +51,48 @@ namespace Ara3D.IfcParser
                 if (inst.Type.Equals("IFCPROPERTYSINGLEVALUE"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddNode(new IfcProp(this, e, (StepString)e[0], e[2]));
+                    AddNode(new IfcProp(this, e, e[2]));
                 }
                 else if (inst.Type.Equals("IFCPROPERTYENUMERATEDVALUE"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddNode(new IfcProp(this, e, (StepString)e[0], e[2]));
+                    AddNode(new IfcProp(this, e, e[2]));
                 }
                 else if (inst.Type.Equals("IFCPROPERTYREFERENCEVALUE"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddNode(new IfcProp(this, e, (StepString)e[0], e[3]));
+                    AddNode(new IfcProp(this, e, e[3]));
                 }
                 else if (inst.Type.Equals("IFCPROPERTYLISTVALUE"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddNode(new IfcProp(this, e, (StepString)e[0], e[2]));
+                    AddNode(new IfcProp(this, e, e[2]));
                 }
                 else if (inst.Type.Equals("IFCCOMPLEXPROPERTY"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddNode(new IfcProp(this, e, (StepString)e[0], e[3]));
+                    AddNode(new IfcProp(this, e, e[3]));
                 }
                 
                 // Property Set 
                 else if (inst.Type.Equals("IFCPROPERTYSET"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddNode(new IfcPropSet(this, e, (StepString)e[0], (StepString)e[2], (StepList)e[4]));
+                    AddNode(new IfcPropSet(this, e, (StepList)e[4]));
                 }
 
                 // Aggregate relation
                 else if (inst.Type.Equals("IFCRELAGGREGATES"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddRelation(new IfcAggregateRelation(this, e, (StepId)e[4], (StepList)e[5]));
+                    AddRelation(new IfcRelationAggregate(this, e, (StepId)e[4], (StepList)e[5]));
                 }
 
                 // Spatial relation
                 else if (inst.Type.Equals("IFCRELCONTAINEDINSPATIALSTRUCTURE"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddRelation(new IfcSpatialRelation(this, e, (StepId)e[5], (StepList)e[4]));
+                    AddRelation(new IfcRelationSpatial(this, e, (StepId)e[5], (StepList)e[4]));
                 }
 
                 // Property set relations
@@ -103,7 +106,7 @@ namespace Ara3D.IfcParser
                 else if (inst.Type.Equals("IFCRELDEFINESBYTYPE"))
                 {
                     var e = d.GetInstanceWithData(inst);
-                    AddRelation(new IfcTypeRelation(this, e, (StepId)e[5], (StepList)e[4]));
+                    AddRelation(new IfcRelationType(this, e, (StepId)e[5], (StepList)e[4]));
                 }
 
                 // Everything else 
@@ -120,11 +123,26 @@ namespace Ara3D.IfcParser
                 .Where(r => r.From != null)
                 .Select(r => (uint)r.From.Id)
                 .Distinct().ToList();
+
+            logger?.Log("Creating lookup of property sets");
+
+            foreach (var psr in Relations.OfType<IfcPropSetRelation>())
+            {
+                var ps = psr.PropSet;
+                foreach (var id in psr.GetRelatedIds())
+                {
+                    PropertySetsByNode.Add(id, ps);
+                }
+            }
+
             logger?.Log("Completed creating model graph");
         }
 
         public IEnumerable<IfcNode> GetNodes()
             => Nodes.Values;
+
+        public IEnumerable<IfcNode> GetNodes(IEnumerable<uint> ids)
+            => ids.Select(GetNode);
 
         public IfcNode GetOrCreateNode(StepInstance lineData, int arg)
         {
@@ -159,15 +177,15 @@ namespace Ara3D.IfcParser
             return GetOrCreateNodes(agg.Values);
         }
 
+        public IfcNode GetNode(StepId id)
+            => GetNode(id.Id);
+
         public IfcNode GetNode(uint id)
         {
             var r = Nodes[id];
             Debug.Assert(r.Id == id);
             return r;
         }
-
-        public IEnumerable<IfcRelation> GetRelations()
-            => Relations.Values;
 
         public IEnumerable<IfcNode> GetSources()
             => SourceIds.Select(GetNode);
@@ -181,120 +199,13 @@ namespace Ara3D.IfcParser
         public IEnumerable<IfcProp> GetProps()
             => GetNodes().OfType<IfcProp>();
 
-        public IEnumerable<IfcSpatialRelation> GetSpatialRelations()
-            => GetRelations().OfType<IfcSpatialRelation>();
+        public IEnumerable<IfcRelationSpatial> GetSpatialRelations()
+            => Relations.OfType<IfcRelationSpatial>();
 
-        public IEnumerable<IfcAggregateRelation> GetAggregateRelations()
-            => GetRelations().OfType<IfcAggregateRelation>();
-    }
+        public IEnumerable<IfcRelationAggregate> GetAggregateRelations()
+            => Relations.OfType<IfcRelationAggregate>();
 
-    public class IfcPart
-    {
-        public StepInstance LineData { get; }
-        public IfcGraph Graph { get; }
-        public uint Id => (uint)LineData.Id;
-        public string Type => LineData?.EntityType ?? "";
-
-        public IfcPart(IfcGraph graph, StepInstance lineData)
-        {
-            Graph = graph;
-            LineData = lineData;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is IfcPart other)
-                return Id == other.Id;
-            return false;
-        }
-
-        public override int GetHashCode()
-            => (int)Id;
-
-        public override string ToString()
-            => $"{Type}#{Id}";
-    }
-
-    /// <summary>
-    /// Always express a 1-to-many relation
-    /// </summary>
-    public class IfcRelation : IfcPart
-    {
-        public StepId From { get; }
-        public StepList To { get; }
-
-        public IfcRelation(IfcGraph graph, StepInstance lineData, StepId from, StepList to)
-            : base(graph, lineData)
-        {
-            From = from;
-            To = to;
-        }
-    }
-
-    public class IfcPropSetRelation : IfcRelation
-    {
-        public IfcPropSetRelation(IfcGraph graph, StepInstance lineData, StepId from, StepList to)
-            : base(graph, lineData, from, to)
-        {
-        }
-    }
-
-    public class IfcSpatialRelation : IfcRelation
-    {
-        public IfcSpatialRelation(IfcGraph graph, StepInstance lineData, StepId from, StepList to)
-            : base(graph, lineData, from, to)
-        {
-        }
-    }
-
-    public class IfcAggregateRelation : IfcRelation
-    {
-        public IfcAggregateRelation(IfcGraph graph, StepInstance lineData, StepId from, StepList to)
-            : base(graph, lineData, from, to)
-        {
-        }
-    }
-
-    public class IfcTypeRelation : IfcRelation
-    {
-        public IfcTypeRelation(IfcGraph graph, StepInstance lineData, StepId from, StepList to)
-            : base(graph, lineData, from, to)
-        {
-        }
-    }
-
-    public class IfcProp : IfcNode
-    {
-        public readonly StepValue Name;
-        public readonly StepValue Value;
-
-        public IfcProp(IfcGraph graph, StepInstance lineData, StepString name, StepValue value)
-            : base(graph, lineData)
-        {
-            Name = name;
-            Value = value;
-        }
-    }
-
-    public class IfcPropSet : IfcNode
-    {
-        public readonly StepString Guid;
-        public readonly StepString Name;
-        public readonly StepList Properties;
-
-        public IfcPropSet(IfcGraph graph, StepInstance lineData, StepString guid, StepString name, StepList properties)
-            : base(graph, lineData)
-        {
-            Guid = guid;
-            Name = name;
-            Properties = properties;
-        }
-    }
-
-    public class IfcNode : IfcPart
-    {
-        public IfcNode(IfcGraph graph, StepInstance lineData)
-            : base(graph, lineData)
-        { }
+        public IReadOnlyList<IfcRelation> GetRelationsFrom(uint id)
+            => RelationsByNode.TryGetValue(id, out var list) ? list : Array.Empty<IfcRelation>();
     }
 }

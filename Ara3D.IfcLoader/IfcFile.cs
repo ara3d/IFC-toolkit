@@ -46,7 +46,7 @@ namespace Ara3D.IfcLoader
         {
             logger?.Log($"Loading IFC geometry");
             ApiPtr = WebIfcDll.InitializeApi();
-            Model = new IfcModel(ApiPtr, WebIfcDll.LoadModel(ApiPtr, FilePath));
+            Model = new IfcModel(this, ApiPtr, WebIfcDll.LoadModel(ApiPtr, FilePath));
             logger?.Log($"Completed loading IFC geometry");
         }
 
