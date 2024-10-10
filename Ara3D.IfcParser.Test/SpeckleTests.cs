@@ -22,7 +22,7 @@ namespace WebIfcDotNetTests
         }
 
         public static IEnumerable<FilePath> InputFiles
-            => new[] { AC20Haus };
+            => Files;
 
         [TestCaseSource(nameof(InputFiles))]
         public static void IfcFileToSpeckleToJson(FilePath f)
@@ -36,16 +36,18 @@ namespace WebIfcDotNetTests
             var json = convertedRoot.ToJson();
             tmp.WriteAllText(json);
             logger?.Log($"Wrote json to: {tmp}");
-            tmp.OpenFile();
+            
+            // DEBUG: 
+            //tmp.OpenFile();
         }
 
         [Test]
-        public static void ListModels()
+        public static void ListModelsInProject()
         {
             SpeckleUtils.ListModels(CreateLogger(), Config.TestProjectId);
         }
 
-        [Test]
+        [Test, Explicit]
         public static void PushAc20Haus()
         {
             var logger = CreateLogger();
@@ -56,9 +58,10 @@ namespace WebIfcDotNetTests
             var client = SpeckleUtils.LoginDefaultClient(logger);
             var result = client.PushModel(TestProjectId, f.GetFileName(), b, logger);
             logger?.Log(result);
+            logger?.Log($"Pushed to Speckle at {TestProjectUrl}");
         }
 
-        [Test]
+        [Test, Explicit]
         public static void PushAllTestFiles()
         {
             var inputFiles = Files;
@@ -81,19 +84,5 @@ namespace WebIfcDotNetTests
             }
         }
 
-        [Test]
-        public static void MoveHaus()
-        {
-            var logger = CreateLogger();
-            var client = SpeckleUtils.LoginDefaultClient(logger);
-
-            // https://app.speckle.systems/projects/68da6db112/models/c78d273327
-            var srcModel = client.PullModelFromId("68da6db112", "c78d273327", logger);
-
-            // https://app.speckle.systems/projects/d1553c3803/models/15e913104e
-            var result = client.PushModelToId("d1553c3803", "15e913104e", srcModel, logger);
-
-            Console.WriteLine($"Got model and pushed it somwhere else. Result was {result}");
-        }
     }
 }

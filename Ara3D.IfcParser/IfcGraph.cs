@@ -45,10 +45,11 @@ namespace Ara3D.IfcParser
             {
                 if (!inst.IsValid())
                     continue;
-                
-                // Property Values
+
                 // TODO: converting entities into numerical hashes would likely improve performance significantly. 
                 // Here we are doing a lot of comparisons. 
+
+                // Property Values
                 if (inst.Type.Equals("IFCPROPERTYSINGLEVALUE"))
                 {
                     var e = d.GetInstanceWithData(inst);
@@ -74,7 +75,52 @@ namespace Ara3D.IfcParser
                     var e = d.GetInstanceWithData(inst);
                     AddNode(new IfcProp(this, e, e[3]));
                 }
-                
+
+                // Quantities which are a treated as a kind of prop
+                // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcphysicalquantity.htm
+                else if (inst.Type.Equals("IFCQUANTITYLENGTH"))
+                {
+                    // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcquantitylength.htm
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[3]));
+                }
+                else if (inst.Type.Equals("IFCQUANTITYAREA"))
+                {
+                    // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcquantityarea.htm
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[3]));
+                }
+                else if (inst.Type.Equals("IFCQUANTITYVOLUME"))
+                {
+                    // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcquantityvolume.htm
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[3]));
+                }
+                else if (inst.Type.Equals("IFCQUANTITYCOUNT"))
+                {
+                    // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcquantitycount.htm
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[3]));
+                }
+                else if (inst.Type.Equals("IFCQUANTITYWEIGHT"))
+                {
+                    // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcquantityweight.htm
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[3]));
+                }
+                else if (inst.Type.Equals("IFCQUANTITYTIME"))
+                {
+                    // https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcquantitytime.htm
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[3]));
+                }
+                else if (inst.Type.Equals("IFCPHYSICALCOMPLEXQUANTITY"))
+                {
+                    //https://iaiweb.lbl.gov/Resources/IFC_Releases/R2x3_final/ifcquantityresource/lexical/ifcphysicalcomplexquantity.htm   
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcProp(this, e, e[2]));
+                }
+
                 // Property Set (or element quantity)
                 else if (inst.Type.Equals("IFCPROPERTYSET"))
                 {

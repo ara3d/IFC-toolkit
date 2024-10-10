@@ -1,19 +1,10 @@
 # Ara 3D IFC Toolkit
 
-A set of open-source C# libraries (.NET 8.0) for loading and querying IFC files in STEP format.
-
-A DLL built from source code taken from [Web IFC engine](https://github.com/ThatOpen/engine_web-ifc) is used to 
-generate meshes. 
-
-## Status
-
-We are just finishing up porting and merging code from two earlier prototypes: 
-   1) a private implementation of a C# parser
-   2) a C++/CLR wrapper around the Web IFC engine. 
+A set of open-source C# libraries (.NET 8.0) for loading and querying IFC files in STEP format
+and a C++ DLL built from source code copied from [Web IFC engine](https://github.com/ThatOpen/engine_web-ifc) 
+for generating meshes. 
 
 Parsing IFC files without creating meshes is very fast. Mesh creation is currently a bottleneck. 
-
-Temporarily compiling this solution requires it to be built as part of the Ara3D mono-repository. 
 
 ## Background
 
@@ -26,17 +17,22 @@ We originally started by wrapping the [Web IFC engine in a C++/CLR wrapper](http
 This project was successful, in that it allowed us to build a new IFC importer in C#, but it was not cross-platform. 
 C++/CLR unforuntately only runs on Windows. It is now deprecated and replaced with this project.
 
-Thanks to the funding from Speckle, at Ara 3D we decided to open-source our IFC/STEP file parser and combine it with a C++ DLL built on top of the Web IFC engine.
+Thanks to the funding from Speckle, at Ara 3D we decided to open-source our IFC/STEP file parser and combine it with a 
+C++ DLL built on top of the Web IFC engine.
 
-Our next step is to generate meshes directly in C# using the [Plato.Geometry](https://github.com/ara3d/Plato.Geometry) library. 
+## Next Steps 
+
+1. [Short term] Speckle is going to start work on assuring that the code runs on Linux. 
+2. [Medium term] Ara 3D future plans will replace the mesh code in C# using the [Plato.Geometry](https://github.com/ara3d/Plato.Geometry) library. 
 
 ## Solution Structure
 
 This is the structure as it appears in the solution view in Visual Studio:  
 
 * **Ara3D.IfcLoader** 
-    * A C# .NET 8 solution that depends on the WebIfcDll output DLL being in the executable folder.  
-    * Combines the Ara3D.IfcParser to load the IFC graph and STEP document, and the WebIfcDll to generate meshes.
+    * A C# .NET 8 project with a dependency on a Windows DLL
+    * Uses Ara3D.IfcParser to load the IFC graph and STEP document, uses the WebIfcDll to generate meshes.
+    * Provides additional helper classes that wrap the WebIfcDll and provide a more C# friendly API.
 * **Ara3D.IfcParser** 
     * A C# .NET 8 library 
     * Creates an IFC graph containing nodes and relations, and IFC data structures. It uses the Ara3D.StepParser.    
@@ -47,15 +43,10 @@ This is the structure as it appears in the solution view in Visual Studio:
     * A C++ DLL that exposes functions for loading a file, and generates meshes from them. 
     * Built from a [snapshot of the Web IFC engine](https://github.com/ThatOpen/engine_web-ifc).
 * **speckle/**
-    * **Ara3D.Speckle** 
-        - WIP: A C# .NET 8 library of utilities for working with Speckle data 
+    * **Ara3D.Speckle.Data** 
+        - A C# .NET 8 library of utilities for working with Speckle data 
     * **Ara3D.Speckle.IfcLoader** 
-        - WIP: A C# .NET 8 library for loading IFC files and generating Speckle objects 
-* **sandbox/** 
-    * **Ara3D.IFCBrower** 
-        - An experiemental Windows WPF application for viewing IFC properties
-    * **Ara3D.IfcPropDB** 
-        - An experimental library for storing properties in a simple in-memory database with serialization to/from disk
+        - A C# .NET 8 library for loading IFC files and generating Speckle objects 
 * **tests/**
     * **Ara3D.IfcParser.Test** 
         - An NUnit test project for working with IFC files and comparing different libraries 
@@ -71,7 +62,9 @@ The public API of the C++ DLL, which is restricted to extracting gometry is as f
 * `Api* InitializeApi();`
 * `void FinalizeApi(Api* api);`
 * `Model* LoadModel(Api* api, const char* fileName);`
-* `::Geometry* GetGeometry(Api* api, Model* model, uint32_t id);`
+* `::Geometry* GetGeometryFromId(Api* api, Model* model, uint32_t id);`
+* `::Geometry* GetGeometryFromIndex(Api* api, Model* model, int index);`
+* `int GetNumGeometries(Api* api, Model* model);`
 * `int GetNumMeshes(Api* api, ::Geometry* geom);`
 * `Mesh* GetMesh(Api* api, ::Geometry* geom, int index);`
 * `double* GetTransform(Api* api, Mesh* mesh);`
@@ -81,15 +74,15 @@ The public API of the C++ DLL, which is restricted to extracting gometry is as f
 * `int GetNumIndices(Api* api, Mesh* mesh);`
 * `uint32_t* GetIndices(Api* api, Mesh* mesh);`
 
-If an element has no associated geometry then GetGeometry will return null. 
+See the file `Ara3D.IfcLoader/WebIfcDll.cs` for the C# PInvoke code.
 
 ## Next Steps 
 
-- [ ] Be able to compile project outside of Ara 3D main repo 
-- [ ] Assure that all Ara 3D dependencies are taken from NuGet packages (not local)
+- [x] Be able to compile project outside of Ara 3D main repo 
+- [x] Assure that all Ara 3D dependencies are taken from NuGet packages (not local)
 - [ ] Make a separate C++ project for the DLL for Linux
 - [ ] Test the C# and C++ code on Linux
-- [ ] Extract Global IDs from all product elements 
+- [x] Extract Global IDs from all product elements 
 - [ ] Create a list of Express IDs that represent product elements 
 - [ ] Testing: Convert loaded IFC file to OBJ files 
 - [ ] Testing: Convert Speckle objects to OBJ files
