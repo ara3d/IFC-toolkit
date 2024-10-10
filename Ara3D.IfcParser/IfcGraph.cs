@@ -48,6 +48,8 @@ namespace Ara3D.IfcParser
                     continue;
                 
                 // Property Values
+                // TODO: converting entities into numerical hashes would likely improve performance significantly. 
+                // Here we are doing a lot of comparisons. 
                 if (inst.Type.Equals("IFCPROPERTYSINGLEVALUE"))
                 {
                     var e = d.GetInstanceWithData(inst);
@@ -74,11 +76,16 @@ namespace Ara3D.IfcParser
                     AddNode(new IfcProp(this, e, e[3]));
                 }
                 
-                // Property Set 
+                // Property Set (or element quantity)
                 else if (inst.Type.Equals("IFCPROPERTYSET"))
                 {
                     var e = d.GetInstanceWithData(inst);
                     AddNode(new IfcPropSet(this, e, (StepList)e[4]));
+                }
+                else if (inst.Type.Equals("IFCELEMENTQUANTITY"))
+                {
+                    var e = d.GetInstanceWithData(inst);
+                    AddNode(new IfcPropSet(this, e, (StepList)e[5]));
                 }
 
                 // Aggregate relation

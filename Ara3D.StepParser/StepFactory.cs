@@ -13,6 +13,7 @@ namespace Ara3D.StepParser
                 return default;
             var ptr = inst.Type.End();
             var token = StepTokenizer.ParseToken(ptr, lineEnd);
+            // TODO: there is a potential bug here when the line is split across multiple line
             return CreateAggregate(ref token, lineEnd);
         }
 

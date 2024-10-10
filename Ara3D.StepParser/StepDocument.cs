@@ -81,10 +81,17 @@ namespace Ara3D.StepParser
         public StepInstance GetInstanceWithData(uint id)
             => GetInstanceWithData(GetRawInstance(id));
 
+        public int GetLineEnd(int lineIndex)
+        {
+            if (lineIndex + 1 == LineOffsets.Count)
+                return Data.NumBytes;
+            return LineOffsets[lineIndex + 1];
+        }
+
         public StepInstance GetInstanceWithData(StepRawInstance inst)
         {
-            throw new Exception("TODO: fix a bug here, need to get data via the StepFactory.");
-            var attr = new StepList(new List<StepValue>());
+            var lineEnd = GetLineEnd(inst.LineIndex);
+            var attr = inst.GetAttributes(DataStart + lineEnd);
             var se = new StepEntity(inst.Type, attr);
             return new StepInstance(inst.Id, se);
         }

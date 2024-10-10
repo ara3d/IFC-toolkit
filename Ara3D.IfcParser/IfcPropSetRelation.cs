@@ -14,11 +14,12 @@ namespace Ara3D.IfcParser
         {
             get
             {
-                var r = Graph.GetNode(From) as IfcPropSet;
+                var node = Graph.GetNode(From);
+                var r = node as IfcPropSet;
                 if (r == null)
-                    throw new System.Exception($"Expected a property set not {Graph.GetNode(From)} from id {From}");
+                    throw new System.Exception($"Expected a property set not {node} from id {From}");
                 return r;
             }
         }
     }
-}
+}    
