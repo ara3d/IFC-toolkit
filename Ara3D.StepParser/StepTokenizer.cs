@@ -10,10 +10,10 @@ namespace Ara3D.StepParser
         public static readonly StepTokenType[] TokenLookup =
             CreateTokenLookup();
 
-        public static bool[] IsNumberLookup =
+        public static readonly bool[] IsNumberLookup =
             CreateNumberLookup();
 
-        public static bool[] IsIdentLookup =
+        public static readonly bool[] IsIdentLookup =
             CreateIdentLookup();
 
         public static StepTokenType[] CreateTokenLookup()

@@ -1,11 +1,14 @@
 using System.Drawing;
 using System.Reflection;
+using System.Text;
+using Ara3D.Buffers;
 using Ara3D.IfcLoader;
 using Ara3D.IfcParser;
 using Ara3D.StepParser;
 using Objects.Geometry;
 using Objects.Other;
 using Speckle.Core.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ara3D.Speckle.IfcLoader
 {
@@ -81,36 +84,11 @@ namespace Ara3D.Speckle.IfcLoader
             return c;
         }
 
-        public static object? IfcValJsonObject(this StepValue? sv)
-        {
-            switch (sv)
-            {
-                case StepEntity stepEntity:
-                    return stepEntity.ToString();
-                case StepId stepId:
-                    return stepId.Id;
-                case StepList stepList:
-                    return stepList.Values.Select(IfcValJsonObject).ToList();
-                case StepNumber stepNumber:
-                    return stepNumber.AsNumber();
-                case StepRedeclared stepRedeclared:
-                    return null;
-                case StepString stepString:
-                    return stepString.AsString();
-                case StepSymbol stepSymbol:
-                    return stepSymbol.AsString();
-                case StepUnassigned stepUnassigned:
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(sv));
-            }
-        }
-
         public static Dictionary<string, object> ToSpeckleDictionary(this IfcPropSet ps)
         {
             var d = new Dictionary<string, object>();
             foreach (var p in ps.GetProperties())
-                d[p.Name] = p.Value.IfcValJsonObject();
+                d[p.Name] = p.Value.ToJsonObject();
             return d;
         }
 
@@ -132,7 +110,7 @@ namespace Ara3D.Speckle.IfcLoader
             typeField?.SetValue(b, n.Type);
 
             // Guid is null for property values, and other Ifc entities not derived from IfcRoot 
-            //b.applicationId = n.Guid;
+            b.applicationId = n.Guid;
 
             // This is the express ID used to identify an entity wihtin a file.
             b["expressID"] = n.Id;

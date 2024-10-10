@@ -136,7 +136,7 @@ namespace Ara3D.StepParser
 
     public class StepUnassigned : StepValue
     {
-        public static StepUnassigned Default = new();
+        public static readonly StepUnassigned Default = new();
 
         public override string ToString()
             => "$";
@@ -153,7 +153,7 @@ namespace Ara3D.StepParser
 
     public class StepRedeclared : StepValue
     {
-        public static StepRedeclared Default = new();
+        public static readonly StepRedeclared Default = new();
 
         public override string ToString()
             => "*";
@@ -166,35 +166,5 @@ namespace Ara3D.StepParser
             Debug.Assert(span.First() == '*');
             return Default;
         }
-    }
-
-    public static class StepValueExtensions
-    {
-        public static uint AsId(this StepValue value)
-            => value is StepUnassigned
-                ? 0u
-                : ((StepId)value).Id;
-
-        public static string AsString(this StepValue value)
-            => value is StepString ss ? ss.Value.ToString() :
-                value is StepNumber sn ? sn.Value.ToString() :
-                value is StepId si ? si.Id.ToString() :
-                value is StepSymbol ssm ? ssm.Name.ToString() :
-                "";    
-
-        public static double AsNumber(this StepValue value)
-            => value is StepUnassigned
-                ? 0
-                : ((StepNumber)value).Value;
-
-        public static List<StepValue> AsList(this StepValue value)
-            => value is StepUnassigned
-                ? new List<StepValue>()
-                : ((StepList)value).Values;
-
-        public static List<uint> AsIdList(this StepValue value)
-            => value is StepUnassigned
-                ? new List<uint>()
-                : value.AsList().Select(AsId).ToList();
     }
 }
