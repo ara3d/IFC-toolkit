@@ -98,6 +98,12 @@ C# to Plato.Geometry
 - [ ] Implement CSG operations 
 - [ ] Implement curve/profile to surface operations 
 
+# WPF Viewer
+
+There is a WPF 3D viewer that leverage the IFC library at [https://github.com/ara3d/ara3d/tree/main/labs/Ara3D.Viewer.Wpf](https://github.com/ara3d/ara3d/tree/main/labs/Ara3D.Viewer.Wpf) 
+
+![image](https://github.com/user-attachments/assets/15a7f44f-a7fa-4c48-ada0-5bb0891318f1)
+
 # Related Open-Source Work 
 
 ## C# Projects 
