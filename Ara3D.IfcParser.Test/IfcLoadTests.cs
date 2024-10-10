@@ -26,8 +26,7 @@ namespace Ara3D.IfcParser.Test
             logger.Log($"Loaded {file.FilePath.GetFileName()}");
             logger.Log($"Graph nodes: {file.Graph.Nodes.Count}");
             logger.Log($"Graph relations: {file.Graph.Relations.Count}");
-            logger.Log($"Graph sinks: {file.Graph.SinkIds.Count}");
-            logger.Log($"Graph sources: {file.Graph.SourceIds.Count}");
+            logger.Log($"Graph roots: {file.Graph.RootIds.Count}");
             logger.Log($"Property sets: {file.Graph.GetPropSets().Count()}");
             logger.Log($"Property values: {file.Graph.GetProps().Count()}");
             logger.Log($"Express ids: {file.Document.RawInstances.Count}");

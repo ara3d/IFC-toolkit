@@ -24,8 +24,7 @@ namespace Ara3D.IfcParser
         public Dictionary<uint, List<IfcRelation>> RelationsByNode { get; } = new Dictionary<uint, List<IfcRelation>>();
         public Dictionary<uint, List<IfcPropSet>> PropertySetsByNode { get; } = new Dictionary<uint, List<IfcPropSet>>();
 
-        public IReadOnlyList<uint> SourceIds { get; }
-        public IReadOnlyList<uint> SinkIds { get; }
+        public IReadOnlyList<uint> RootIds { get; }
 
         public IfcNode AddNode(IfcNode n)
             => Nodes[n.Id] = n;
@@ -125,8 +124,8 @@ namespace Ara3D.IfcParser
                 }
             }
 
-            logger?.Log("Retrieving the root of all of the spatial relationship");
-            SourceIds = GetSpatialRelations()
+            logger?.Log("Retrieving the roots of all of the spatial relationship");
+            RootIds = GetSpatialRelations()
                 .Where(r => r.From != null)
                 .Select(r => (uint)r.From.Id)
                 .Distinct().ToList();
@@ -195,10 +194,7 @@ namespace Ara3D.IfcParser
         }
 
         public IEnumerable<IfcNode> GetSources()
-            => SourceIds.Select(GetNode);
-
-        public IEnumerable<IfcNode> GetSinks()
-            => SinkIds.Select(GetNode);
+            => RootIds.Select(GetNode);
 
         public IEnumerable<IfcPropSet> GetPropSets()
             => GetNodes().OfType<IfcPropSet>();
