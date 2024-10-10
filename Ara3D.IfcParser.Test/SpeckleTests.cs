@@ -28,6 +28,11 @@ namespace WebIfcDotNetTests
         public static void IfcFileToSpeckleToJson(FilePath f)
         {
             var logger = CreateLogger();
+            IfcFileToSpeckle(f, logger, false);
+        }
+
+        public static Base IfcFileToSpeckle(FilePath f, ILogger logger, bool showJson = false)
+        {
             var b = IfcFileToBase(f, logger);
 
             var convertedRoot = b.ToSpeckleObject();
@@ -37,11 +42,13 @@ namespace WebIfcDotNetTests
             tmp.WriteAllText(json);
             logger?.Log($"Wrote json to: {tmp}");
             
-            // DEBUG: 
-            tmp.OpenFile();
+            if (showJson)   
+                tmp.OpenFile();
+
+            return b;
         }
 
-        [Test]
+        [Test, Explicit]
         public static void ListModelsInProject()
         {
             SpeckleUtils.ListModels(CreateLogger(), Config.TestProjectId);

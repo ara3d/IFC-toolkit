@@ -50,10 +50,10 @@ namespace Ara3D.IfcParser
             => IsIfcRoot ? (this[1] as StepId)?.Id ?? 0 : 0;
 
         public string Name
-            => IsIfcRoot ? (this[2] as StepString)?.Value.ToString() : null;
+            => IsIfcRoot ? (this[2] as StepString)?.AsString() : null;
 
         public string Description
-            => IsIfcRoot ? (this[3] as StepString)?.Value.ToString() : null;
+            => IsIfcRoot ? (this[3] as StepString)?.AsString() : null;
 
         public int Count 
             => LineData.Count;

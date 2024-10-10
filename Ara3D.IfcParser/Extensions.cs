@@ -47,37 +47,117 @@ namespace Ara3D.IfcParser
                 : value.AsList().Select(AsId).ToList();
 
         // Uses Latin1 encoding (aka ISO-8859-1)
-        // Extended characters are escaped with a backslash and are converted 
+        // Extended characters converted using an IFC specific system 
         public static string AsString(this ByteSpan span)
             => Encoding.Latin1.GetString(span.ToSpan()).IfcToUnicode();
 
-        public static readonly Regex IfcRegex
-            = new Regex(@"\\X(\d+)\\([0-9A-Fa-f]+)\\X\d+\\", RegexOptions.Compiled);
+        // https://technical.buildingsmart.org/resources/ifcimplementationguidance/string-encoding/
+        public static string IfcToUnicode(this string input)
+        {
+            if (!input.Contains('\\'))
+                return input;
 
-        public static string IfcToUnicode(this string self)
-            => IfcRegex.Replace(self, match =>
+            var output = new StringBuilder();
+            var i = 0;
+            var length = input.Length;
+            while (i < length)
             {
-                // Extract byte count and hex values (e.g., \X2\00F600DF\X0\)
-                var byteCountStr = match.Groups[1].Value;
-                var hexValue = match.Groups[2].Value;
-
-                // Parse the byte count
-                var byteCount = int.Parse(byteCountStr);
-
-                // Split the hex string into chunks of two characters (each representing one byte)
-                var result = new StringBuilder();
-                for (var i = 0; i < hexValue.Length; i += 4)
+                if (input[i] != '\\')
                 {
-                    // Get the next 4 characters (representing 2 bytes, or 1 Unicode character)
-                    var hexChunk = hexValue.Substring(i, 4);
-
-                    // Convert the hex chunk to a Unicode character
-                    var unicodeCodePoint = Convert.ToInt32(hexChunk, 16);
-                    result.Append(char.ConvertFromUtf32(unicodeCodePoint));
+                    // Regular character, append to output
+                    output.Append(input[i++]);
+                    continue;
                 }
 
-                return result.ToString();
-            });
+                i++; // Move past '\'
+                if (i >= length)
+                {
+                    output.Append('\\');
+                    break;
+                }
+
+                var escapeChar = input[i++];
+
+                if (escapeChar == 'S' && i < length && input[i] == '\\')
+                {
+                    i++; // Move past '\'
+                    if (i < length)
+                    {
+                        var c = input[i++];
+                        var code = c + 128;
+                        output.Append((char)code);
+                    }
+                    else
+                    {
+                        output.Append("\\S\\");
+                    }
+                    continue;
+                }
+                
+                if (escapeChar == 'X')
+                {
+                    if (i < length && input[i] == '\\')
+                    {
+                        // Handle \X\XX escape sequence (8-bit character code)
+                        i++; // Move past '\'
+                        if (i + 1 < length)
+                        {
+                            var hex = input.Substring(i, 2);
+                            i += 2;
+                            var code = Convert.ToInt32(hex, 16);
+                            output.Append((char)code);
+                        }
+                        else
+                        {
+                            output.Append("\\X\\");
+                        }
+
+                        continue;
+                    }
+
+                    // Handle extended \Xn\...\X0\ escape sequence
+                    // Skip 'n' until the next '\'
+                    while (i < length && input[i] != '\\')
+                        i++;
+                    if (i < length)
+                        i++; // Move past '\'
+
+                    // Collect hex digits until '\X0\'
+                    var hexDigits = new StringBuilder();
+                    while (i + 3 <= length && input.Substring(i, 3) != "\\X0")
+                    {
+                        hexDigits.Append(input[i++]);
+                    }
+
+                    if (i + 3 <= length && input.Substring(i, 3) == "\\X0")
+                    {
+                        i += 3; // Move past '\X0'
+                        if (i < length && input[i] == '\\')
+                            i++; // Move past '\'
+
+                        var hexStr = hexDigits.ToString();
+
+                        // Process hex digits in chunks of 4 (representing Unicode code points)
+                        for (var k = 0; k + 4 <= hexStr.Length; k += 4)
+                        {
+                            var codeHex = hexStr.Substring(k, 4);
+                            var code = Convert.ToInt32(codeHex, 16);
+                            output.Append(char.ConvertFromUtf32(code));
+                        }
+                        continue;
+                    }
+
+                    // Invalid format, append as is
+                    output.Append("\\X");
+                    continue;
+                }
+
+                // Unrecognized escape sequence, append as is
+                output.Append('\\').Append(escapeChar);
+            }
+
+            return output.ToString();
+        }
 
         public static string AsString(this StepString ss)
             => ss.Value.AsString();
