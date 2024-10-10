@@ -42,15 +42,15 @@ namespace Ara3D.Speckle.IfcLoader
 
             for (var i = 0; i < mesh.NumVertices; i++)
             {
-                var x = vp->PX;
-                var y = vp->PY;
-                var z = vp->PZ;
+                var x = vp[i].PX;
+                var y = vp[i].PY;
+                var z = vp[i].PZ;
                 r.vertices.Add(m[0] * x + m[4] * y + m[8] * z + m[12]);
                 r.vertices.Add(-(m[2] * x + m[6] * y + m[10] * z + m[14]));
                 r.vertices.Add(m[1] * x + m[5] * y + m[9] * z + m[13]);
             }
 
-            for (var i = 0; i < mesh.NumIndices * 3; i += 3)
+            for (var i = 0; i < mesh.NumIndices; i += 3)
             {
                 var a = ip[i];
                 var b = ip[i + 1];
@@ -62,12 +62,12 @@ namespace Ara3D.Speckle.IfcLoader
             }
 
             var rm = new RenderMaterial();
-            var color = (double*)mesh.Color;
+            var color = (IfcColor*)mesh.Color;
             rm.diffuseColor = Color.FromArgb(
-                (int)(color[0] * 255), 
-                (int)(color[1] * 255), 
-                (int)(color[2] * 255),
-                (int)(color[3] * 255));
+                (int)(color->A * 255), 
+                (int)(color->R * 255), 
+                (int)(color->G * 255),
+                (int)(color->B * 255));
             r["renderMaterial"] = rm;
             return r;
         }
@@ -132,7 +132,7 @@ namespace Ara3D.Speckle.IfcLoader
             typeField?.SetValue(b, n.Type);
 
             // Guid is null for property values, and other Ifc entities not derived from IfcRoot 
-            b.applicationId = n.Guid;
+            //b.applicationId = n.Guid;
 
             // This is the express ID used to identify an entity wihtin a file.
             b["expressID"] = n.Id;
@@ -148,7 +148,11 @@ namespace Ara3D.Speckle.IfcLoader
 
             // Add the properties
             foreach (var p in n.GetPropSets())
-                b[p.Name] = p.ToSpeckleDictionary();
+            {
+                // Only when there are actually some properties.
+                if (p.NumProperties > 0)
+                    b[p.Name] = p.ToSpeckleDictionary();
+            }
 
             return b;
         }

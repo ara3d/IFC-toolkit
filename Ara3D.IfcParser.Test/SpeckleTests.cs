@@ -38,7 +38,7 @@ namespace WebIfcDotNetTests
             logger?.Log($"Wrote json to: {tmp}");
             
             // DEBUG: 
-            //tmp.OpenFile();
+            tmp.OpenFile();
         }
 
         [Test]
