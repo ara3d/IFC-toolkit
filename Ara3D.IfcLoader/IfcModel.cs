@@ -19,6 +19,9 @@
             return gPtr == IntPtr.Zero ? null : new IfcGeometry(ApiPtr, gPtr);
         }
 
+        public int GetNumGeometries()
+            => WebIfcDll.GetNumGeometries(ApiPtr, ModelPtr);
+
         public IEnumerable<IfcGeometry> GetGeometries()
         {
             var numGeometries = WebIfcDll.GetNumGeometries(ApiPtr, ModelPtr);

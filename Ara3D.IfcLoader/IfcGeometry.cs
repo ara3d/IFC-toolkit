@@ -16,7 +16,10 @@
         }
         public IfcMesh GetMesh(int i) 
             => new IfcMesh(ApiPtr, WebIfcDll.GetMesh(ApiPtr, GeometryPtr, i));
-        
+
+        public int GetNumMeshes()
+            => NumMeshes;
+
         public IEnumerable<IfcMesh> GetMeshes()
         {
             for (int i = 0; i < NumMeshes; ++i)

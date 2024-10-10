@@ -12,34 +12,25 @@ namespace Ara3D.IfcLoader
         public IfcModel Model;
         public IntPtr ApiPtr;
         public FilePath FilePath;
-        public Exception Exception;
 
         public IfcFile(FilePath fp, bool includeGeometry, ILogger? logger = null)
         {
-            try
-            {
-                if (!File.Exists(fp))
-                    throw new FileNotFoundException($"File not found: {fp}");
-                FilePath = fp;
+            if (!File.Exists(fp))
+                throw new FileNotFoundException($"File not found: {fp}");
+            FilePath = fp;
 
-                logger?.Log($"Starting load of {fp.GetFileName()}");
-                if (includeGeometry)
-                {
-                    Parallel.Invoke(
-                        () => { LoadGeometryData(logger); },
-                        () => { LoadNonGeometryData(logger); });
-                }
-                else
-                {
-                    LoadNonGeometryData(logger);
-                }
-                logger?.Log($"Completed loading {fp.GetFileName()}");
-            }
-            catch (Exception e)
+            logger?.Log($"Starting load of {fp.GetFileName()}");
+            if (includeGeometry)
             {
-                Exception = e;
-                logger?.LogError(e);
+                Parallel.Invoke(
+                    () => { LoadGeometryData(logger); },
+                    () => { LoadNonGeometryData(logger); });
             }
+            else
+            {
+                LoadNonGeometryData(logger);
+            }
+            logger?.Log($"Completed loading {fp.GetFileName()}");
         }
 
         private void LoadGeometryData(ILogger? logger)

@@ -25,7 +25,7 @@ namespace Ara3D.IfcLoader
 
         // GetGeometry
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr GetNumGeometries(IntPtr api, IntPtr model);
+        public static extern int GetNumGeometries(IntPtr api, IntPtr model);
 
         // GetGeometry
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

@@ -29,6 +29,7 @@
     <ProjectReference Include="..\Ara3D.IfcLoader\Ara3D.IfcLoader.csproj" />
     <ProjectReference Include="..\Ara3D.IfcParser\Ara3D.IfcParser.csproj" />
     <ProjectReference Include="..\Ara3D.Speckle.Data\Ara3D.Speckle.Data.csproj" />
+    <ProjectReference Include="..\Ara3D.Speckle.IfcLoader\Ara3D.Speckle.IfcLoader.csproj" />
   </ItemGroup>
 
   <ItemGroup>

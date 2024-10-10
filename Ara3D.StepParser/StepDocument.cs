@@ -8,7 +8,6 @@ using Ara3D.Utils;
 
 namespace Ara3D.StepParser
 {
-
     public unsafe class StepDocument : IDisposable
     {
         public readonly FilePath FilePath;
@@ -84,6 +83,7 @@ namespace Ara3D.StepParser
 
         public StepInstance GetInstanceWithData(StepRawInstance inst)
         {
+            throw new Exception("TODO: fix a bug here, need to get data via the StepFactory.");
             var attr = new StepList(new List<StepValue>());
             var se = new StepEntity(inst.Type, attr);
             return new StepInstance(inst.Id, se);

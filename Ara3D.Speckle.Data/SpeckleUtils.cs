@@ -142,5 +142,23 @@ namespace Ara3D.Speckle.Data
             logger?.Log($"Model Id = {model.id}");
             return client.PullModelFromId(projectId, name, logger);
         }
+
+        public static string ProjectUrl(string projectId)
+            => $"https://app.speckle.systems/projects/{projectId}";
+
+        public static void ListModels(ILogger logger, string projectId)
+        {
+            logger.Log($"Connecting to project {ProjectUrl(projectId)}");
+            var client = SpeckleUtils.LoginDefaultClient(logger);
+            var models = client.GetModels(projectId);
+            if (models == null)
+            {
+                logger?.Log($"Unable to retrieved models for project {projectId}");
+                return;
+            }
+            logger?.Log($"Found {models.Count()} models");
+            foreach (var m in models)
+                logger?.Log($"{m.name}:{m.id}");
+        }
     }
 }
