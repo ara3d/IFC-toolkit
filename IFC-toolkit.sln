@@ -62,6 +62,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{35D0
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ara3D.IfcLoader", "Ara3D.IfcLoader\Ara3D.IfcLoader.csproj", "{85C50A50-F77C-43BD-B319-0FF592358E16}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1149FEC3-B141-419C-A445-16C22BBD7CCE} = {1149FEC3-B141-419C-A445-16C22BBD7CCE}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "speckle", "speckle", "{D8EB10EF-491D-44AD-905B-3F93CF361AA0}"
 EndProject
