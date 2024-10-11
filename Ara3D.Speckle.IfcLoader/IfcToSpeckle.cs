@@ -5,6 +5,7 @@ using Ara3D.Buffers;
 using Ara3D.IfcLoader;
 using Ara3D.IfcParser;
 using Ara3D.StepParser;
+using Ara3D.Utils;
 using Objects.Geometry;
 using Objects.Other;
 using Speckle.Core.Models;
@@ -129,8 +130,15 @@ namespace Ara3D.Speckle.IfcLoader
             {
                 // Only when there are actually some properties.
                 if (p.NumProperties > 0)
-                    b[p.Name] = p.ToSpeckleDictionary();
+                {
+                    var name = p.Name;
+                    if (name.IsNullOrWhiteSpace())
+                        name = $"#{p.Id}";
+                    b[name] = p.ToSpeckleDictionary();
+                }
             }
+
+            // TODO: add the "type" properties
 
             return b;
         }
