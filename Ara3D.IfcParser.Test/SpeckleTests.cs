@@ -7,6 +7,10 @@ using Ara3D.Speckle.IfcLoader;
 using NUnit.Framework;
 using static Ara3D.IfcParser.Test.Config;
 using Base = Speckle.Core.Models.Base;
+using Speckle.Core.Credentials;
+using Speckle.Core.Api;
+using Speckle.Automate.Sdk.Schema;
+using Speckle.Automate.Sdk;
 
 namespace WebIfcDotNetTests
 {
@@ -41,7 +45,7 @@ namespace WebIfcDotNetTests
             var json = convertedRoot.ToJson();
             tmp.WriteAllText(json);
             logger?.Log($"Wrote json to: {tmp}");
-            
+                
             if (showJson)   
                 tmp.OpenFile();
 
@@ -90,6 +94,55 @@ namespace WebIfcDotNetTests
                 }
             }
         }
+
+        [Test, Explicit]
+        public static void TestPushFile()
+        {
+            /*
+            var logger = CreateLogger();
+            SpeckleUtils.LoginDefaultClient(logger);
+            var project = "6b218f1aca";
+            var baseUrl = "https://app.speckle.systems/";
+            var result = SpeckleUtils.PushToServer(baseUrl, project, AC20Haus, logger);
+            logger.Log(result);
+            */
+        }
+
+        [Test,Explicit]
+        public static void PushUsingAutomate()
+        {
+            var logger = CreateLogger();
+            var client = SpeckleUtils.LoginDefaultClient(logger);
+            logger.Log($"Logged into account {client.Account} with user {client.ActiveUser}");
+            
+            // Initialize the automation context
+            var remoteRunData = new AutomationRunData
+            {
+                SpeckleServerUrl = "https://app.speckle.systems/",
+                ProjectId = "6b218f1aca",
+            };
+
+            
+            var localRunData = new AutomationRunData
+            {
+                SpeckleServerUrl = "http://127.0.0.1/",
+                ProjectId = "e9f309708a",
+            };
+
+            /*
+            var context = AutomationContext.Initialize(localRunData, client.ApiToken).Result;
+            logger.Log($"Created automation context with status {context.RunStatus}");
+            var task = context.StoreFileResult(AC20Haus);
+            Task.WaitAll(task);
+            logger.Log($"Stored file with status {context.RunStatus}");
+            */
+
+            var projectId = remoteRunData.ProjectId;
+            var url = remoteRunData.SpeckleServerUrl;
+            var modelId = "20ad8406cc";
+            SpeckleUtils.UploadFile(client, url, projectId, modelId, AC20Haus, logger);
+        }
+
 
     }
 }

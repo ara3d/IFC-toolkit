@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using Ara3D.Logging;
 using Ara3D.Utils;
 using Speckle.Core.Api;
@@ -16,18 +17,21 @@ namespace Ara3D.Speckle.Data
 {
     public static class SpeckleUtils
     {
+        public static string AccountDesc(Account account)
+            => $"{account.serverInfo.url} {account.userInfo.email}";
+
         public static Client LoginDefaultClient(ILogger logger)
         {
             var accounts = AccountManager.GetAccounts();
             foreach (var account in accounts)
-                logger?.Log($"Account: {account.serverInfo.url} {account.userInfo.email}");
+                logger?.Log($"Account: ");
 
             logger?.Log($"Getting default account for this machine");
             var defaultAccount = AccountManager.GetDefaultAccount();
             if (defaultAccount == null)
                 throw new Exception(
                     "Could not find a default account. You may need to install and run the Speckle Manager");
-
+            logger?.Log($"Default account = {AccountDesc(defaultAccount)}");
             logger?.Log($"Authenticating with this account");
             return new Client(defaultAccount);
         }
@@ -159,6 +163,51 @@ namespace Ara3D.Speckle.Data
             logger?.Log($"Found {models.Count()} models");
             foreach (var m in models)
                 logger?.Log($"{m.name}:{m.id}");
+        }
+
+        public static string PushToServer(string url, string projectId, string modelId, FilePath pathToIfcFile, ILogger logger)
+        {
+            logger.Log($"Pushing file {pathToIfcFile}");
+            var requestUri = $"{url}api/file/autodetect/{projectId}/main";
+            logger?.Log($"Creating post request to {requestUri}");
+            using (var multipartFormContent = new MultipartFormDataContent())
+            {
+                var fileStreamContent = new StreamContent(pathToIfcFile.OpenRead());
+                fileStreamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+                multipartFormContent.Add(fileStreamContent, name: "file", fileName: pathToIfcFile.GetFileName());
+                var client = new HttpClient();
+                var response = client.PostAsync(requestUri, multipartFormContent).Result;
+                return response.StatusCode.ToString();
+            }
+        }
+
+        public static string UploadFile(Client client, string url, string projectId, string filePath, ILogger logger)
+        {
+            logger?.Log($"Storing file {filePath} in project {projectId}");
+            var model = CreateModel(client, projectId, Path.GetFileName(filePath), logger);
+            var result = UploadFile(client, url, projectId, model.id, filePath, logger);
+            logger?.Log($"Completed file store with result {result}");
+            return result;
+        }
+
+        public static string UploadFile(Client client, string url, string projectId, string modelId, string filePath, ILogger logger)
+        {
+            logger?.Log("Starting upload");
+            var fileStream = File.Open(filePath, FileMode.Open);
+            using (var streamContent = new StreamContent(fileStream))
+            {
+                using (var formData = new MultipartFormDataContent())
+                {
+                    formData.Add(streamContent, "files", Path.GetFileName(filePath));
+                    var request = client.GQLClient.HttpClient
+                        .PostAsync(new Uri($"{url}api/file/autodetect/{projectId}/{modelId}"),
+                            formData
+                        ).Result;
+                    logger?.Log($"Completed upload: {request.StatusCode}");
+                    request.EnsureSuccessStatusCode();
+                    return request.Content.ReadAsStringAsync().Result;
+                }
+            }
         }
     }
 }
