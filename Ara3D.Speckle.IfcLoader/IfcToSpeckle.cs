@@ -1,15 +1,11 @@
 using System.Drawing;
 using System.Reflection;
-using System.Text;
-using Ara3D.Buffers;
 using Ara3D.IfcLoader;
 using Ara3D.IfcParser;
-using Ara3D.StepParser;
 using Ara3D.Utils;
 using Objects.Geometry;
 using Objects.Other;
 using Speckle.Core.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ara3D.Speckle.IfcLoader
 {
@@ -113,8 +109,8 @@ namespace Ara3D.Speckle.IfcLoader
             // Guid is null for property values, and other Ifc entities not derived from IfcRoot 
             b.applicationId = n.Guid;
 
-            // This is the express ID used to identify an entity wihtin a file.
-            b["expressID"] = n.Id;
+            // This is the express ID used to identify an entity within a file.
+            b["expressID"] = n.Id;      
             
             // Even if there is no geometry, this will return an empty collection. 
             var c = file.Model.GetGeometry(n.Id).ToSpeckle();
