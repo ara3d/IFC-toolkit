@@ -23,6 +23,8 @@ namespace Ara3D.Speckle.Data
         public bool IsSimpleDictionary => Properties.Count > 0 && Elements.Count == 0 && DotNetType == "Dictionary`2";
         public bool IsSimpleList => Properties.Count == 0 && Elements.Count > 0 && DotNetType == "List`1";
 
+        public string DotNetType { get; set; }
+    
         public Mesh Mesh { get; set; }
         public RenderMaterial Material { get; set; }
         
