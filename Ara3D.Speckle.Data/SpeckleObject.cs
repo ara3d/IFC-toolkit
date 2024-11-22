@@ -15,7 +15,8 @@ namespace Ara3D.Speckle.Data
     public class SpeckleObject
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-
+        public string Name { get; set; }
+        public string SpeckleType { get; set; }
         public List<object> Elements { get; set; } = new List<object>();
         public IEnumerable<SpeckleObject> Children => Elements.Concat(Properties.Values).OfType<SpeckleObject>();
         public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();

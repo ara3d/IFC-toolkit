@@ -11,6 +11,7 @@ using Speckle.Core.Credentials;
 using Speckle.Core.Api;
 using Speckle.Automate.Sdk.Schema;
 using Speckle.Automate.Sdk;
+using Speckle.Core.Helpers;
 
 namespace WebIfcDotNetTests
 {
@@ -143,6 +144,28 @@ namespace WebIfcDotNetTests
             SpeckleUtils.UploadFile(client, url, projectId, modelId, AC20Haus, logger);
         }
 
+        [Test, Explicit]
+        public static async Task TestUploadIfc()
+        {
+            var FILE_PATH = Config.AC20Haus;
+            var PROJECT_ID = Config.TestProjectId;
+            const string SERVER_URL = "https://app.speckle.systems";
 
+            var acc = AccountManager.GetAccounts(SERVER_URL).First();
+            using var httpClient = Http.GetHttpProxyClient();
+            Http.AddAuthHeader(httpClient, acc.token);
+
+            var fileStream = new FileStream(FILE_PATH, FileMode.Open, FileAccess.Read);
+            using StreamContent streamContent = new(fileStream);
+            using MultipartFormDataContent formData = new() { { streamContent, "files", Path.GetFileName(FILE_PATH) } };
+
+            var response = await httpClient
+                .PostAsync(new Uri($"{SERVER_URL}/api/file/ifc/{PROJECT_ID}"), formData)
+                .ConfigureAwait(false);
+
+            Console.WriteLine($"Response code: {response.StatusCode}");
+            Console.WriteLine($"Response content: {await response.Content.ReadAsStringAsync().ConfigureAwait(false)}");
+            Console.WriteLine($"Response headers: {response.Headers}");
+        }   
     }
 }

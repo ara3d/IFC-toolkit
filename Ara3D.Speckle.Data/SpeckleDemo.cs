@@ -66,7 +66,7 @@ namespace Ara3D.Speckle.Data
 
         public static void OutputNative(SpeckleObject obj, string indent = "")
         {
-            Console.WriteLine($"{indent}{obj.Id}:{obj.SpeckleType}:{obj.DotNetType}");
+            Console.WriteLine($"{indent}{obj.Id}:{obj.DotNetType}");
             foreach (var child in obj.Elements.OfType<SpeckleObject>())
                 OutputNative(child, indent + "  ");
         }
