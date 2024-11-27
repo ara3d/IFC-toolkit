@@ -8,9 +8,7 @@ namespace Ara3D.IfcParser.Test
 {
     public static class IfcLoadTests
     {
-        public static IReadOnlyList<FilePath> Files = 
-            new DirectoryPath(@"C:\Users\cdigg\dev\speckle\private-test-files").GetFiles("*.ifc").ToList();
-        //Config.Files;
+        public static IReadOnlyList<FilePath> Files = Config.Files;
 
         [Test]
         [TestCaseSource(nameof(Files))]

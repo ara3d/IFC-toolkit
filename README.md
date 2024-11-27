@@ -80,7 +80,7 @@ See the file `Ara3D.IfcLoader/WebIfcDll.cs` for the C# PInvoke code.
 
 - [x] Be able to compile project outside of Ara 3D main repo 
 - [x] Assure that all Ara 3D dependencies are taken from NuGet packages (not local)
-- [ ] Make a separate C++ project for the DLL for Linux
+- [x] Make a separate C++ project for the DLL for Linux
 - [ ] Test the C# and C++ code on Linux
 - [x] Extract Global IDs from all product elements 
 - [ ] Create a list of Express IDs that represent product elements 
