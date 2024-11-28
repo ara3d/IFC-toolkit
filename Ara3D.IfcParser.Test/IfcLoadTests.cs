@@ -10,12 +10,23 @@ namespace Ara3D.IfcParser.Test
     {
         public static IReadOnlyList<FilePath> Files = Config.Files;
 
-        [Test]
+        [Test, Explicit("Takes a long time to run")]
         [TestCaseSource(nameof(Files))]
         public static void TestIfcFile(FilePath fp)
         {
             var logger = CreateLogger();
             var (rd, file) = RunDetails.LoadGraph(fp, true, logger);
+            OutputDetails(file, logger);
+            Console.WriteLine(rd.Header());
+            Console.WriteLine(rd.RowData());
+        }
+
+        [Test]
+        [TestCaseSource(nameof(Files))]
+        public static void TestIfcFileWithoutGeometry(FilePath fp)
+        {
+            var logger = CreateLogger();
+            var (rd, file) = RunDetails.LoadGraph(fp, false, logger);
             OutputDetails(file, logger);
             Console.WriteLine(rd.Header());
             Console.WriteLine(rd.RowData());

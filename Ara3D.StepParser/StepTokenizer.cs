@@ -231,6 +231,17 @@ namespace Ara3D.StepParser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe bool EatWSpace(ref StepToken cur, byte* end)
+        {
+            while (cur.Type == StepTokenType.Comment || cur.Type == StepTokenType.Whitespace)
+            {
+                if (!ParseNextToken(ref cur, end))
+                    return false;
+            }
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool ParseNextToken(ref StepToken prev, byte* end)
         {
             var cur = prev.Span.End();

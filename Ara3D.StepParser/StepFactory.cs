@@ -65,7 +65,9 @@ namespace Ara3D.StepParser
         public static StepList CreateAggregate(ref StepToken token, byte* end)
         {
             var values = new List<StepValue>();
-            Debug.Assert(token.Type == StepTokenType.BeginGroup);
+            StepTokenizer.EatWSpace(ref token, end);
+            if (token.Type != StepTokenType.BeginGroup)
+                throw new Exception("Expected '('");
 
             while (StepTokenizer.ParseNextToken(ref token, end))
             {

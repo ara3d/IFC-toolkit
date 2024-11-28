@@ -40,8 +40,10 @@ namespace Ara3D.IfcParser
         public bool IsIfcRoot
             => Count >= 4
                && this[0] is StepString str
-               && this[1] is StepId
-               && str.Value.Length == 22;
+               && this[1] is StepId;
+            // Modern IFC files conform to this, but older ones have been observed to have different length IDs.
+            // Leaving as a comment for now. 
+            //&& str.Value.Length == 22;
 
         public string Guid
             => IsIfcRoot ? (this[0] as StepString)?.Value.ToString() : null;
