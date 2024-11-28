@@ -40,7 +40,7 @@ namespace Ara3D.IfcParser
         public bool IsIfcRoot
             => Count >= 4
                && this[0] is StepString str
-               && this[1] is StepId;
+               && (this[1] is StepId) || (this[1] is StepUnassigned);
             // Modern IFC files conform to this, but older ones have been observed to have different length IDs.
             // Leaving as a comment for now. 
             //&& str.Value.Length == 22;
