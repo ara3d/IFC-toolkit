@@ -12,13 +12,19 @@ namespace Ara3D.StepParser
     {
         public readonly FilePath FilePath;
         public readonly byte* DataStart;
+        public readonly byte* DataEnd;
         public readonly AlignedMemory Data;
 
         /// <summary>
         /// This is a list of raw step instance information.
         /// Each one has only a type and an ID.
         /// </summary>
-        public readonly List<StepRawInstance> RawInstances = new();
+        public readonly StepRawInstance[] RawInstances;
+
+        /// <summary>
+        /// The number of raw instance
+        /// </summary>
+        public readonly int NumRawInstances; 
 
         /// <summary>
         /// This gives us a fast way to look up a StepInstance by their ID
@@ -38,11 +44,12 @@ namespace Ara3D.StepParser
             logger.Log($"Loading {filePath.GetFileSizeAsString()} of data from {filePath.GetFileName()}");
             Data = AlignedMemoryReader.ReadAllBytes(filePath);
             DataStart = Data.BytePtr;
+            DataEnd = DataStart + Data.NumBytes;
 
             logger.Log($"Computing the start of each line");
-            // NOTE: this estimates that the average line length is more than 16 characters. 
-            // This is a reasonable estimate. Only very degenerate files would not meet that. 
-            var cap = Data.NumBytes / 16;
+            // NOTE: this estimates that the average line length is at least 32 characters. 
+            // This minimize the number of allocations that happen
+            var cap = Data.NumBytes / 32;
             LineOffsets = new List<int>(cap);
 
             // We are going to report the beginning of the lines, while the "ComputeLines" function
@@ -50,48 +57,42 @@ namespace Ara3D.StepParser
             var currentLine = 1;
             for (var i = 0; i < Data.NumVectors; i++)
             {
-                StepLineParser.ComputeLines(
+                StepLineParser.ComputeOffsets(
                     ((Vector256<byte>*)Data.BytePtr)[i], ref currentLine, LineOffsets);
             }
 
             logger.Log($"Found {LineOffsets.Count} lines");
 
             logger.Log($"Creating instance records");
+            RawInstances = new StepRawInstance[LineOffsets.Count];
 
             for (var i = 0; i < LineOffsets.Count - 1; i++)
             {
                 var lineStart = LineOffsets[i];
                 var lineEnd = LineOffsets[i + 1];
-                var inst = StepLineParser.ParseLine(DataStart, i, RawInstances.Count, lineStart, lineEnd);
+                var inst = StepLineParser.ParseLine(DataStart + lineStart, DataStart + lineEnd);
                 if (inst.IsValid())
                 {
-                    RawInstances.Add(inst);
-                    InstanceIdToIndex.Add(inst.Id, i);
+                    InstanceIdToIndex.Add(inst.Id, NumRawInstances);
+                    RawInstances[NumRawInstances++] = inst;
                 }
             }
+
             logger.Log($"Completed creation of STEP document from {filePath.GetFileName()}");
         }
 
         public void Dispose() 
             => Data.Dispose();
 
-        public StepRawInstance GetRawInstance(uint id)
-            => RawInstances[InstanceIdToIndex[id]];
-
         public StepInstance GetInstanceWithData(uint id)
-            => GetInstanceWithData(GetRawInstance(id));
+            => GetInstanceWithDataFromIndex(InstanceIdToIndex[id]);
 
-        public int GetLineEnd(int lineIndex)
-        {
-            if (lineIndex + 1 == LineOffsets.Count)
-                return Data.NumBytes;
-            return LineOffsets[lineIndex + 1];
-        }
+        public StepInstance GetInstanceWithDataFromIndex(int index)
+            => GetInstanceWithData(RawInstances[index]);
 
         public StepInstance GetInstanceWithData(StepRawInstance inst)
         {
-            var lineEnd = GetLineEnd(inst.LineIndex);
-            var attr = inst.GetAttributes(DataStart + lineEnd);
+            var attr = inst.GetAttributes(DataEnd);
             var se = new StepEntity(inst.Type, attr);
             return new StepInstance(inst.Id, se);
         }
@@ -99,10 +100,13 @@ namespace Ara3D.StepParser
         public static StepDocument Create(FilePath fp) 
             => new(fp);
 
+        public IEnumerable<StepRawInstance> GetRawInstances(string typeCode)
+            => RawInstances.Where(inst => inst.Type.Equals(typeCode));
+
         public IEnumerable<StepInstance> GetInstances()
             => RawInstances.Select(GetInstanceWithData);
 
         public IEnumerable<StepInstance> GetInstances(string typeCode)
-            => RawInstances.Where(ri => ri.Type.Equals(typeCode)).Select(GetInstanceWithData);
+            => GetRawInstances(typeCode).Select(GetInstanceWithData);
     }
 }

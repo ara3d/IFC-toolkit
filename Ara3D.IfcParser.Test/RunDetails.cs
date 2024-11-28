@@ -71,7 +71,7 @@ namespace Ara3D.IfcParser.Test
             var r = new RunDetails(fp);
             var file = IfcFile.Load(fp, includeGeometry, logger);
             r.Stop();
-            r.ExpressIds = file.Document.RawInstances.Count;
+            r.ExpressIds = file.Document.RawInstances.Length;
             r.IfcGraphNodes = file.Graph?.Nodes.Count ?? 0;
             r.IfcGraphRelations = file.Graph?.Relations.Count ?? 0;
             return (r, file);

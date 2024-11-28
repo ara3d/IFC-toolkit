@@ -40,7 +40,7 @@ namespace Ara3D.IfcParser.Test
             logger.Log($"Graph roots: {file.Graph.RootIds.Count}");
             logger.Log($"Property sets: {file.Graph.GetPropSets().Count()}");
             logger.Log($"Property values: {file.Graph.GetProps().Count()}");
-            logger.Log($"Express ids: {file.Document.RawInstances.Count}");
+            logger.Log($"Express ids: {file.Document.NumRawInstances}");
             logger.Log($"Geometry loaded: {file.GeometryDataLoaded}");
             logger.Log($"Num geometries loaded: {file.Model?.GetNumGeometries()}");
             logger.Log($"Num meshes loaded: {file.Model?.GetGeometries().Select(g => g.GetNumMeshes()).Sum()}");

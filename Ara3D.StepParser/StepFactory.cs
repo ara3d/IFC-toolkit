@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Ara3D.StepParser
 {
@@ -76,6 +75,7 @@ namespace Ara3D.StepParser
                     // Advance past comments, whitespace, and commas 
                     case StepTokenType.Comment:
                     case StepTokenType.Whitespace:
+                    case StepTokenType.LineBreak:
                     case StepTokenType.Separator:
                     case StepTokenType.None:
                         continue;
