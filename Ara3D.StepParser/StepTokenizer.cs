@@ -97,6 +97,7 @@ namespace Ara3D.StepParser
                     return StepTokenType.LineBreak;
 
                 case (byte)'\'':
+                case (byte)'"':
                     return StepTokenType.String;
 
                 case (byte)'.':
@@ -265,11 +266,14 @@ namespace Ara3D.StepParser
                     break;
 
                 case StepTokenType.String:
+                    // usually it is as single quote,
+                    // but in rare cases it could be a double quote 
+                    var quoteChar = *(cur - 1);
                     while (cur < end)
                     {
-                        if (*cur++ == '\'')
+                        if (*cur++ == quoteChar)
                         {
-                            if (*cur != '\'')
+                            if (*cur != quoteChar)
                                 break;
                             else
                                 cur++;
