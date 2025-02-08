@@ -5,21 +5,31 @@ using Ara3D.Utils;
 
 namespace Ara3D.IfcGeometry
 {
-    public abstract record IfcRepresentationItem();
+    public abstract record IfcClass();
 
-    public abstract record IfcGeometricRepresentationItem() : IfcRepresentationItem();
+    public abstract record IfcRepresentationItem()
+        : IfcClass();
 
-    public abstract record IfcTopologicalRepresentationItem() : IfcRepresentationItem();
+    public abstract record IfcGeometricRepresentationItem()
+        : IfcRepresentationItem();
 
-    public record IfcCartesianPoint(List<double> Coordinates) : IfcGeometricRepresentationItem();
+    public abstract record IfcTopologicalRepresentationItem()
+        : IfcRepresentationItem();
 
-    public record IfcDirection(List<double> DirectionRatios) : IfcGeometricRepresentationItem();
+    public record IfcCartesianPoint(List<double> Coordinates)
+        : IfcGeometricRepresentationItem();
 
-    public record IfcVector(IfcDirection Orientation, double Magnitude) : IfcGeometricRepresentationItem();
+    public record IfcDirection(List<double> DirectionRatios)
+        : IfcGeometricRepresentationItem();
 
-    public record IfcAxis1Placement(IfcCartesianPoint Location, IfcDirection Axis) : IfcGeometricRepresentationItem();
+    public record IfcVector(IfcDirection Orientation, double Magnitude)
+        : IfcGeometricRepresentationItem();
 
-    public abstract record IfcPlacement(IfcCartesianPoint Location) : IfcGeometricRepresentationItem();
+    public record IfcAxis1Placement(IfcCartesianPoint Location, IfcDirection Axis)
+        : IfcGeometricRepresentationItem();
+
+    public abstract record IfcPlacement(IfcCartesianPoint Location)
+        : IfcGeometricRepresentationItem();
 
     public record IfcAxis2Placement2D(IfcCartesianPoint Location, IfcDirection? RefDirection = null)
         : IfcPlacement(Location);
@@ -30,17 +40,23 @@ namespace Ara3D.IfcGeometry
         IfcDirection? RefDirection = null
     ) : IfcPlacement(Location);
 
-    public abstract record IfcCurve() : IfcGeometricRepresentationItem();
+    public abstract record IfcCurve()
+        : IfcGeometricRepresentationItem();
 
-    public abstract record IfcBoundedCurve() : IfcCurve();
+    public abstract record IfcBoundedCurve()
+        : IfcCurve();
 
-    public record IfcPolyline(List<IfcCartesianPoint> Points) : IfcBoundedCurve();
+    public record IfcPolyline(List<IfcCartesianPoint> Points)
+        : IfcBoundedCurve();
 
-    public record IfcLine(IfcCartesianPoint Pnt, IfcVector Dir) : IfcCurve();
+    public record IfcLine(IfcCartesianPoint Pnt, IfcVector Dir)
+        : IfcCurve();
 
-    public abstract record IfcConic(IfcAxis2Placement2D Position) : IfcCurve();
+    public abstract record IfcConic(IfcAxis2Placement2D Position)
+        : IfcCurve();
 
-    public record IfcCircle(IfcAxis2Placement2D Position, double Radius) : IfcConic(Position);
+    public record IfcCircle(IfcAxis2Placement2D Position, double Radius)
+        : IfcConic(Position);
 
     public record IfcEllipse(IfcAxis2Placement2D Position, double SemiMajorAxis, double SemiMinorAxis)
         : IfcConic(Position);
@@ -57,7 +73,8 @@ namespace Ara3D.IfcGeometry
 
     public abstract record IfcElementarySurface(IfcAxis2Placement3D Position) : IfcSurface();
 
-    public record IfcPlane(IfcAxis2Placement3D Position) : IfcElementarySurface(Position);
+    public record IfcPlane(IfcAxis2Placement3D Position)
+        : IfcElementarySurface(Position);
 
     public record IfcCylindricalSurface(IfcAxis2Placement3D Position, double Radius)
         : IfcElementarySurface(Position);
@@ -73,7 +90,8 @@ namespace Ara3D.IfcGeometry
         IfcAxis1Placement AxisPosition
     ) : IfcSurface();
 
-    public abstract record IfcSolidModel() : IfcGeometricRepresentationItem();
+    public abstract record IfcSolidModel()
+        : IfcGeometricRepresentationItem();
 
     public abstract record IfcSweptAreaSolid(IfcProfileDef SweptArea, IfcAxis2Placement3D? Position = null)
         : IfcSolidModel();
@@ -92,9 +110,11 @@ namespace Ara3D.IfcGeometry
         double Angle
     ) : IfcSweptAreaSolid(SweptArea, Position);
 
-    public abstract record IfcProfileDef(string? ProfileName);
+    public abstract record IfcProfileDef(string? ProfileName)
+        : IfcClass();
 
-    public abstract record IfcParameterizedProfileDef(string? ProfileName) : IfcProfileDef(ProfileName);
+    public abstract record IfcParameterizedProfileDef(string? ProfileName)
+        : IfcProfileDef(ProfileName);
 
     public record IfcRectangleProfileDef(string? ProfileName, double XDim, double YDim)
         : IfcParameterizedProfileDef(ProfileName);
@@ -114,17 +134,22 @@ namespace Ara3D.IfcGeometry
         IfcSolidModel SecondOperand
     ) : IfcBooleanResult(Operation, FirstOperand, SecondOperand);
 
-    public abstract record IfcManifoldSolidBrep(IfcClosedShell Outer) : IfcSolidModel();
+    public abstract record IfcManifoldSolidBrep(IfcClosedShell Outer)
+        : IfcSolidModel();
 
     public record IfcFacetedBrep(IfcClosedShell Outer) : IfcManifoldSolidBrep(Outer);
 
-    public record IfcAdvancedBrep(IfcClosedShell Outer) : IfcManifoldSolidBrep(Outer);
+    public record IfcAdvancedBrep(IfcClosedShell Outer)
+        : IfcManifoldSolidBrep(Outer);
 
-    public record IfcShellBasedSurfaceModel(List<IfcOpenShell> SbsmBoundary) : IfcGeometricRepresentationItem();
+    public record IfcShellBasedSurfaceModel(List<IfcOpenShell> SbsmBoundary)
+        : IfcGeometricRepresentationItem();
 
-    public record IfcFaceBasedSurfaceModel(List<IfcConnectedFaceSet> FbsmFaces) : IfcGeometricRepresentationItem();
+    public record IfcFaceBasedSurfaceModel(List<IfcConnectedFaceSet> FbsmFaces)
+        : IfcGeometricRepresentationItem();
 
-    public abstract record IfcTessellatedItem() : IfcGeometricRepresentationItem();
+    public abstract record IfcTessellatedItem()
+        : IfcGeometricRepresentationItem();
 
     public record IfcPolygonalFaceSet(
         IfcCartesianPointList3D Coordinates,
@@ -132,19 +157,21 @@ namespace Ara3D.IfcGeometry
         List<IfcIndexedPolygonalFace> Faces
     ) : IfcTessellatedItem();
 
-    public record IfcCartesianPointList3D(List<List<double>> CoordList);
+    public record IfcCartesianPointList3D(List<List<double>> CoordList) : IfcClass();
 
-    public record IfcIndexedPolygonalFace(List<int> CoordIndex);
+    public record IfcIndexedPolygonalFace(List<int> CoordIndex) : IfcClass();
 
     public abstract record IfcTopologicalRepresentationItem2DOr3D()
         : IfcTopologicalRepresentationItem(); // (Not an official IFC entity, just a placeholder if needed)
 
-    public abstract record IfcVertex() : IfcTopologicalRepresentationItem();
+    public abstract record IfcVertex()
+        : IfcTopologicalRepresentationItem();
 
     public record IfcVertexPoint(IfcPointOrVertexPoint? VertexGeometry)
         : IfcVertex(); // In IFC, IfcPointOrVertexPoint is a select. Here as nullable?
 
-    public abstract record IfcEdge(IfcVertex EdgeStart, IfcVertex EdgeEnd) : IfcTopologicalRepresentationItem();
+    public abstract record IfcEdge(IfcVertex EdgeStart, IfcVertex EdgeEnd)
+        : IfcTopologicalRepresentationItem();
 
     public record IfcEdgeCurve(
         IfcVertex EdgeStart,
@@ -158,88 +185,147 @@ namespace Ara3D.IfcGeometry
         bool Orientation
     ) : IfcEdge(EdgeElement.EdgeStart, EdgeElement.EdgeEnd);
 
-    public record IfcPath(List<IfcOrientedEdge> EdgeList) : IfcTopologicalRepresentationItem();
+    public record IfcPath(List<IfcOrientedEdge> EdgeList)
+        : IfcTopologicalRepresentationItem();
 
-    public abstract record IfcLoop() : IfcTopologicalRepresentationItem();
+    public abstract record IfcLoop()
+        : IfcTopologicalRepresentationItem();
 
-    public record IfcEdgeLoop(List<IfcOrientedEdge> EdgeList) : IfcLoop();
+    public record IfcEdgeLoop(List<IfcOrientedEdge> EdgeList)
+        : IfcLoop();
 
-    public record IfcVertexLoop(IfcVertex LoopVertex) : IfcLoop();
+    public record IfcVertexLoop(IfcVertex LoopVertex)
+        : IfcLoop();
 
-    public abstract record IfcFaceBound(IfcLoop Bound, bool Orientation) : IfcTopologicalRepresentationItem();
+    public abstract record IfcFaceBound(IfcLoop Bound, bool Orientation)
+        : IfcTopologicalRepresentationItem();
 
-    public record IfcFaceOuterBound(IfcLoop Bound, bool Orientation) : IfcFaceBound(Bound, Orientation);
+    public record IfcFaceOuterBound(IfcLoop Bound, bool Orientation)
+        : IfcFaceBound(Bound, Orientation);
 
-    public record IfcFace(List<IfcFaceBound> Bounds) : IfcTopologicalRepresentationItem();
+    public record IfcFace(List<IfcFaceBound> Bounds)
+        : IfcTopologicalRepresentationItem();
 
     public record IfcFaceSurface(List<IfcFaceBound> Bounds, IfcSurface FaceSurface, bool SameSense)
         : IfcFace(Bounds);
 
-    public record IfcConnectedFaceSet(List<IfcFace> CfsFaces) : IfcTopologicalRepresentationItem();
+    public record IfcConnectedFaceSet(List<IfcFace> CfsFaces)
+        : IfcTopologicalRepresentationItem();
 
-    public record IfcClosedShell(List<IfcFace> CfsFaces) : IfcConnectedFaceSet(CfsFaces);
+    public record IfcClosedShell(List<IfcFace> CfsFaces)
+        : IfcConnectedFaceSet(CfsFaces);
 
-    public record IfcOpenShell(List<IfcFace> CfsFaces) : IfcConnectedFaceSet(CfsFaces);
+    public record IfcOpenShell(List<IfcFace> CfsFaces)
+        : IfcConnectedFaceSet(CfsFaces);
 
-// In IFC, IfcPointOrVertexPoint and other SELECT types are not formal entities. 
-// You may adapt those to your own usage or code-generation strategy as needed.
-    public record IfcPointOrVertexPoint(IfcCartesianPoint? Point, IfcVertex? Vertex);
-}
+    // In IFC, IfcPointOrVertexPoint and other SELECT types are not formal entities. 
+    // You may adapt those to your own usage or code-generation strategy as needed.
+    public record IfcPointOrVertexPoint(IfcCartesianPoint? Point, IfcVertex? Vertex)
+        : IfcClass();
 
-public static class Tests
-{
-    public static FilePath InputFile = Config.AC20Haus;
-
-    public static HashSet<string> GetLocalTypes()
+    public class IfcFactory
     {
-        return Assembly.GetExecutingAssembly().GetTypes().Select(t => t.Name.ToUpperInvariant())
-            .Where(n => n.StartsWith("IFC")).ToHashSet();
-    }
-    [Test]
-    public static void Test1()
-    {
-        var logger = Config.CreateLogger();
-        var (rd, file) = RunDetails.LoadGraph(InputFile, false, logger);
-        IfcLoadTests.OutputDetails(file, logger);
-        Console.WriteLine(rd.Header());
-        Console.WriteLine(rd.RowData());
-        var localTypes = GetLocalTypes();
-        var doc = file.Document;
-        var numbers = new List<double>();
-        var d = new Dictionary<string, List<StepInstance>>();
-        var cnt = 0;
-        foreach (var rawInstance in file.Document.RawInstances)
+        public Dictionary<uint, StepInstance> StepInstances  = new Dictionary<uint, StepInstance>();
+        public Dictionary<string, Type> Types = new Dictionary<string, Type>();
+        public Dictionary<uint, IfcClass> IfcInstances = new Dictionary<uint, IfcClass>();
+
+        public IfcFactory()
         {
-            if (rawInstance.Type.IsNull())
-                continue;
-
-            var str = rawInstance.Type.ToString().ToUpperInvariant();
-            if (!localTypes.Contains(str))
-                continue;
-
-            var inst = doc.GetInstanceWithData(rawInstance);
-            GatherNumbers(inst.AttributeValues, numbers);
-            cnt++;
-
-            if (!d.ContainsKey(str))
-                d[str] = new List<StepInstance>() { inst };
-            else
-                d[str].Add(inst);
+            Types = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.Name.StartsWith("Ifc"))
+                .ToDictionary(t => t.Name.ToUpperInvariant(), t => t);
         }
 
-        Console.WriteLine($"Found a total of {cnt} instances, and {numbers.Count} numbers");
-        foreach (var kv in d.OrderBy(kv => kv.Key))
-            Console.WriteLine($"{kv.Key} = {kv.Value.Count}");
+        public void AddValue(StepInstance inst)
+            => StepInstances.Add(inst.Id, inst);
+       
+
+        public Type? GetIfcType(StepInstance inst)
+            => Types.GetValueOrDefault(inst.EntityType);
+
+        public IfcClass GetCreateIfcInstance(uint id)
+        {
+            if (IfcInstances.TryGetValue(id, out var ifcInstance))
+                return ifcInstance;
+
+            if (!StepInstances.TryGetValue(id, out var stepInstance))
+                throw new Exception($"Could not find step instance {id}");
+
+            var type = Types.
+            var vals = stepInstance.AttributeValues;
+            var ctor = type
+            if (vals.Count != )
+
+            var ic = Activator.CreateInstance(type) as IfcClass;
+            if (ic == null)
+                throw new Exception($"Unable to create instance of {type}");
+            IfcInstances.Add(inst.Id, ic);
+
+        }
     }
 
-    public static void GatherNumbers(List<StepValue> list, List<double> numbers)
+    public static class Tests
     {
-        foreach (var tmp in list)
+
+        public static FilePath InputFile = Config.AC20Haus;
+
+        public static HashSet<string> GetLocalTypes()
         {
-            if (tmp is StepNumber n)
-                numbers.Add(n.Value);
-            else if (tmp is StepList stepList)
-                GatherNumbers(stepList.Values, numbers);
+            return Assembly.GetExecutingAssembly().GetTypes().Select(t => t.Name.ToUpperInvariant())
+                .Where(n => n.StartsWith("IFC")).ToHashSet();
+        }
+
+        [Test]
+        public static void Test1()
+        {
+            var logger = Config.CreateLogger();
+            var (rd, file) = RunDetails.LoadGraph(InputFile, false, logger);
+            IfcLoadTests.OutputDetails(file, logger);
+            Console.WriteLine(rd.Header());
+            Console.WriteLine(rd.RowData());
+            var localTypes = GetLocalTypes();
+            var doc = file.Document;
+            var numbers = new List<double>();
+            var f = new IfcFactory();
+            var d = new Dictionary<string, List<StepInstance>>();
+            var cnt = 0;
+            foreach (var rawInstance in file.Document.RawInstances)
+            {
+                if (rawInstance.Type.IsNull())
+                    continue;
+
+                var str = rawInstance.Type.ToString().ToUpperInvariant();
+                if (!localTypes.Contains(str))
+                    continue;
+
+                var inst = doc.GetInstanceWithData(rawInstance);
+                GatherNumbers(inst.AttributeValues, numbers);
+                cnt++;
+
+                f.AddValue(inst);
+
+                if (!d.ContainsKey(str))
+                    d[str] = new List<StepInstance>() { inst };
+                else
+                    d[str].Add(inst);
+            }
+
+            Console.WriteLine($"Found a total of {cnt} instances, and {numbers.Count} numbers");
+            foreach (var kv in d.OrderBy(kv => kv.Key))
+                Console.WriteLine($"{kv.Key} = {kv.Value.Count}");
+        }
+
+        public static void GatherNumbers(List<StepValue> list, List<double> numbers)
+        {
+            foreach (var tmp in list)
+            {
+                if (tmp is StepNumber n)
+                    numbers.Add(n.Value);
+                else if (tmp is StepList stepList)
+                    GatherNumbers(stepList.Values, numbers);
+            }
         }
     }
 }
