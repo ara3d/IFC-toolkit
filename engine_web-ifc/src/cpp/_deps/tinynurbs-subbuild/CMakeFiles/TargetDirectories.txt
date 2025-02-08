@@ -1,3 +1,0 @@
-C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/tinynurbs-subbuild/CMakeFiles/tinynurbs-populate.dir
-C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/tinynurbs-subbuild/CMakeFiles/ALL_BUILD.dir
-C:/Users/cdigg/git/temp/engine_web-ifc/src/cpp/_deps/tinynurbs-subbuild/CMakeFiles/ZERO_CHECK.dir
