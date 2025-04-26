@@ -253,6 +253,8 @@ namespace Ara3D.IfcGeometry
             if (!StepInstances.TryGetValue(id, out var stepInstance))
                 throw new Exception($"Could not find step instance {id}");
 
+            throw new NotImplementedException();
+            /*
             var type = Types.
             var vals = stepInstance.AttributeValues;
             var ctor = type
@@ -262,7 +264,7 @@ namespace Ara3D.IfcGeometry
             if (ic == null)
                 throw new Exception($"Unable to create instance of {type}");
             IfcInstances.Add(inst.Id, ic);
-
+            */
         }
     }
 
